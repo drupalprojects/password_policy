@@ -48,10 +48,10 @@ class History_Constraint extends Constraint {
   }
 
   function getValidationErrorMessage() {
-    return t("Password must not match %stmt.",
+    return t("Password must not match !stmt.",
     array('%windowSize' => $this->minimumConstraintValue,
-        '%stmt' => format_plural($this->minimumConstraintValue, t('the last password used'), t('any of the previous %windowSize passwords', array('%windowSize' => $this->minimumConstraintValue))),
-        '%password' => format_plural($this->minimumConstraintValue, t('password'), t('passwords'))));
+        '!stmt' => format_plural($this->minimumConstraintValue, t('the last password used'), t('any of the previous %windowSize @password', array('%windowSize' => $this->minimumConstraintValue,
+        '@password' => format_plural($this->minimumConstraintValue, t('password'), t('passwords')))))));
   }
 
 }
