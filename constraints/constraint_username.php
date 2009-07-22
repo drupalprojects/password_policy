@@ -11,7 +11,7 @@ include_once 'constraint.php';
 class Username_Constraint extends Constraint {
 
   function validate($plaintext_password, $user = NULL) {
-    return drupal_strtolower($user->name) != drupal_strtolower($password);
+    return drupal_strtolower($user->name) != drupal_strtolower($plaintext_password);
   }
 
   function getDescription() {
