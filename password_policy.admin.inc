@@ -114,7 +114,7 @@ function password_policy_admin_settings_submit($form, &$form_state) {
 
 function _password_policy_admin_list_roles($pid) {
   $roles = array();
-  $result = db_query('SELECT name FROM {role} r INNER JOIN {password_policy_role} p ON r.rid = p.rid WHERE p.pid = %d', $pid);
+  $result = db_query('SELECT r.name FROM {role} r INNER JOIN {password_policy_role} p ON r.rid = p.rid WHERE p.pid = %d', $pid);
   while ($row = db_fetch_object($result)) {
     $roles[] = $row->name;
   }
