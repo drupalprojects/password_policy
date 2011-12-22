@@ -23,12 +23,12 @@ function password_policy_consecutive_admin_form($form, &$form_state, $constraint
 function password_policy_consecutive_constraint($password, $account, $constraint) {
   $count = $constraint->config['consecutive_char_count'];
   $regex_string = "/(.)";
-  if($count && count > 1) {
+  if($count && $count > 1) {
     for( $i = 1 ; $i<$count; $i++) {
       $regex_string .='\1';
     }
-    $regex_string .= '/';
   }
+  $regex_string .= '/';
   return !preg_match($regex_string, $password);
   
 }
