@@ -2,12 +2,11 @@
 $plugin = array(
   'admin form callback' => 'password_policy_past_passwords_count_admin_form',
   'constraint callback' =>  'password_policy_past_passwords_count_constraint',
-  'message' => 'Password can not match past_passwords_count past passwords.',
+  'message' => 'Password can not match past_passwords past passwords.',
   'default' => 0,
 );
 
 function password_policy_past_passwords_count_admin_form($form, &$form_state, $constraint) {
-  dpm($constraint);
   $sub_form['past_passwords'] = array(
     '#type' => 'textfield',
     '#title' => 'Check against Previous Passwords',
@@ -23,17 +22,20 @@ function password_policy_past_passwords_count_constraint($password, $account, $c
   }
   require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
   $count = $constraint->config['past_passwords'];
-  $query = db_select('password_policy2_history', 'p');
-  $query
-    ->condition('p.uid', $account->uid)
-    ->fields('p', array('pass'))
-    ->orderBy("created", "DESC")
-    ->range(0, $count);
-  $result = $query->execute();
   $match = FALSE;
-  foreach ($result as $record) {
-    $match = $match || user_check_password($password, $record);
-  };
-
+  //TODO: find out why the hook_user_load is not running correctly
+  if(!isset($account->password_history)) {
+    password_policy2_user_load(array($account->uid=>$account));
+  }
+  for($i = 0 ; $i<$count ; $i++) {
+    // if we have that level of depth see if we have a match
+    if(isset($account->password_history[$i])) {
+      $match = $match || user_check_password($password, $account->password_history[$i]);
+    }
+    // if we do not have that amount of history then break out
+    else {
+      break;
+    }
+  }
   return !$match;
 }

@@ -7,8 +7,8 @@
 class PasswordPolicy {
   public $name;
   public $config;
-  public $conditions;
-  public $constraints;
+  public $items;
+  public $cache;
 
   /**
    * PasswordPolicy::__construct
@@ -36,15 +36,18 @@ class PasswordPolicy {
       '#type' => 'fieldset',
       '#title' => 'Conditions',
     );
-    foreach ($this->conditions as $condition) {
-      $form['condition']  = $form['condition'] + $condition->admin_form($form, $form_state);
-    }
     $form['constraint'] = array(
       '#type' => 'fieldset',
       '#title' => 'Constraints',
     );
-    foreach ($this->constraints as $constraint) {
-      $form['constraint']  = $form['constraint'] + $constraint->admin_form($form, $form_state);
+    $form['item'] = array(
+      '#type' => 'container',
+      '#title' => 'Misc',
+    );
+    foreach ($this->items as $item) {
+      $parent = $item->is_type('condition') ? 'condition' : (
+                $item->is_type('constraint') ? 'constraint' : 'item');
+      $form[$parent]  = $form[$parent] + $item->admin_form($form, $form_state);
     }
     return $form;
   }
@@ -56,11 +59,8 @@ class PasswordPolicy {
    * each constraint should parse the form_state and update the config
    */
   function admin_form_submit($form, &$form_state) {
-    foreach ($this->conditions as $condition) {
-      $condition->admin_form_submit($form, $form_state);
-    }
-    foreach ($this->constraints as $constraint) {
-      $constraint->admin_form_submit($form, $form_state);
+    foreach ($this->items as $item) {
+      $item->admin_form_submit($form, $form_state);
     }
     $form_state['item']->config = serialize($this->config);
 
@@ -98,10 +98,8 @@ class PasswordPolicy {
    */
   function active_constraints() {
     $constraints = array();
-    foreach($this->constraints as $constraint) {
-      if($constraint->is_active()) {
-        $constraints[] = $constraint;
-      }
+    foreach($this->get_items('constraint') as $constraint) {
+      $constraints[] = $constraint;
     }
     return $constraints;
   }
@@ -110,34 +108,72 @@ class PasswordPolicy {
    */
   function match($account) {
     $does_match = FALSE;
-    foreach($this->conditions as $condition) {
+    foreach($this->get_items('condition') as $condition) {
       $does_match = $does_match || $condition->match($account);
     }
     return $does_match;
   }
+
+  /**
+   * PasswordPolicy::cron()
+   *
+   * Run cron for each of the items that is a cron item
+   */
+  function cron() {
+    foreach($this->get_items('cron') as $item) {
+      $item->cron();
+    }
+  }
+
+  /**
+   * PasswordPolicy::init()
+   *
+   * Run init for each of the items that is a cron item
+   */
+  function init($account) {
+    foreach($this->get_items('init') as $item) {
+      $item->init($account);
+    }
+  }
+
   /**
    * PasswordPolicy::load_plugins()
    *
    * Load all constraint and condition plugins and instancate object
    * for each saving them in to the module.
    */
+  function _load_plugin($info) {
+      if(!isset($this->config[$info['name']])) {
+        $this->config[$info['name']] = array();
+      }
+      $this->items[$info['name']] = PasswordPolicyConstraint::factory($info,$this);
+  }
+
+  /**
+   * get all items of a particular type
+   */
+  function get_items($type) {
+    $this->cache[$type] = isset($this->cache[$type]) ? $this->cache[$type] : array();
+    if (empty($this->cache[$type])) {
+      foreach($this->items as $item) {
+        if($item->is_type($type)) {
+          $this->cache[$type][] = $item;
+        }
+      }
+    }
+    return $this->cache[$type];
+  }
   function load_plugins() {
     ctools_include('plugins');
-    foreach(ctools_get_plugins('password_policy2', 'constraint') as $constraint_name => $info) {
-      // give the constraint a place to put its config
-      if(!isset($this->config['constraint'][$info['name']])) {
-        $this->config['constraint'][$info['name']] = array();
-      }
-      $this->constraints[$constraint_name] = PasswordPolicyConstraint::factory($info,$this);
+    foreach(ctools_get_plugins('password_policy2', 'constraint') as $info) {
+      $this->_load_plugin($info);
     }
 
-    $infos = ctools_get_plugins('password_policy2', 'condition');
-    foreach($infos as $condition_name => $info) {
-      // give the condition a place to put its config
-      if(!isset($this->config['condition'][$info['name']])) {
-        $this->config['condition'][$info['name']] = array();
-      }
-      $this->conditions[$condition_name] = PasswordPolicyCondition::factory($info,$this);
+    foreach(ctools_get_plugins('password_policy2', 'condition') as $info) {
+      $this->_load_plugin($info);
+    }
+    foreach(ctools_get_plugins('password_policy2', 'item') as $info) {
+      $this->_load_plugin($info);
     }
   }
 
@@ -176,7 +212,7 @@ class PasswordPolicy {
 
 
 class PasswordPolicyConstraint extends PasswordPolicyItem {
-  protected $pp_type = 'constraint';
+  protected $pp_type = array('item','constraint');
 
   function message() {
     $mes_temp = is_array($this->info['message']) ? $this->info['message'] : array($this->info['message']);
@@ -205,7 +241,7 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
 }
 
 class PasswordPolicyCondition extends PasswordPolicyItem {
-  protected  $pp_type = 'condition';
+  protected  $pp_type = array('item', 'condition');
 
   function match($account) {
     if($func = $this->func('condition callback')) {
@@ -215,7 +251,7 @@ class PasswordPolicyCondition extends PasswordPolicyItem {
 }
 
 class PasswordPolicyItem {
-  protected $pp_type;
+  protected $pp_type = array('item');
   public $info;
   public $policy;
   public $config;
@@ -223,9 +259,12 @@ class PasswordPolicyItem {
     $this->info = $info;
     //we want to have a local config but have it be a ref to the policy one
     //that way we only have to make updates once
-    $this->config = &$policy->config[$this->pp_type][$info['name']];
+    $this->config = &$policy->config[$info['name']];
     $this->config = $this->config + $info['config'];
     $this->policy = $policy;
+  }
+  function is_type($type) {
+    return in_array($type, $this->pp_type);
   }
   
   //get function from plugin

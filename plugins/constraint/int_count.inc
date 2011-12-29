@@ -13,7 +13,6 @@ function password_policy_int_count_admin_form($form, &$form_state, $constraint) 
     '#default_value' => $constraint->config['int_count'],
     '#description' => "Password well be required to have this many integers",
   );
-  dpm($sub_form);
   return $sub_form;
 }
 
@@ -24,7 +23,7 @@ function password_policy_int_count_constraint($password, $account, $constraint) 
     for( $i = 1 ; $i<=$count; $i++) {
       $regex_string .='[0-9].*';
     }
-    $regex_string .= '/';
   }
+  $regex_string .= '/';
   return preg_match($regex_string, $password);
 }

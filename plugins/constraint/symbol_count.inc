@@ -39,7 +39,7 @@ function password_policy_symbol_count_constraint($password, $account, $constrain
     for( $i = 1 ; $i<=$count; $i++) {
       $regex_string .='['.$symbols.'].*';
     }
-    $regex_string .= '/';
   }
+  $regex_string .= '/';
   return preg_match($regex_string, $password);
 }

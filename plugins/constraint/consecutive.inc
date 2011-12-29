@@ -10,7 +10,6 @@ $plugin = array(
 );
 
 function password_policy_consecutive_admin_form($form, &$form_state, $constraint) {
-  dpm("hi");
   $sub_form['consecutive_char_count'] = array(
     '#type' => 'textfield',
     '#title' => ' Consecutive Character Count',
