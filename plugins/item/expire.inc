@@ -120,6 +120,15 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
     }
     $expire_int = $this->interval_string_to_int($this->config['expire_limit']);
 
+    // if there is no password history lets start one
+    if(!isset($account->password_history[0])) {
+      $account->password_history[0] = (object) array(
+        'uid' => $account->uid,
+        'pass' => $account->pass,
+        'created' => time()
+      );
+      password_policy2_update_password_history($account->password_history[0]);
+    }
     //check to see that the password has expired
     if($account->password_history[0]->created + $expire_int < time()) {
       //if we are on the check ajax page or using a cli then skip
