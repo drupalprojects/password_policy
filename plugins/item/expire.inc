@@ -119,6 +119,9 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       return;
     }
     $expire_int = $this->interval_string_to_int($this->config['expire_limit']);
+    if(!$expire_int) {
+      return;
+    }
 
     // if there is no password history lets start one
     if(!isset($account->password_history[0])) {
