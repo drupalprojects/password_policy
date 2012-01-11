@@ -135,7 +135,7 @@ function password_policy_admin_list() {
     if ($row['enabled']) {
       $enabled[] = $pid;
     }
-    $form[$pid]['name'] = array('#value' => $row['name']);
+    $form[$pid]['name'] = array('#value' => check_plain($row['name']));
     $form[$pid]['roles'] = array('#value' => theme('item_list', _password_policy_admin_list_roles($pid)));
     $form['weight'][$pid] = array('#type' => 'weight', '#default_value' => $row['weight']);
     $form[$pid]['view'] = array('#value' => l(t('view'), 'admin/settings/password_policy/'. $pid));
