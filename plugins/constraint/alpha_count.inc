@@ -23,7 +23,7 @@ function password_policy_alpha_count_constraint($password, $account, $constraint
     for( $i = 1 ; $i<=$count; $i++) {
       $regex_string .='[a-zA-Z].*';
     }
-    $regex_string .= '/';
   }
+  $regex_string .= '/';
   return preg_match($regex_string, $password);
 }

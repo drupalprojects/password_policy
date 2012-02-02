@@ -27,6 +27,9 @@ function password_policy_consecutive_constraint($password, $account, $constraint
       $regex_string .='\1';
     }
   }
+  else {
+    return TRUE;
+  }
   $regex_string .= '/';
   return !preg_match($regex_string, $password);
   
