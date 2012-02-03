@@ -32,11 +32,7 @@ Drupal.behaviors.passwordOverride = {
     //we are overrideing the normal evaluatePasseordStrength and instead 
     //are just returning the current status
     Drupal.evaluatePasswordStrength = function (password, translate) {
-      strength = Math.random() * 100;
-      msg = 'hi';
-      indicatorText = strength;
       return pw_status;
-      return { strength: strength, message: msg, indicatorText: indicatorText }
     };
   },
 };
