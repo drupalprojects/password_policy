@@ -376,6 +376,7 @@ function password_policy_password_change_settings() {
     '#title' => t('Force password change on first-time login'),
     '#default_value' => variable_get('password_policy_new_login_change', 0),
   );
+
   $roles = user_roles(TRUE);
   $form['password_policy_force_change_roles'] = array(
     '#type' => 'checkboxes',
@@ -383,6 +384,15 @@ function password_policy_password_change_settings() {
     '#title' => t('Force users in the following roles to change their password'),
     '#description' => t('Users who are not signed in will be required to change their password immediately upon sign in. Users who are currently signed in will be required to change their password upon their next page click, but after changing their password will be redirected back to the page they were attempting to access.'),
   );
+
+  $form['password_policy_exclude_pages'] = array(
+    '#title' => t('Page Exclusion List'),
+    '#type' => 'textarea',
+    '#description' => t('The user will be able to access these pages without changing their password. This should always include the logout path.'),
+    '#default_value' => variable_get('password_policy_exclude_pages', 'logout'),  
+    '#wysiwyg' => FALSE,
+  );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
@@ -397,6 +407,7 @@ function password_policy_password_change_settings_submit($form, &$form_state) {
   global $user;
   $selected_roles = array();
   variable_set('password_policy_new_login_change', $form_state['values']['password_policy_new_login_change']);
+  variable_set('password_policy_exclude_pages', $form_state['values']['password_policy_exclude_pages']);
   if ($form_state['values']['password_policy_new_login_change'] == 1) {
     watchdog('password policy', t('New user accounts must change password on new login enabled by !admin', array('!admin' => $user->name)), array(), WATCHDOG_NOTICE);
   }
