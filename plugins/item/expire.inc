@@ -147,22 +147,23 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
           //info (it might be an ajax call)
           if(!isset($_SESSION['password_policy2_lock'])) {
             $_SESSION['password_policy2_lock'] = TRUE;
-            $_SESSION['password_policy2_GET'] = $_GET;
-            $_SESSION['password_policy2_POST'] = $_POST;
+//            $_SESSION['password_policy2_GET'] = $_GET;
+//            $_SESSION['password_policy2_POST'] = $_POST;
           }
           drupal_set_message("Your Password has expired please change it now", 'warning');
           drupal_goto($uri);
         }
         //if we are on the user edit screen set the destination so we go back
         else {
-          $_GET['destination'] = $_SESSION['password_policy2_GET']['q'];
+// Comment this out for now.  Causes infinite redirect loop when password expires
+//          $_GET['destination'] = $_SESSION['password_policy2_GET']['q'];
         }
       }
     }
     //reset post and get if we are not locked
     elseif(isset($_SESSION['password_policy2_lock'])) {
-      $_GET = $_SESSION['password_policy2_GET'];
-      $_POST = $_SESSION['password_policy2_POST'];
+//      $_GET = $_SESSION['password_policy2_GET'];
+//      $_POST = $_SESSION['password_policy2_POST'];
       unset($_SESSION['password_policy2_lock']);
     }
   }
