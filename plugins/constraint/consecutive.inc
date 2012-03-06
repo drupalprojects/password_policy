@@ -14,7 +14,7 @@ function password_policy_consecutive_admin_form($form, &$form_state, $constraint
     '#type' => 'textfield',
     '#title' => ' Consecutive Character Count',
     '#default_value' => $constraint->config['consecutive_char_count'],
-    '#description' => "Password can not have more then this number of identical consecutive charaters",
+    '#description' => "Password can not have more then this number of identical consecutive characters",
   );
   return $sub_form;
 }

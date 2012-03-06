@@ -16,7 +16,7 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
 
   $sub_form['expire_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => 'Password Experiation',
+    '#title' => 'Password Expiration',
     '#collapsible' => TRUE,
     '#collapsed' =>!(bool)$constraint->config['expire_limit'],
   );
@@ -24,14 +24,14 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'textfield',
     '#title' => 'Expire Limit',
     '#default_value' => $constraint->config['expire_limit'],
-    '#description' => "Password well be expire after being used for this long (use normal english like 90 days or 5 hours)",
+    '#description' => "Password will expire after being used for this long (use normal english like 90 days or 5 hours)",
   //debug($vars['element']);
   );
   $sub_form['expire_fieldset']['expire_warning_email_sent'] = array(
     '#type' => 'textfield',
     '#title' => 'When to send warning emails',
     '#default_value' => $constraint->config['expire_warning_email_sent'],
-    '#description' => t("A comma seperated list of time intervals, when to send warning emails. (use normal english like 90 days or 5 hours).  If prfixed with a negative (like -2 days) then this will before the experation."),
+    '#description' => t("A comma seperated list of time intervals, when to send warning emails. (use normal english like 90 days or 5 hours).  If prefixed with a negative (like -2 days) then this will be before the expiration."),
   );
   $sub_form['expire_fieldset']['expire_warning_email_subject'] = array(
     '#type' => 'textfield',

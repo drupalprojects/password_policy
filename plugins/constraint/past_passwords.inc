@@ -11,7 +11,7 @@ function password_policy_past_passwords_count_admin_form($form, &$form_state, $c
     '#type' => 'textfield',
     '#title' => 'Check against Previous Passwords',
     '#default_value' => $constraint->config['past_passwords'],
-    '#description' => "Password can not match this many privious passwords.",
+    '#description' => "Password can not match this many previous passwords.",
   );
   return $sub_form;
 }

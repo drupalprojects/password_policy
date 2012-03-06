@@ -11,7 +11,7 @@ function password_policy_char_count_admin_form($form, &$form_state, $constraint)
     '#type' => 'textfield',
     '#title' => 'Minimum Total Characters',
     '#default_value' => $constraint->config['char_count'],
-    '#description' => "Password well be required to have this many Characters",
+    '#description' => "Password will be required to have this many Characters",
   );
   return $sub_form;
 }
