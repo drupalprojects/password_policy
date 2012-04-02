@@ -10,11 +10,11 @@ $plugin = array(
 function password_policy_global_admin_form($form, &$form_state, $condition) {
   $sub_form['global_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => 'Global',
+    '#title' => t('Global'),
   );
   $sub_form['global_fieldset']['global'] = array(
     '#type' => 'checkbox',
-    '#title' => ' Enabled Always',
+    '#title' => t('Enabled Always'),
     '#default_value' => $condition->config['global'],
   );
   return $sub_form;

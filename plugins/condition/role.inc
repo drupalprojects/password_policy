@@ -4,17 +4,17 @@ $plugin = array(
   'condition callback' =>  'password_policy_role_condition',
   'prime value' => 'role_char_count',
   'config' => array(
-    'roles' => NULL,
+    'roles' => array(),
   ),
 );
 function password_policy_role_admin_form($form, &$form_state, $condition) {
   $sub_form['role_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => 'By Role',
+    '#title' => t('By Role'),
   );
   $sub_form['role_fieldset']['roles'] = array(
     '#type' => 'checkboxes',
-    '#title' => ' Enabled For the following Roles:',
+    '#title' => t('Enabled For the following Roles:'),
     '#default_value' => $condition->config['roles'],
     '#options' => user_roles(TRUE),
   );
