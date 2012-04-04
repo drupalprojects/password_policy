@@ -151,7 +151,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
 //            $_SESSION['password_policy2_POST'] = $_POST;
           }
           drupal_set_message("Your Password has expired please change it now", 'warning');
-          drupal_goto($uri);
+          password_policy2_goto($uri);
         }
         //if we are on the user edit screen set the destination so we go back
         else {
