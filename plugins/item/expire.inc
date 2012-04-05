@@ -179,7 +179,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
 
       // if we need to subtract from expire do so
       $expire_interval = password_policy2_parse_interval($expire_interval_string);
-      $expire_int = $this->interval_string_to_int($expire_interval_string);
+      $expire_int = password_policy2_parse_interval($expire_interval_string);
       if($from_interval) {
           $notice_int = $expire_int - $notice_int;
       }
