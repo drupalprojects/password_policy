@@ -95,16 +95,6 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
 
 class PasswordPolicyExpire extends PasswordPolicyItem {
   public $pp_type = array('item', 'cron', 'init');
-
-  static function interval_string_to_int($interval_string) {
-    $interval = DateInterval::createFromDateString($interval_string);
-    $int = 
-      $interval->s +
-      $interval->i * 60 +
-      $interval->h * 60*60 +
-      $interval->d * 60*60*24;
-    return $int;
-  }
   /**
    * PasswordPolicyExpire::init()
    *
@@ -118,7 +108,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
     if($account->uid == 0) {
       return;
     }
-    $expire_int = $this->interval_string_to_int($this->config['expire_limit']);
+    $expire_int = password_policy2_parse_interval($this->config['expire_limit']);
     if(!$expire_int) {
       return;
     }
@@ -185,10 +175,10 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       $notice_interval_string = ltrim($notice_interval_string, '-');
 
       //convert notice interval to secs
-      $notice_int = $this->interval_string_to_int($notice_interval_string);
+      $notice_int = password_policy2_parse_interval($notice_interval_string);
 
       // if we need to subtract from expire do so
-      $expire_interval = DateInterval::createFromDateString($expire_interval_string);
+      $expire_interval = password_policy2_parse_interval($expire_interval_string);
       $expire_int = $this->interval_string_to_int($expire_interval_string);
       if($from_interval) {
           $notice_int = $expire_int - $notice_int;
