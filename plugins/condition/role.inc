@@ -22,8 +22,10 @@ function password_policy_role_admin_form($form, &$form_state, $condition) {
 }
 function password_policy_role_condition($account, $condition) {
   $match = FALSE;
-  foreach($account->roles as $id => $name) {
-    $match = $match || $condition->config['roles'][$id];
+  foreach ($account->roles as $id => $name) {
+    if (isset($condition->config['roles'][$id])) {
+      $match = $match || $condition->config['roles'][$id];
+    }
   }
   return $match;
 }
