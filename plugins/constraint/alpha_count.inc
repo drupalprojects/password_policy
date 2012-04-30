@@ -11,7 +11,7 @@ function password_policy_alpha_count_admin_form($form, &$form_state, $constraint
     '#type' => 'textfield',
     '#title' => t('Minimum Letters'),
     '#default_value' => $constraint->config['alpha_count'],
-    '#description' => "Password well be required to have this many Letters",
+    '#description' => "Password will be required to have this many Letters",
   );
   return $sub_form;
 }

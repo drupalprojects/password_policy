@@ -26,7 +26,7 @@ $plugin = array(
   'title singular' => t('policy'),
   'title singular proper' => t('Policy'),
   'title plural' => t('policies'),
-  'title plural proper' => t('Polices'),
+  'title plural proper' => t('Policies'),
   // This will provide you with a form for editing the properties on your
   // exportable, with validate and submit handler.
   //

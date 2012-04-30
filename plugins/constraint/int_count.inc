@@ -11,7 +11,7 @@ function password_policy_int_count_admin_form($form, &$form_state, $constraint) 
     '#type' => 'textfield',
     '#title' => 'Minimum Integers',
     '#default_value' => $constraint->config['int_count'],
-    '#description' => "Password well be required to have this many integers",
+    '#description' => "Password will be required to have this many integers",
   );
   return $sub_form;
 }

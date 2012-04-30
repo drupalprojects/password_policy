@@ -139,7 +139,7 @@ class PasswordPolicy {
   /**
    * PasswordPolicy::load_plugins()
    *
-   * Load all constraint and condition plugins and instancate object
+   * Load all constraint and condition plugins and instantiate object
    * for each saving them in to the module.
    */
   function _load_plugin($info) {

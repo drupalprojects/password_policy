@@ -20,7 +20,7 @@ function password_policy_symbol_count_admin_form($form, &$form_state, $constrain
     '#type' => 'textfield',
     '#title' => 'Minimum Symbols',
     '#default_value' => $constraint->config['symbol_count'],
-    '#description' => "Password well be required to have this many Symbols",
+    '#description' => "Password will be required to have this many Symbols",
   );
   $sub_form['symbol_count_fieldset']['symbol_count_symobols'] = array(
     '#type' => 'textfield',
