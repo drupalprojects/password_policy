@@ -19,8 +19,8 @@ function password_policy_int_count_admin_form($form, &$form_state, $constraint) 
 function password_policy_int_count_constraint($password, $account, $constraint) {
   $count = $constraint->config['int_count'];
   $regex_string = "/.*";
-  if($count && $count > 0) {
-    for( $i = 1 ; $i<=$count; $i++) {
+  if ($count && $count > 0) {
+    for ($i = 1 ; $i<=$count; $i++) {
       $regex_string .='[0-9].*';
     }
   }

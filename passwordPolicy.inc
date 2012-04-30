@@ -83,8 +83,8 @@ class PasswordPolicy {
   function constraint($pass, $account) {
     $errors = array();
     foreach ($this->active_constraints() as $constraint) {
-      if(!$constraint->constraint($pass, $account)) {
-        $errors = array_merge($errors,$constraint->fail_message($pass, $account));
+      if (!$constraint->constraint($pass, $account)) {
+        $errors = array_merge($errors, $constraint->fail_message($pass, $account));
       }
     }
     return $errors;
@@ -98,7 +98,7 @@ class PasswordPolicy {
    */
   function active_constraints() {
     $constraints = array();
-    foreach($this->get_items('constraint') as $constraint) {
+    foreach ($this->get_items('constraint') as $constraint) {
       $constraints[] = $constraint;
     }
     return $constraints;
@@ -108,7 +108,7 @@ class PasswordPolicy {
    */
   function match($account) {
     $does_match = FALSE;
-    foreach($this->get_items('condition') as $condition) {
+    foreach ($this->get_items('condition') as $condition) {
       $does_match = $does_match || $condition->match($account);
     }
     return $does_match;
@@ -120,7 +120,7 @@ class PasswordPolicy {
    * Run cron for each of the items that is a cron item
    */
   function cron() {
-    foreach($this->get_items('cron') as $item) {
+    foreach ($this->get_items('cron') as $item) {
       $item->cron();
     }
   }
@@ -131,7 +131,7 @@ class PasswordPolicy {
    * Run init for each of the items that is a cron item
    */
   function init($account) {
-    foreach($this->get_items('init') as $item) {
+    foreach ($this->get_items('init') as $item) {
       $item->init($account);
     }
   }
@@ -143,10 +143,10 @@ class PasswordPolicy {
    * for each saving them in to the module.
    */
   function _load_plugin($info) {
-      if(!isset($this->config[$info['name']])) {
-        $this->config[$info['name']] = array();
-      }
-      $this->items[$info['name']] = PasswordPolicyConstraint::factory($info,$this);
+    if (!isset($this->config[$info['name']])) {
+      $this->config[$info['name']] = array();
+    }
+    $this->items[$info['name']] = PasswordPolicyConstraint::factory($info, $this);
   }
 
   /**
@@ -155,8 +155,8 @@ class PasswordPolicy {
   function get_items($type) {
     $this->cache[$type] = isset($this->cache[$type]) ? $this->cache[$type] : array();
     if (empty($this->cache[$type])) {
-      foreach($this->items as $item) {
-        if($item->is_type($type)) {
+      foreach ($this->items as $item) {
+        if ($item->is_type($type)) {
           $this->cache[$type][] = $item;
         }
       }
@@ -165,26 +165,25 @@ class PasswordPolicy {
   }
   function load_plugins() {
     ctools_include('plugins');
-    foreach(ctools_get_plugins('password_policy2', 'constraint') as $info) {
+    foreach (ctools_get_plugins('password_policy2', 'constraint') as $info) {
       $this->_load_plugin($info);
     }
 
-    foreach(ctools_get_plugins('password_policy2', 'condition') as $info) {
+    foreach (ctools_get_plugins('password_policy2', 'condition') as $info) {
       $this->_load_plugin($info);
     }
-    foreach(ctools_get_plugins('password_policy2', 'item') as $info) {
+    foreach (ctools_get_plugins('password_policy2', 'item') as $info) {
       $this->_load_plugin($info);
     }
   }
 
   static function policy($name = NULL) {
-    if(isset($name)) {
+    if (isset($name)) {
       ctools_include('export');
       $policy = ctools_export_crud_load('password_policy2', $name);
     }
     else {
       $policy = ctools_export_crud_new('password_policy2');
-      
     }
     return new PasswordPolicy($policy);
   }
@@ -194,16 +193,16 @@ class PasswordPolicy {
     ctools_include('export');
     $policies = array();
     $infos = ctools_export_crud_load_all('password_policy2');
-    foreach($infos as $name => $info) {
+    foreach ($infos as $name => $info) {
       $policies[$name] = new PasswordPolicy($info);
     }
     return $policies;
   }
   static function matched_policies($account) {
     $policies = array();
-    foreach(PasswordPolicy::all_policies() as $policy) {
-      if($policy->match($account)) {
-      $policies[] = $policy;
+    foreach (PasswordPolicy::all_policies() as $policy) {
+      if ($policy->match($account)) {
+        $policies[] = $policy;
       }
     }
     return $policies;
@@ -212,7 +211,7 @@ class PasswordPolicy {
 
 
 class PasswordPolicyConstraint extends PasswordPolicyItem {
-  protected $pp_type = array('item','constraint');
+  protected $pp_type = array('item', 'constraint');
 
   function message() {
     $mes_temp = is_array($this->info['message']) ? $this->info['message'] : array($this->info['message']);
@@ -227,14 +226,14 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
   }
   function __construct($info, &$policy) {
 
-    if(isset($info['default'])) {
+    if (isset($info['default'])) {
       $info['prime value'] = $info['name'];
       $info['config'] = array($info['name'] => $info['default']);
     }
     parent::__construct($info, $policy);
   }
   function constraint($pass, $account) {
-    if($func = $this->func('constraint callback')) {
+    if ($func = $this->func('constraint callback')) {
       return $func($pass, $account, $this);
     }
   }
@@ -244,7 +243,7 @@ class PasswordPolicyCondition extends PasswordPolicyItem {
   protected  $pp_type = array('item', 'condition');
 
   function match($account) {
-    if($func = $this->func('condition callback')) {
+    if ($func = $this->func('condition callback')) {
       return $func($account, $this);
     }
   }
@@ -272,14 +271,14 @@ class PasswordPolicyItem {
     return ctools_plugin_get_function($this->info, $function_name);
   }
   function admin_form($form, &$form_state) {
-    if($func = $this->func("admin form callback")) {
+    if ($func = $this->func("admin form callback")) {
       return $func($form, $form_state, $this);
     }
     return array();
   }
 
   function admin_form_submit($form, &$form_state) {
-    foreach($this->info['config'] as $id => $default) {
+    foreach ($this->info['config'] as $id => $default) {
       if (isset($form_state['values'][$id])) {
         $this->config[$id] = $form_state['values'][$id];
       }
@@ -292,7 +291,7 @@ class PasswordPolicyItem {
       return (bool)$this->config[$this->info['prime value']];
     }
     else {
-     return true;
+     return TRUE;
     }
   }
 

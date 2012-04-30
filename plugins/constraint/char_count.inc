@@ -18,8 +18,8 @@ function password_policy_char_count_admin_form($form, &$form_state, $constraint)
 
 function password_policy_char_count_constraint($password, $account, $constraint) {
   $count = $constraint->config['char_count'];
-  if($count > 0) {
-    $regex_string = "/.{" . $count .",}/";
+  if ($count > 0) {
+    $regex_string = "/.{" . $count . ",}/";
     return preg_match($regex_string, $password);
   }
   return TRUE;

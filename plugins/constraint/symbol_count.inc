@@ -6,7 +6,7 @@ $plugin = array(
   'prime value' => 'symbol_count',
   'config' => array(
     'symbol_count' => 0,
-    'symbol_count_symbols'=>"!@#$%^&*()_+=-|}{\"?:><,./;'\[]",
+    'symbol_count_symbols' => "!@#$%^&*()_+=-|}{\"?:><,./;'\[]",
   ),
 );
 
@@ -35,9 +35,9 @@ function password_policy_symbol_count_constraint($password, $account, $constrain
   $count = $constraint->config['symbol_count'];
   $symbols = addcslashes($constraint->config['symbol_count_symbols'], ']^\-/');
   $regex_string = "/.*";
-  if($count && $count > 0) {
-    for( $i = 1 ; $i<=$count; $i++) {
-      $regex_string .='['.$symbols.'].*';
+  if ($count && $count > 0) {
+    for ($i = 1 ; $i<=$count; $i++) {
+      $regex_string .='[' . $symbols . '].*';
     }
   }
   $regex_string .= '/';
