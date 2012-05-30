@@ -121,7 +121,9 @@ class PasswordPolicy {
    */
   function cron() {
     foreach ($this->get_items('cron') as $item) {
-      $item->cron();
+      if ($item->is_active()) {
+        $item->cron();
+      }
     }
   }
 
