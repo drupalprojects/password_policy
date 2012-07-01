@@ -11,14 +11,14 @@
  * Description of the constraint.
  */
 function password_policy_constraint_username_description() {
-  return array('name' => t('Username'), 'description' => t('Password must differ from the username. Put any positive number to enforce this policy.'));
+  return array('name' => t('Username'), 'description' => t('Password must not contain the username (case insensitive). Put any positive number to enforce this policy.'));
 }
 
 /**
  * Error message of the constraint.
  */
 function password_policy_constraint_username_error($constraint) {
-  return t('Password must differ from the username.');
+  return t('Password must not contain the username.');
 }
 
 /**
@@ -26,7 +26,10 @@ function password_policy_constraint_username_error($constraint) {
  */
 function password_policy_constraint_username_validate($password, $constraint, $uid) {
   $account = user_load(array('uid' => $uid));
-  if ($constraint && (drupal_strtolower($account->name) == drupal_strtolower($password))) {
+  if ($account->name == '') { return TRUE; }
+  $username_lowercase = drupal_strtolower($account->name);
+  $password_lowercase = drupal_strtolower($password);
+  if ($constraint && (strpos($password_lowercase, $username_lowercase) !== FALSE)) {
     return FALSE;
   }
   return TRUE;
@@ -37,10 +40,13 @@ function password_policy_constraint_username_validate($password, $constraint, $u
  */
 function password_policy_constraint_username_js($constraint, $uid) {
   $account = user_load(array('uid' => $uid));
+  if ($account->name == '') { return ''; }
   $s = '';
   if ($constraint) {
     $s .= "  var username='". $account->name ."';\n";
-    $s .= "  if (username.toLowerCase() == value.toLowerCase()) {\n";
+    $s .= "  var username_lowercase=username.toLowerCase();\n";
+    $s .= "  var password_lowercase=value.toLowerCase();\n";
+    $s .= "  if (password_lowercase.indexOf(username_lowercase) != -1) {\n";
     $s .= "    strength=\"low\";\n";
     $s .= "    msg.push(translate.constraint_username);\n";
     $s .= "  }\n";
