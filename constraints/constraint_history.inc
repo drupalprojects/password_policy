@@ -42,28 +42,6 @@ function password_policy_constraint_history_validate($password, $constraint, $ui
   return true;
 }
 
-/**
- * Javascript portion.
- */
-function password_policy_constraint_history_js($constraint, $uid) {
-  drupal_add_js(drupal_get_path('module', 'password_policy') .'/constraints/scripts/webtoolkit.md5.js');
-  $pass = _password_policy_constraint_history_old_passwords($constraint, $uid);
-  $s = '';
-  $s .= "  var num=0;\n";
-  $s .= "  var pass=new Array(\"". implode('","', $pass) ."\");\n";
-  $s .= "  var i;\n";
-  $s .= "  for (i=0;i<pass.length;i++) {\n";
-  $s .= "    if (pass[i] == MD5(value)) {\n";
-  $s .= "      num=1;\n";
-  $s .= "    }\n";
-  $s .= "  }\n";
-  $s .= "  if (num>0) {\n";
-  $s .= "    strength=\"low\";\n";
-  $s .= "    msg.push(translate.constraint_history);\n";
-  $s .= "  }\n";
-  return $s;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Auxiliary
 
