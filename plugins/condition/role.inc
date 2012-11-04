@@ -35,11 +35,13 @@ function password_policy_role_admin_form($form, &$form_state, $condition) {
  * Condition callback for role condition.
  */
 function password_policy_role_condition($account, $condition) {
-  $match = FALSE;
-  foreach ($account->roles as $id => $name) {
-    if (isset($condition->config['roles'][$id])) {
-      $match = $match || $condition->config['roles'][$id];
-    }
+  $roles = array_filter($condition->config['roles']);
+
+  // Always enfore this policy if no roles were selected.
+  if (count($roles) == 0) {
+    return TRUE;
   }
-  return $match;
+
+  // Otherwise, test if policy roles intersect with account roles.
+  return count(array_intersect_key($account->roles, $roles));
 }
