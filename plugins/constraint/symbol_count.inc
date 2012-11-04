@@ -25,13 +25,13 @@ function password_policy_symbol_count_admin_form($form, &$form_state, $constrain
   );
   $sub_form['symbol_count_fieldset']['symbol_count'] = array(
     '#type' => 'textfield',
-    '#title' => 'Minimum Symbols',
+    '#title' => 'Minimum symbols',
     '#default_value' => $constraint->config['symbol_count'],
     '#description' => "Password will be required to have this many Symbols",
   );
   $sub_form['symbol_count_fieldset']['symbol_count_symobols'] = array(
     '#type' => 'textfield',
-    '#title' => 'Symbol Chars.',
+    '#title' => 'Symbol characters',
     '#default_value' => $constraint->config['symbol_count_symbols'],
     '#description' => "Which charaters are symbols",
   );

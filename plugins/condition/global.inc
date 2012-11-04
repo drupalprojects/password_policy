@@ -23,7 +23,7 @@ function password_policy_global_admin_form($form, &$form_state, $condition) {
   );
   $sub_form['global_fieldset']['global'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Enabled Always'),
+    '#title' => t('Enabled always'),
     '#default_value' => $condition->config['global'],
   );
   return $sub_form;

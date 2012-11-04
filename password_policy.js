@@ -23,7 +23,7 @@ Drupal.behaviors.passwordOverride = {
           "/password_policy/check?password=" + encodeURIComponent(passwordInput.val()),
           function(data) {
             pw_status = data;
-            passwordInput.trigger("focus");
+            passwordInput.trigger('focus');
           }
         );
       };

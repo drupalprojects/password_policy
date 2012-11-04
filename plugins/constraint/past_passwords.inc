@@ -38,7 +38,7 @@ function password_policy_past_passwords_count_constraint($password, $account, $c
   require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
   $count = $constraint->config['past_passwords'];
   $match = FALSE;
-  //TODO: find out why the hook_user_load is not running correctly
+  // @TODO Find out why the hook_user_load is not running correctly.
   if (!isset($account->password_history)) {
     password_policy_user_load(array($account->uid => $account));
   }

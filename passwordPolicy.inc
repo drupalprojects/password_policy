@@ -19,14 +19,15 @@ class PasswordPolicy {
   /**
    * PasswordPolicy::__construct
    *
-   * @PARAM $policy: a db object as returned by ctools_export_crud_load('password_policy', $name);
+   * @param Object
+   *   Database object as returned by ctools_export_crud_load().
    */
   function __construct($policy) {
     ctools_include('export');
-    //save name and config
     $this->name = $policy->name;
     $this->config = isset($policy->config) ? unserialize($policy->config) : array();
-    // load all constraint objects
+
+    // Load all constraint objects.
     $this->load_plugins();
   }
 
@@ -264,8 +265,8 @@ class PasswordPolicyItem {
   public $config;
   function __construct($info, &$policy) {
     $this->info = $info;
-    //we want to have a local config but have it be a ref to the policy one
-    //that way we only have to make updates once
+    // We want to have a local config but have it be a ref to the policy one
+    // that way we only have to make updates once.
     $this->config = &$policy->config[$info['name']];
     $this->config = $this->config + $info['config'];
     $this->policy = $policy;
@@ -274,12 +275,12 @@ class PasswordPolicyItem {
     return in_array($type, $this->pp_type);
   }
 
-  //get function from plugin
   function func($function_name) {
     return ctools_plugin_get_function($this->info, $function_name);
   }
+
   function admin_form($form, &$form_state) {
-    if ($func = $this->func("admin form callback")) {
+    if ($func = $this->func('admin form callback')) {
       return $func($form, $form_state, $this);
     }
     return array();

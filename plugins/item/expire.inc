@@ -23,34 +23,33 @@ $plugin = array(
 function password_policy_expire_admin_form($form, &$form_state, $constraint) {
   $sub_form['expire_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => 'Password Expiration',
+    '#title' => 'Password expiration',
     '#collapsible' => TRUE,
-    '#collapsed' => !(bool)$constraint->config['expire_limit'],
+    '#collapsed' => !(bool) $constraint->config['expire_limit'],
   );
   $sub_form['expire_fieldset']['expire_limit'] = array(
     '#type' => 'textfield',
-    '#title' => 'Expire Limit',
+    '#title' => 'Expire limit',
     '#default_value' => $constraint->config['expire_limit'],
     '#description' => "Password will expire after being used for this long (use normal English, like 90 days or 5 hours)",
-  //debug($vars['element']);
   );
   $sub_form['expire_fieldset']['expire_warning_email_sent'] = array(
     '#type' => 'textfield',
     '#title' => 'When to send warning emails',
     '#default_value' => $constraint->config['expire_warning_email_sent'],
-    '#description' => t("A comma separated list of time intervals, when to send warning emails. (Use normal English, like 90 days or 5 hours).  If prefixed with a negative (like -2 days) then this will be before the expiration."),
+    '#description' => t('A comma separated list of time intervals, when to send warning emails. (Use normal English, like 90 days or 5 hours).  If prefixed with a negative (like -2 days) then this will be before the expiration.'),
   );
   $sub_form['expire_fieldset']['expire_warning_email_subject'] = array(
     '#type' => 'textfield',
-    '#title' => 'Warning Subject',
+    '#title' => 'Warning subject',
     '#default_value' => $constraint->config['expire_warning_email_subject'],
-    '#description' => t(""),
+    '#description' => t(''),
   );
   $sub_form['expire_fieldset']['expire_warning_email_message'] = array(
     '#type' => 'textarea',
-    '#title' => 'Warning Message',
+    '#title' => 'Warning message',
     '#default_value' => $constraint->config['expire_warning_email_message'],
-    '#description' => t(""),
+    '#description' => t(''),
   );
   $sub_form['expire_fieldset']['expire_warning_email_message_token'] = array(
     '#theme' => 'token_tree',
@@ -62,9 +61,16 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
 }
 
 function _password_policy_expire_notify($account, $candidate, $expire, $item) {
-  $body = token_replace($item->config['expire_warning_email_message'], array("user" => $account, "password_expiration_date" => $expire));
-  $subject = token_replace($item->config['expire_warning_email_subject'], array("user" => $account, "password_expiration_date" => $expire));
+  $body = token_replace($item->config['expire_warning_email_message'], array(
+    'user' => $account,
+    'password_expiration_date' => $expire,
+  ));
+  $subject = token_replace($item->config['expire_warning_email_subject'], array(
+    'user' => $account,
+    'password_expiration_date' => $expire,
+  ));
   $message = drupal_mail('password_policy', 'warning', $account->mail, user_preferred_language($account), array('body' => $body, 'subject' => $subject));
+
   return $message;
 }
 
@@ -72,32 +78,33 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
   $current_pw_query = db_select('password_policy_history', 'c');
   $current_pw_query
     ->fields('c', array('uid'))
-    ->groupBy("uid")
+    ->groupBy('uid')
     ->addExpression('MAX(created)', 'created');
 
   $query = db_select('password_policy_history', 'p');
 
   $query->fields('p', array('uid', 'hid', 'created'));
 
-  //join to our active password so we are only looking at the most recent
+  // Join to our active password so we are only looking at the most recent.
   $query->join($current_pw_query, 'c', 'p.created = c.created AND p.uid = c.uid');
 
-  //add negative join to remove all items that have already sent this notice.
-  //TODO findout why we can not use arguments here
-  //$query->leftJoin('password_policy_notice_history', 'nh', "nh.hid = p.hid AND nh.timeframe = '%s' AND nh.name='%s'", array($notice_int, $policy_name));
-  $condition =t("nh.hid = p.hid AND nh.name='@name' AND nh.timeframe = '@timeframe'", array('@name' => $policy_name, '@timeframe' => $notice_int));
+  // Add negative join to remove all items that have already sent this notice.
+  // @TODO findout why we can not use arguments here
+  // $query->leftJoin('password_policy_notice_history', 'nh', "nh.hid = p.hid AND nh.timeframe = '%s' AND nh.name='%s'", array($notice_int, $policy_name));
+  $condition = t("nh.hid = p.hid AND nh.name='@name' AND nh.timeframe = '@timeframe'", array('@name' => $policy_name, '@timeframe' => $notice_int));
   $query->leftJoin('password_policy_notice_history', 'nh', $condition);
   $query->isNull('nh.hid');
 
-  // check to see if the password needs a warning notification
-  $query->condition("p.created", time() - $notice_int, '<');
+  // Check to see if the password needs a warning notification.
+  $query->condition('p.created', time() - $notice_int, '<');
 
-  // package up the candidates and return them
+  // Package up the candidates and return them.
   $candidates = array();
   $result = $query->execute();
   foreach ($result as $row) {
     $candidates[$row->uid] = $row;
   }
+
   return $candidates;
 }
 
@@ -111,7 +118,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * the user edit page until they set a new password
    */
   function init($account) {
-    //TODO this should not be necessary
+    // @TODO this should not be necessary
     password_policy_user_load(array($account->uid => $account));
     if ($account->uid == 0) {
       return;
@@ -156,7 +163,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
         }
       }
     }
-    //reset post and get if we are not locked
+    // Reset post and get if we are not locked.
     elseif (isset($_SESSION['password_policy_lock'])) {
 //      $_GET = $_SESSION['password_policy_GET'];
 //      $_POST = $_SESSION['password_policy_POST'];
@@ -180,7 +187,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       $from_interval = drupal_substr($notice_interval_string, 0, 1) == '-';
       $notice_interval_string = ltrim($notice_interval_string, '-');
 
-      //convert notice interval to secs
+      // Convert notice interval to secs.
       $notice_int = password_policy_parse_interval($notice_interval_string);
 
       // if we need to subtract from expire do so
