@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Expiration plugin for Password Policy module.
+ */
 
 $plugin = array(
   'admin form callback' => 'password_policy_expire_admin_form',
@@ -13,6 +17,9 @@ $plugin = array(
   ),
 );
 
+/**
+ * Admin form callback for expiration plugin.
+ */
 function password_policy_expire_admin_form($form, &$form_state, $constraint) {
   $sub_form['expire_fieldset'] = array(
     '#type' => 'fieldset',
@@ -96,12 +103,12 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
 
 class PasswordPolicyExpire extends PasswordPolicyItem {
   public $pp_type = array('item', 'cron', 'init');
+
   /**
    * PasswordPolicyExpire::init()
    *
-   * on init we check if the user password has expired if so 
-   * we send them to the user edit page
-   * until they set a new password
+   * On init we check if the user password has expired. If so,  we send them to
+   * the user edit page until they set a new password
    */
   function init($account) {
     //TODO this should not be necessary
@@ -114,7 +121,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       return;
     }
 
-    // if there is no password history lets start one
+    // If there is no password history, start one.
     if (!isset($account->password_history[0])) {
       $account->password_history[0] = (object) array(
         'uid' => $account->uid,
@@ -123,19 +130,17 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       );
       password_policy_update_password_history($account->password_history[0]);
     }
-    //check to see that the password has expired
+    // Check to see that the password has expired.
     if ($account->password_history[0]->created + $expire_int < time()) {
-      //if we are on the check ajax page or using a cli then skip
-      if (($_GET['q'] != 'password_policy/check') &&
-         !drupal_is_cli()
-      ) {
+      // If we are on the check ajax page or using a CLI, then skip.
+      if (($_GET['q'] != 'password_policy/check') && !drupal_is_cli()) {
         $uri = "user/{$account->uid}/edit";
 
-        //if we are not on the user page lets go there
-        //but lets remember where were where
+        // If we are not on the user page lets go there, but lets remember where
+        // were where.
         if ($_GET['q'] != $uri) {
-          //if we have been here before we do not want to override this 
-          //info (it might be an ajax call)
+          // If we have been here before, we do not want to override this
+          // info (it might be an ajax call).
           if (!isset($_SESSION['password_policy_lock'])) {
             $_SESSION['password_policy_lock'] = TRUE;
 //            $_SESSION['password_policy_GET'] = $_GET;
@@ -144,7 +149,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
           drupal_set_message(t('Your Password has expired please change it now'), 'warning');
           password_policy_goto($uri);
         }
-        //if we are on the user edit screen set the destination so we go back
+        // If we are on the user edit screen, set the destination so we go back.
         else {
 // Comment this out for now.  Causes infinite redirect loop when password expires
 //          $_GET['destination'] = $_SESSION['password_policy_GET']['q'];
@@ -172,7 +177,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
 
     foreach ($notice_interval_strings as $notice_interval_string) {
       // see if we should be subtracting from expire interval
-      $from_interval = substr($notice_interval_string, 0, 1) == '-';
+      $from_interval = drupal_substr($notice_interval_string, 0, 1) == '-';
       $notice_interval_string = ltrim($notice_interval_string, '-');
 
       //convert notice interval to secs
