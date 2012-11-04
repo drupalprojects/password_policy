@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file
+ * Role-based condition for Password Policy module.
+ */
+
 $plugin = array(
   'admin form callback' => 'password_policy_role_admin_form',
   'condition callback' =>  'password_policy_role_condition',
@@ -7,6 +12,10 @@ $plugin = array(
     'roles' => array(),
   ),
 );
+
+/**
+ * Admin form callback for role condition.
+ */
 function password_policy_role_admin_form($form, &$form_state, $condition) {
   $sub_form['role_fieldset'] = array(
     '#type' => 'fieldset',
@@ -20,6 +29,10 @@ function password_policy_role_admin_form($form, &$form_state, $condition) {
   );
   return $sub_form;
 }
+
+/**
+ * Condition callback for role condition.
+ */
 function password_policy_role_condition($account, $condition) {
   $match = FALSE;
   foreach ($account->roles as $id => $name) {
