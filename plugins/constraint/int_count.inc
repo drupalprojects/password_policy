@@ -8,7 +8,10 @@ $plugin = array(
   'admin form callback' => 'password_policy_int_count_admin_form',
   'constraint callback' =>  'password_policy_int_count_constraint',
   'message' => 'Password must have int_count integers',
-  'default' => 0,
+  'prime value' => 'int_count',
+  'config' => array(
+    'int_count' => NULL,
+  ),
 );
 
 /**

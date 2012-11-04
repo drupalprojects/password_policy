@@ -8,7 +8,10 @@ $plugin = array(
   'admin form callback' => 'password_policy_alpha_count_admin_form',
   'constraint callback' =>  'password_policy_alpha_count_constraint',
   'message' => 'Password must have at least alpha_count letters',
-  'default' => 0,
+  'prime value' => 'alpha_count',
+  'config' => array(
+    'alpha_count' => NULL,
+  ),
 );
 
 /**

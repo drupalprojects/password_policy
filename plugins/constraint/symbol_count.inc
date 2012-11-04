@@ -10,7 +10,7 @@ $plugin = array(
   'message' => 'Password must have at least symbol_count symbols.',
   'prime value' => 'symbol_count',
   'config' => array(
-    'symbol_count' => 0,
+    'symbol_count' => NULL,
     'symbol_count_symbols' => "!@#$%^&*()_+=-|}{\"?:><,./;'\[]",
   ),
 );

@@ -10,7 +10,7 @@ $plugin = array(
   'message' => 'Password must not contain their username.',
   'config' => array(
     'enabled' => FALSE,
-  )
+  ),
 );
 
 /**
