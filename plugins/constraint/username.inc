@@ -35,5 +35,5 @@ function password_policy_username_admin_form($form, &$form_state, $constraint) {
  */
 function password_policy_username_constraint($password, $account, $constraint) {
   $regex_string = '/' . $account->name . '/';
-  return preg_match($regex_string, $password);
+  return !preg_match($regex_string, $password);
 }
