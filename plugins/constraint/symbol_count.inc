@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file
+ * Symbol count constraint for Password Policy module.
+ */
+
 $plugin = array(
   'admin form callback' => 'password_policy_symbol_count_admin_form',
   'constraint callback' =>  'password_policy_symbol_count_constraint',
@@ -10,8 +15,10 @@ $plugin = array(
   ),
 );
 
+/**
+ * Admin form callback for symbol count constraint.
+ */
 function password_policy_symbol_count_admin_form($form, &$form_state, $constraint) {
-
   $sub_form['symbol_count_fieldset'] = array(
     '#type' => 'fieldset',
     '#title' => 'Symbols',
@@ -28,9 +35,13 @@ function password_policy_symbol_count_admin_form($form, &$form_state, $constrain
     '#default_value' => $constraint->config['symbol_count_symbols'],
     '#description' => "Which charaters are symbols",
   );
+
   return $sub_form;
 }
 
+/**
+ * Admin form callback for symbol count constraint.
+ */
 function password_policy_symbol_count_constraint($password, $account, $constraint) {
   $count = $constraint->config['symbol_count'];
   $symbols = addcslashes($constraint->config['symbol_count_symbols'], ']^\-/');
@@ -40,6 +51,7 @@ function password_policy_symbol_count_constraint($password, $account, $constrain
       $regex_string .='[' . $symbols . '].*';
     }
   }
+
   $regex_string .= '/';
   return preg_match($regex_string, $password);
 }

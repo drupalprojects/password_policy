@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file
+ * Character count constraint for Password Policy module.
+ */
+
 $plugin = array(
   'admin form callback' => 'password_policy_char_count_admin_form',
   'constraint callback' =>  'password_policy_char_count_constraint',
@@ -6,6 +11,9 @@ $plugin = array(
   'default' => 0,
 );
 
+/**
+ * Admin form callback for character count constraint.
+ */
 function password_policy_char_count_admin_form($form, &$form_state, $constraint) {
   $sub_form['char_count'] = array(
     '#type' => 'textfield',
@@ -13,14 +21,19 @@ function password_policy_char_count_admin_form($form, &$form_state, $constraint)
     '#default_value' => $constraint->config['char_count'],
     '#description' => "Password will be required to have this many Characters",
   );
+
   return $sub_form;
 }
 
+/**
+ * Admin form callback for character count constraint.
+ */
 function password_policy_char_count_constraint($password, $account, $constraint) {
   $count = $constraint->config['char_count'];
   if ($count > 0) {
     $regex_string = "/.{" . $count . ",}/";
     return preg_match($regex_string, $password);
   }
+
   return TRUE;
 }
