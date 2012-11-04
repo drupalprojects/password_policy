@@ -16,7 +16,10 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
     $mes_temp = is_array($this->info['message']) ? $this->info['message'] : array($this->info['message']);
     $messages = array();
     foreach ($mes_temp as $id => $message) {
-      $messages[$id] = t($message, $this->config);
+      // Only show messages for constraints that have been configured.
+      if ($this->config != $this->info['config']) {
+        $messages[$id] = t($message, $this->config);
+      }
     }
     return $messages;
   }
