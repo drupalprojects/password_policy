@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file
+ * Export UI Ctools plugin for Password Policy module.
+ */
+
 $plugin = array(
   // The name of the table as found in the schema in hook_install. This
   // must be an exportable type with the 'export' section defined.
@@ -14,7 +19,7 @@ $plugin = array(
     'menu item' => 'password_policy',
     // Title of the top level menu. Note this should not be translated,
     // as the menu system will translate it.
-    'menu title' => 'Password Policy', 
+    'menu title' => 'Password Policy',
     // Description of the top level menu, which is usually needed for
     // menu items in an administration list. Will be translated
     // by the menu system.
