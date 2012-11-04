@@ -1,8 +1,7 @@
 <?php
 /**
  * @file
- * Contains PasswordPolicy, PasswordPolicyCondition, PasswordPolicyConstraint,
- * and PasswordPolicyItem.
+ * Contains PasswordPolicy.
  */
 
 /**
@@ -171,6 +170,7 @@ class PasswordPolicy {
     }
     return $this->cache[$type];
   }
+
   function load_plugins() {
     ctools_include('plugins');
     foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
@@ -214,99 +214,4 @@ class PasswordPolicy {
     }
     return $policies;
   }
-}
-
-
-class PasswordPolicyConstraint extends PasswordPolicyItem {
-  protected $pp_type = array('item', 'constraint');
-
-  function message() {
-    $mes_temp = is_array($this->info['message']) ? $this->info['message'] : array($this->info['message']);
-    $messages = array();
-    foreach ($mes_temp as $id => $message) {
-      $messages[$id] = t($message, $this->config);
-    }
-    return $messages;
-  }
-
-  function fail_message($password, $account) {
-    return $this->message();
-  }
-
-  function __construct($info, &$policy) {
-    if (isset($info['default'])) {
-      $info['prime value'] = $info['name'];
-      $info['config'] = array($info['name'] => $info['default']);
-    }
-    parent::__construct($info, $policy);
-  }
-
-  function constraint($pass, $account) {
-    if ($func = $this->func('constraint callback')) {
-      return $func($pass, $account, $this);
-    }
-  }
-}
-
-class PasswordPolicyCondition extends PasswordPolicyItem {
-  protected $pp_type = array('item', 'condition');
-
-  function match($account) {
-    if ($func = $this->func('condition callback')) {
-      return $func($account, $this);
-    }
-  }
-}
-
-class PasswordPolicyItem {
-  protected $pp_type = array('item');
-  public $info;
-  public $policy;
-  public $config;
-  function __construct($info, &$policy) {
-    $this->info = $info;
-    // We want to have a local config but have it be a ref to the policy one
-    // that way we only have to make updates once.
-    $this->config = &$policy->config[$info['name']];
-    $this->config = $this->config + $info['config'];
-    $this->policy = $policy;
-  }
-  function is_type($type) {
-    return in_array($type, $this->pp_type);
-  }
-
-  function func($function_name) {
-    return ctools_plugin_get_function($this->info, $function_name);
-  }
-
-  function admin_form($form, &$form_state) {
-    if ($func = $this->func('admin form callback')) {
-      return $func($form, $form_state, $this);
-    }
-    return array();
-  }
-
-  function admin_form_submit($form, &$form_state) {
-    foreach ($this->info['config'] as $id => $default) {
-      if (isset($form_state['values'][$id])) {
-        $this->config[$id] = $form_state['values'][$id];
-      }
-    }
-  }
-
-  // see if the constraint is active
-  function is_active() {
-    if (isset($this->info['prime value'])) {
-      return (bool)$this->config[$this->info['prime value']];
-    }
-    else {
-      return TRUE;
-    }
-  }
-
-  static function factory($info, &$policy) {
-    $class = $info['class'];
-    return new $class($info, $policy);
-  }
-
 }
