@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_symbol_count_admin_form',
   'constraint callback' =>  'password_policy_symbol_count_constraint',
-  'message' => 'Password must have at least symbol_count Symbols',
+  'message' => 'Password must have at least symbol_count symbols.',
   'prime value' => 'symbol_count',
   'config' => array(
     'symbol_count' => 0,
@@ -21,19 +21,19 @@ $plugin = array(
 function password_policy_symbol_count_admin_form($form, &$form_state, $constraint) {
   $sub_form['symbol_count_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => 'Symbols',
+    '#title' => t('Symbols'),
   );
   $sub_form['symbol_count_fieldset']['symbol_count'] = array(
     '#type' => 'textfield',
-    '#title' => 'Minimum symbols',
+    '#title' => t('Minimum symbols'),
     '#default_value' => $constraint->config['symbol_count'],
-    '#description' => "Password will be required to have this many Symbols",
+    '#description' => t('Password will be required to have this many symbols.'),
   );
   $sub_form['symbol_count_fieldset']['symbol_count_symobols'] = array(
     '#type' => 'textfield',
-    '#title' => 'Symbol characters',
+    '#title' => t('Symbol characters'),
     '#default_value' => $constraint->config['symbol_count_symbols'],
-    '#description' => "Which charaters are symbols",
+    '#description' => t('Deteremine which charaters are symbols.'),
   );
 
   return $sub_form;

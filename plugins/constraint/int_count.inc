@@ -17,9 +17,9 @@ $plugin = array(
 function password_policy_int_count_admin_form($form, &$form_state, $constraint) {
   $sub_form['int_count'] = array(
     '#type' => 'textfield',
-    '#title' => 'Minimum integers',
+    '#title' => t('Minimum integers'),
     '#default_value' => $constraint->config['int_count'],
-    '#description' => "Password will be required to have this many integers",
+    '#description' => t('Password will be required to have this many integers.'),
   );
   return $sub_form;
 }

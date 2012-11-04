@@ -20,9 +20,9 @@ $plugin = array(
 function password_policy_consecutive_admin_form($form, &$form_state, $constraint) {
   $sub_form['consecutive_char_count'] = array(
     '#type' => 'textfield',
-    '#title' => ' Consecutive character count',
+    '#title' => t('Consecutive character count'),
     '#default_value' => $constraint->config['consecutive_char_count'],
-    '#description' => "Password can not have more than this number of identical consecutive characters",
+    '#description' => t('Password can not have more than this number of identical consecutive characters.'),
   );
 
   return $sub_form;

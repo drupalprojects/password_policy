@@ -17,9 +17,9 @@ $plugin = array(
 function password_policy_past_passwords_count_admin_form($form, &$form_state, $constraint) {
   $sub_form['past_passwords'] = array(
     '#type' => 'textfield',
-    '#title' => 'Check against Previous Passwords',
+    '#title' => t('Check against previous passwords'),
     '#default_value' => $constraint->config['past_passwords'],
-    '#description' => "Password can not match this many previous passwords.",
+    '#description' => t('Password can not match this many previous passwords.'),
   );
 
   return $sub_form;
