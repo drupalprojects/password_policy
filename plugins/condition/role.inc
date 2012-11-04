@@ -19,12 +19,13 @@ $plugin = array(
 function password_policy_role_admin_form($form, &$form_state, $condition) {
   $sub_form['role_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => t('By role'),
+    '#title' => t('Roles'),
   );
   $sub_form['role_fieldset']['roles'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Enabled for the following roles:'),
+    '#title' => t('Enforce policy for specific roles'),
     '#default_value' => $condition->config['roles'],
+    '#description' => t('Enforce this policy only for the selected role(s). If you select no roles, the policy will be enforced for all users.'),
     '#options' => user_roles(TRUE),
   );
   return $sub_form;
