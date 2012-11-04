@@ -5,7 +5,7 @@ $plugin = array(
   'schema' => 'password_policy',
   // The access permission to use. If not provided it will default to
   // 'administer site configuration'
-  'access' => 'administer site configuration',
+  'access' => 'administer password policy',
   // You can actually define large chunks of the menu system here. Nothing
   // is required here. If you leave out the values, the prefix will default
   // to admin/structure and the item will default to the plugin name.
