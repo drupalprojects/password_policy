@@ -29,6 +29,7 @@ Drupal.behaviors.passwordOverride = {
       };
       passwordInput.keyup(passwordCheck);
     });
+
     // We are overriding the normal evaluatePasswordStrength and instead are
     // just returning the current status.
     Drupal.evaluatePasswordStrength = function (password, translate) {
