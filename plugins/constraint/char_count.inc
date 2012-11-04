@@ -15,7 +15,11 @@ $plugin = array(
  * Admin form callback for character count constraint.
  */
 function password_policy_char_count_admin_form($form, &$form_state, $constraint) {
-  $sub_form['char_count'] = array(
+  $sub_form['char_count_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Character count'),
+  );
+  $sub_form['char_count_fieldset']['char_count'] = array(
     '#type' => 'textfield',
     '#title' => t('Minimum total characters'),
     '#default_value' => $constraint->config['char_count'],

@@ -18,7 +18,11 @@ $plugin = array(
  * Admin form callback for consecutive character count constraint.
  */
 function password_policy_consecutive_admin_form($form, &$form_state, $constraint) {
-  $sub_form['consecutive_char_count'] = array(
+  $sub_form['consecutive_char_count_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Consecutive character count'),
+  );
+  $sub_form['consecutive_char_count_fieldset']['consecutive_char_count'] = array(
     '#type' => 'textfield',
     '#title' => t('Consecutive character count'),
     '#default_value' => $constraint->config['consecutive_char_count'],

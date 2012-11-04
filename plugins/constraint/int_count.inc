@@ -15,7 +15,11 @@ $plugin = array(
  * Admin form callback for numeric count constraint.
  */
 function password_policy_int_count_admin_form($form, &$form_state, $constraint) {
-  $sub_form['int_count'] = array(
+  $sub_form['int_count_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Number count'),
+  );
+  $sub_form['int_count_fieldset']['int_count'] = array(
     '#type' => 'textfield',
     '#title' => t('Minimum integers'),
     '#default_value' => $constraint->config['int_count'],

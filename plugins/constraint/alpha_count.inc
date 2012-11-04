@@ -15,7 +15,11 @@ $plugin = array(
  * Admin form callback for letter count constraint.
  */
 function password_policy_alpha_count_admin_form($form, &$form_state, $constraint) {
-  $sub_form['alpha_count'] = array(
+  $sub_form['alpha_count_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Letter count'),
+  );
+  $sub_form['alpha_count_fieldset']['alpha_count'] = array(
     '#type' => 'textfield',
     '#title' => t('Minimum letters'),
     '#default_value' => $constraint->config['alpha_count'],

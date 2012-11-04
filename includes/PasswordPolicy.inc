@@ -38,23 +38,41 @@ class PasswordPolicy {
    * Mostly just asking each plugin for its part of the form
    */
   function admin_form(&$form, &$form_state) {
+    // Condition settings.
+    $form['condition_title'] = array(
+      '#type' => 'item',
+      '#title' => t('Conditions'),
+    );
     $form['condition'] = array(
-      '#type' => 'fieldset',
-      '#title' => 'Conditions',
+      '#type' => 'vertical_tabs',
+    );
+
+    // Constraint settings.
+    $form['constraint_title'] = array(
+      '#type' => 'item',
+      '#title' => t('Constraints'),
     );
     $form['constraint'] = array(
-      '#type' => 'fieldset',
-      '#title' => 'Constraints',
+      '#type' => 'vertical_tabs',
+      '#attached' => array(
+        'js' => array(drupal_get_path('module', 'password_policy') . '/password_policy.js'),
+      ),
+    );
+
+    // Item settings.
+    $form['item_title'] = array(
+      '#type' => 'item',
+      '#title' => t('Other settings'),
     );
     $form['item'] = array(
       '#type' => 'container',
-      '#title' => 'Misc',
     );
+
     foreach ($this->items as $item) {
-      $parent = $item->is_type('condition') ? 'condition' : (
-                $item->is_type('constraint') ? 'constraint' : 'item');
+      $parent = $item->is_type('condition') ? 'condition' : ($item->is_type('constraint') ? 'constraint' : 'item');
       $form[$parent]  = $form[$parent] + $item->admin_form($form, $form_state);
     }
+
     return $form;
   }
 

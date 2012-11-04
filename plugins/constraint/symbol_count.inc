@@ -29,7 +29,7 @@ function password_policy_symbol_count_admin_form($form, &$form_state, $constrain
     '#default_value' => $constraint->config['symbol_count'],
     '#description' => t('Password will be required to have this many symbols.'),
   );
-  $sub_form['symbol_count_fieldset']['symbol_count_symobols'] = array(
+  $sub_form['symbol_count_fieldset']['symbol_count_symbols'] = array(
     '#type' => 'textfield',
     '#title' => t('Symbol characters'),
     '#default_value' => $constraint->config['symbol_count_symbols'],

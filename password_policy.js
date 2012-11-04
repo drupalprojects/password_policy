@@ -37,4 +37,107 @@ Drupal.behaviors.passwordOverride = {
     };
   },
 };
+
+/**
+ * Provide the summary information for the constraint settings vertical tabs.
+ */
+Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
+  attach: function (context) {
+    $('fieldset#edit-alpha-count-fieldset', context).drupalSetSummary(function (context) {
+      alpha_count = $('input[name="alpha_count"]', context).val();
+      if (!alpha_count) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('At least @count letters', {'@count': alpha_count});
+      }
+    });
+
+    $('fieldset#edit-char-count-fieldset', context).drupalSetSummary(function (context) {
+      char_count = $('input[name="char_count"]', context).val();
+      if (!char_count) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('At least @count characters', {'@count': char_count});
+      }
+    });
+    
+    $('fieldset#edit-consecutive-char-count-fieldset', context).drupalSetSummary(function (context) {
+      consecutive_char_count = $('input[name="consecutive_char_count"]', context).val();
+      if (!consecutive_char_count) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('No more than @count consecutive characters', {'@count': consecutive_char_count});
+      }
+    });
+
+    $('fieldset#edit-int-count-fieldset', context).drupalSetSummary(function (context) {
+      int_count = $('input[name="int_count"]', context).val();
+      if (!int_count) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('At least @count integers', {'@count': int_count});
+      }
+    });
+
+    $('fieldset#edit-past-passwords-fieldset', context).drupalSetSummary(function (context) {
+      past_passwords = $('input[name="past_passwords"]', context).val();
+      if (!past_passwords) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('Must not match previous @count passwords', {'@count': past_passwords});
+      }
+    });
+
+    $('fieldset#edit-symbol-count-fieldset', context).drupalSetSummary(function (context) {
+      symbol_count = $('input[name="symbol_count"]', context).val();
+      if (!symbol_count) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('At least @count symbols', {'@count': symbol_count}) + '<br/>' + Drupal.t('Symbol characters: @symbols', {'@symbols': $('input[name="symbol_count_symbols"]', context).val()});
+      }
+    });
+
+    $('fieldset#edit-username-fieldset', context).drupalSetSummary(function (context) {
+      var username = $('input[name="username"]:checked', context);
+      if (!username.val()) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return username.next('label').text();
+      }
+    });
+  }
+};
+
+/**
+ * Provide the summary information for the constraint settings vertical tabs.
+ */
+Drupal.behaviors.passwordPolicyConditionSettingsSummary = {
+  attach: function (context) {
+    $('fieldset#edit-role-fieldset', context).drupalSetSummary(function (context) {
+      var vals = [];
+      $('input[type="checkbox"]:checked', context).each(function() {
+        vals.push($.trim($(this).next('label').text()));
+      });
+      if (!vals.length) {
+        vals.push(Drupal.t('Not restricted'));
+      }
+      return vals.join(', ');
+    });
+
+    $('fieldset#edit-global-fieldset', context).drupalSetSummary(function (context) {
+      var global = $('input[name="global"]:checked', context);
+      if (global.val()) {
+        return global.next('label').text();
+      }
+    });
+  }
+};
+
 })(jQuery);

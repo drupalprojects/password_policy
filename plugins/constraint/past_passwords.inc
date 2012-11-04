@@ -15,7 +15,11 @@ $plugin = array(
  * Admin form callback for password history constraint.
  */
 function password_policy_past_passwords_count_admin_form($form, &$form_state, $constraint) {
-  $sub_form['past_passwords'] = array(
+  $sub_form['past_passwords_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Past passwords'),
+  );
+  $sub_form['past_passwords_fieldset']['past_passwords'] = array(
     '#type' => 'textfield',
     '#title' => t('Check against previous passwords'),
     '#default_value' => $constraint->config['past_passwords'],
