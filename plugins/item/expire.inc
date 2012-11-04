@@ -56,18 +56,18 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
 function _password_policy_expire_notify($account, $candidate, $expire, $item) {
   $body = token_replace($item->config['expire_warning_email_message'], array("user" => $account, "password_expiration_date"=> $expire));
   $subject = token_replace($item->config['expire_warning_email_subject'], array("user" => $account, "password_expiration_date"=> $expire));
-  $message = drupal_mail('password_policy2', 'warning', $account->mail, user_preferred_language($account), array('body' => $body, 'subject' => $subject));
+  $message = drupal_mail('password_policy', 'warning', $account->mail, user_preferred_language($account), array('body' => $body, 'subject' => $subject));
   return $message;
 }
 
 function _password_policy_expire_query_users($notice_int, $policy_name) {
-  $current_pw_query = db_select('password_policy2_history', 'c');
+  $current_pw_query = db_select('password_policy_history', 'c');
   $current_pw_query
     ->fields('c', array('uid'))
     ->groupBy("uid")
     ->addExpression('MAX(created)', 'created');
 
-  $query = db_select('password_policy2_history', 'p');
+  $query = db_select('password_policy_history', 'p');
 
   $query->fields('p', array('uid', 'hid', 'created'));
 
@@ -76,9 +76,9 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
 
   //add negative join to remove all items that have already sent this notice.
   //TODO findout why we can not use arguments here
-  //$query->leftJoin('password_policy2_notice_history', 'nh', "nh.hid = p.hid AND nh.timeframe = '%s' AND nh.name='%s'", array($notice_int, $policy_name));
+  //$query->leftJoin('password_policy_notice_history', 'nh', "nh.hid = p.hid AND nh.timeframe = '%s' AND nh.name='%s'", array($notice_int, $policy_name));
   $condition =t("nh.hid = p.hid AND nh.name='@name' AND nh.timeframe = '@timeframe'", array('@name' => $policy_name, '@timeframe' => $notice_int));
-  $query->leftJoin('password_policy2_notice_history', 'nh', $condition);
+  $query->leftJoin('password_policy_notice_history', 'nh', $condition);
   $query->isNull('nh.hid');
 
   // check to see if the password needs a warning notification
@@ -104,11 +104,11 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    */
   function init($account) {
     //TODO this should not be necessary
-    password_policy2_user_load(array($account->uid=>$account));
+    password_policy_user_load(array($account->uid=>$account));
     if( $account->uid == 0) {
       return;
     }
-    $expire_int = password_policy2_parse_interval($this->config['expire_limit']);
+    $expire_int = password_policy_parse_interval($this->config['expire_limit']);
     if (!$expire_int) {
       return;
     }
@@ -120,12 +120,12 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
         'pass' => $account->pass,
         'created' => time()
       );
-      password_policy2_update_password_history($account->password_history[0]);
+      password_policy_update_password_history($account->password_history[0]);
     }
     //check to see that the password has expired
     if ($account->password_history[0]->created + $expire_int < time()) {
       //if we are on the check ajax page or using a cli then skip
-      if (($_GET['q'] != 'password_policy2/check') &&
+      if (($_GET['q'] != 'password_policy/check') &&
          !drupal_is_cli()
       ) {
         $uri = "user/{$account->uid}/edit";
@@ -135,26 +135,26 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
         if ($_GET['q'] != $uri) {
           //if we have been here before we do not want to override this 
           //info (it might be an ajax call)
-          if (!isset($_SESSION['password_policy2_lock'])) {
-            $_SESSION['password_policy2_lock'] = TRUE;
-//            $_SESSION['password_policy2_GET'] = $_GET;
-//            $_SESSION['password_policy2_POST'] = $_POST;
+          if (!isset($_SESSION['password_policy_lock'])) {
+            $_SESSION['password_policy_lock'] = TRUE;
+//            $_SESSION['password_policy_GET'] = $_GET;
+//            $_SESSION['password_policy_POST'] = $_POST;
           }
           drupal_set_message("Your Password has expired please change it now", 'warning');
-          password_policy2_goto($uri);
+          password_policy_goto($uri);
         }
         //if we are on the user edit screen set the destination so we go back
         else {
 // Comment this out for now.  Causes infinite redirect loop when password expires
-//          $_GET['destination'] = $_SESSION['password_policy2_GET']['q'];
+//          $_GET['destination'] = $_SESSION['password_policy_GET']['q'];
         }
       }
     }
     //reset post and get if we are not locked
-    elseif (isset($_SESSION['password_policy2_lock'])) {
-//      $_GET = $_SESSION['password_policy2_GET'];
-//      $_POST = $_SESSION['password_policy2_POST'];
-      unset($_SESSION['password_policy2_lock']);
+    elseif (isset($_SESSION['password_policy_lock'])) {
+//      $_GET = $_SESSION['password_policy_GET'];
+//      $_POST = $_SESSION['password_policy_POST'];
+      unset($_SESSION['password_policy_lock']);
     }
   }
 
@@ -175,11 +175,11 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       $notice_interval_string = ltrim($notice_interval_string, '-');
 
       //convert notice interval to secs
-      $notice_int = password_policy2_parse_interval($notice_interval_string);
+      $notice_int = password_policy_parse_interval($notice_interval_string);
 
       // if we need to subtract from expire do so
-      $expire_interval = password_policy2_parse_interval($expire_interval_string);
-      $expire_int = password_policy2_parse_interval($expire_interval_string);
+      $expire_interval = password_policy_parse_interval($expire_interval_string);
+      $expire_int = password_policy_parse_interval($expire_interval_string);
       if ($from_interval) {
           $notice_int = $expire_int - $notice_int;
       }
@@ -189,14 +189,14 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
         if ($this->policy->match($account)) {
           $message = _password_policy_expire_notify($account, $candidate, $candidate->created+$expire_int, $this);
           if ($message['result']) {
-            watchdog('password_policy2', 'Password expiration warning mailed to %username at %email.', array('%username' => $account->name, '%email' => $account->mail));
+            watchdog('password_policy', 'Password expiration warning mailed to %username at %email.', array('%username' => $account->name, '%email' => $account->mail));
             $notice_history = (object) array(
               'hid' => $candidate->hid,
               'name' => $this->policy->name,
               'timeframe' => $notice_int,
               'sent' => time(),
             );
-            drupal_write_record('password_policy2_notice_history', $notice_history);
+            drupal_write_record('password_policy_notice_history', $notice_history);
           }
         }
       }

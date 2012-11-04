@@ -13,7 +13,7 @@ class PasswordPolicy {
   /**
    * PasswordPolicy::__construct
    *
-   * @PARAM $policy: a db object as returned by ctools_export_crud_load('password_policy2', $name);
+   * @PARAM $policy: a db object as returned by ctools_export_crud_load('password_policy', $name);
    */
   function __construct($policy) {
     ctools_include('export');
@@ -167,14 +167,14 @@ class PasswordPolicy {
   }
   function load_plugins() {
     ctools_include('plugins');
-    foreach (ctools_get_plugins('password_policy2', 'constraint') as $info) {
+    foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
       $this->_load_plugin($info);
     }
 
-    foreach (ctools_get_plugins('password_policy2', 'condition') as $info) {
+    foreach (ctools_get_plugins('password_policy', 'condition') as $info) {
       $this->_load_plugin($info);
     }
-    foreach (ctools_get_plugins('password_policy2', 'item') as $info) {
+    foreach (ctools_get_plugins('password_policy', 'item') as $info) {
       $this->_load_plugin($info);
     }
   }
@@ -182,10 +182,10 @@ class PasswordPolicy {
   static function policy($name = NULL) {
     if (isset($name)) {
       ctools_include('export');
-      $policy = ctools_export_crud_load('password_policy2', $name);
+      $policy = ctools_export_crud_load('password_policy', $name);
     }
     else {
-      $policy = ctools_export_crud_new('password_policy2');
+      $policy = ctools_export_crud_new('password_policy');
     }
     return new PasswordPolicy($policy);
   }
@@ -194,7 +194,7 @@ class PasswordPolicy {
    
     ctools_include('export');
     $policies = array();
-    $infos = ctools_export_crud_load_all('password_policy2');
+    $infos = ctools_export_crud_load_all('password_policy');
     foreach ($infos as $name => $info) {
       $policies[$name] = new PasswordPolicy($info);
     }

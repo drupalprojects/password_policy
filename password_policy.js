@@ -20,7 +20,7 @@ Drupal.behaviors.passwordOverride = {
       passwordCheck = function (e) {
         e.stopImmediatePropagation();
         $.getJSON(
-          "/password_policy2/check?password=" + encodeURIComponent(passwordInput.val()),
+          "/password_policy/check?password=" + encodeURIComponent(passwordInput.val()),
           function(data) {
             pw_status = data;
             passwordInput.trigger("focus");

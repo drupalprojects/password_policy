@@ -2,7 +2,7 @@
 $plugin = array(
   // The name of the table as found in the schema in hook_install. This
   // must be an exportable type with the 'export' section defined.
-  'schema' => 'password_policy2',
+  'schema' => 'password_policy',
   // The access permission to use. If not provided it will default to
   // 'administer site configuration'
   'access' => 'administer site configuration',
@@ -11,7 +11,7 @@ $plugin = array(
   // to admin/structure and the item will default to the plugin name.
   'menu' => array(
     'menu prefix' => 'admin/config/people',
-    'menu item' => 'password_policy2',
+    'menu item' => 'password_policy',
     // Title of the top level menu. Note this should not be translated,
     // as the menu system will translate it.
     'menu title' => 'Password Policy', 
@@ -37,8 +37,8 @@ $plugin = array(
   //
   // All callbacks will accept &$form and &$form_state as arguments.
   'form' => array(
-    'settings' => 'password_policy2_admin_settings',
-    'validate' => 'password_policy2_admin_validate',
-    'submit' =>   'password_policy2_admin_submit',
+    'settings' => 'password_policy_admin_settings',
+    'validate' => 'password_policy_admin_validate',
+    'submit' =>   'password_policy_admin_submit',
   ),
 );
