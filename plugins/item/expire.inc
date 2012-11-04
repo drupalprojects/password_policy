@@ -1,4 +1,5 @@
 <?php
+
 $plugin = array(
   'admin form callback' => 'password_policy_expire_admin_form',
   'prime value' => 'expire_limit',
@@ -13,7 +14,6 @@ $plugin = array(
 );
 
 function password_policy_expire_admin_form($form, &$form_state, $constraint) {
-
   $sub_form['expire_fieldset'] = array(
     '#type' => 'fieldset',
     '#title' => 'Password Expiration',
@@ -53,9 +53,10 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
   );
   return $sub_form;
 }
+
 function _password_policy_expire_notify($account, $candidate, $expire, $item) {
-  $body = token_replace($item->config['expire_warning_email_message'], array("user" => $account, "password_expiration_date"=> $expire));
-  $subject = token_replace($item->config['expire_warning_email_subject'], array("user" => $account, "password_expiration_date"=> $expire));
+  $body = token_replace($item->config['expire_warning_email_message'], array("user" => $account, "password_expiration_date" => $expire));
+  $subject = token_replace($item->config['expire_warning_email_subject'], array("user" => $account, "password_expiration_date" => $expire));
   $message = drupal_mail('password_policy', 'warning', $account->mail, user_preferred_language($account), array('body' => $body, 'subject' => $subject));
   return $message;
 }
@@ -104,8 +105,8 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    */
   function init($account) {
     //TODO this should not be necessary
-    password_policy_user_load(array($account->uid=>$account));
-    if( $account->uid == 0) {
+    password_policy_user_load(array($account->uid => $account));
+    if ($account->uid == 0) {
       return;
     }
     $expire_int = password_policy_parse_interval($this->config['expire_limit']);
@@ -140,7 +141,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
 //            $_SESSION['password_policy_GET'] = $_GET;
 //            $_SESSION['password_policy_POST'] = $_POST;
           }
-          drupal_set_message("Your Password has expired please change it now", 'warning');
+          drupal_set_message(t('Your Password has expired please change it now'), 'warning');
           password_policy_goto($uri);
         }
         //if we are on the user edit screen set the destination so we go back
