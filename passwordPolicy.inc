@@ -1,6 +1,12 @@
 <?php
 /**
- * class PasswordPolicy
+ * @file
+ * Contains PasswordPolicy, PasswordPolicyCondition, PasswordPolicyConstraint,
+ * and PasswordPolicyItem.
+ */
+
+/**
+ * Class PasswordPolicy
  *
  * This class is used for managing password Policies
  */
@@ -23,7 +29,7 @@ class PasswordPolicy {
     // load all constraint objects
     $this->load_plugins();
   }
-  
+
   /**
    * PasswordPolicy::admin_form()
    *
@@ -63,8 +69,6 @@ class PasswordPolicy {
       $item->admin_form_submit($form, $form_state);
     }
     $form_state['item']->config = serialize($this->config);
-
-    
   }
 
   function message() {
@@ -94,7 +98,7 @@ class PasswordPolicy {
   /**
    * PasswordPolicy::active_constraints()
    *
-   * return all constraints that are active 
+   * Return all constraints that are active.
    */
   function active_constraints() {
     $constraints = array();
@@ -103,6 +107,7 @@ class PasswordPolicy {
     }
     return $constraints;
   }
+
   /**
    * PasswordPolicy::constraint_condition()
    */
@@ -191,7 +196,6 @@ class PasswordPolicy {
   }
 
   static function all_policies() {
-   
     ctools_include('export');
     $policies = array();
     $infos = ctools_export_crud_load_all('password_policy');
@@ -223,17 +227,19 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
     }
     return $messages;
   }
+
   function fail_message($password, $account) {
     return $this->message();
   }
-  function __construct($info, &$policy) {
 
+  function __construct($info, &$policy) {
     if (isset($info['default'])) {
       $info['prime value'] = $info['name'];
       $info['config'] = array($info['name'] => $info['default']);
     }
     parent::__construct($info, $policy);
   }
+
   function constraint($pass, $account) {
     if ($func = $this->func('constraint callback')) {
       return $func($pass, $account, $this);
@@ -242,7 +248,7 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
 }
 
 class PasswordPolicyCondition extends PasswordPolicyItem {
-  protected  $pp_type = array('item', 'condition');
+  protected $pp_type = array('item', 'condition');
 
   function match($account) {
     if ($func = $this->func('condition callback')) {
@@ -267,7 +273,7 @@ class PasswordPolicyItem {
   function is_type($type) {
     return in_array($type, $this->pp_type);
   }
-  
+
   //get function from plugin
   function func($function_name) {
     return ctools_plugin_get_function($this->info, $function_name);
@@ -293,7 +299,7 @@ class PasswordPolicyItem {
       return (bool)$this->config[$this->info['prime value']];
     }
     else {
-     return TRUE;
+      return TRUE;
     }
   }
 
