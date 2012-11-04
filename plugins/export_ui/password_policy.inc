@@ -19,11 +19,11 @@ $plugin = array(
     'menu item' => 'password_policy',
     // Title of the top level menu. Note this should not be translated,
     // as the menu system will translate it.
-    'menu title' => 'Password Policy',
+    'menu title' => 'Password policy',
     // Description of the top level menu, which is usually needed for
     // menu items in an administration list. Will be translated
     // by the menu system.
-    'menu description' => 'Administer Password Policies.',
+    'menu description' => 'Administer password policies.',
   ),
   // These are required to provide proper strings for referring to the
   // actual type of exportable. "proper" means it will appear at the
