@@ -1,4 +1,5 @@
 (function ($) {
+
 /**
  * Overriding the standard password strength check
  */
@@ -14,7 +15,7 @@ Drupal.behaviors.passwordOverride = {
     // We take over the keyup function on password and instead make a call to 
     // the server to evaluate the password. When we get the status back we
     // update it.  Then we call focus to all the normal drupal password update.
-    $('input.password-field', context).once('passworda', function () {
+    $('input.password-field', context).once('passwordOverride', function () {
       passwordInput = $(this);
       passwordCheck = function (e) {
         e.stopImmediatePropagation();
@@ -27,7 +28,7 @@ Drupal.behaviors.passwordOverride = {
           }
         );
       };
-      passwordInput.keyup(passwordCheck);
+      passwordInput.keyup(passwordCheck).focusin(passwordCheck);
     });
 
     // We are overriding the normal evaluatePasswordStrength and instead are
@@ -36,6 +37,12 @@ Drupal.behaviors.passwordOverride = {
       return pw_status;
     };
   },
+};
+
+// We are overriding the normal evaluatePasswordStrength and instead are
+// just returning the current status.
+Drupal.evaluatePasswordStrength = function (password, translate) {
+  return Drupal.settings.pw_status;
 };
 
 /**

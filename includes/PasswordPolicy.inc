@@ -46,7 +46,7 @@ class PasswordPolicy {
     $form['condition'] = array(
       '#type' => 'vertical_tabs',
       '#attached' => array(
-        'js' => array(drupal_get_path('module', 'password_policy') . '/password_policy.js'),
+        'js' => array(drupal_get_path('module', 'password_policy') . '/password_policy.js' => array('group' => JS_MODULE, 'weight' => 10)),
       ),
     );
 
@@ -58,7 +58,7 @@ class PasswordPolicy {
     $form['constraint'] = array(
       '#type' => 'vertical_tabs',
       '#attached' => array(
-        'js' => array(drupal_get_path('module', 'password_policy') . '/password_policy.js'),
+        'js' => array(drupal_get_path('module', 'password_policy') . '/password_policy.js' => array('group' => JS_MODULE, 'weight' => 10)),
       ),
     );
 
