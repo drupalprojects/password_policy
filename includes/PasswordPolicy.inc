@@ -226,6 +226,18 @@ class PasswordPolicy {
     }
     return $policies;
   }
+
+  static function enabled_policies() {
+    ctools_include('export');
+    $policies = array();
+    $infos = ctools_export_crud_load_all('password_policy');
+    foreach ($infos as $name => $info) {
+      if (empty($info->disabled)) {
+        $policies[$name] = new PasswordPolicy($info);
+      }
+    }
+    return $policies;
+  }
   static function matched_policies($account) {
     $policies = array();
     foreach (PasswordPolicy::all_policies() as $policy) {
