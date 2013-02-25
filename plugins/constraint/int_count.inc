@@ -35,14 +35,7 @@ function password_policy_int_count_admin_form($form, &$form_state, $constraint) 
  * Admin form callback for numeric count constraint.
  */
 function password_policy_int_count_constraint($password, $account, $constraint) {
-  $count = $constraint->config['int_count'];
-  $regex_string = "/.*";
-  if ($count && $count > 0) {
-    for ($i = 1 ; $i<=$count; $i++) {
-      $regex_string .='[0-9].*';
-    }
-  }
-
-  $regex_string .= '/';
-  return preg_match($regex_string, $password);
+  $matches = array();
+  $count = preg_match_all('/[[:digit:]]/', $password, $matches);
+  return $count >= $constraint->config['int_count'];
 }
