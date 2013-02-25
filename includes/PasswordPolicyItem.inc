@@ -20,7 +20,7 @@ class PasswordPolicyItem {
     // We want to have a local config but have it be a ref to the policy one
     // that way we only have to make updates once.
     $this->config = &$policy->config[$info['name']];
-    $this->config = $this->config + $info['config'];
+    $this->config = array_merge($this->config, $info['config']);
     $this->policy = $policy;
   }
 
