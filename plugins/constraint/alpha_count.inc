@@ -26,7 +26,7 @@ function password_policy_alpha_count_admin_form($form, &$form_state, $constraint
     '#type' => 'textfield',
     '#title' => t('Minimum letters'),
     '#default_value' => $constraint->config['alpha_count'],
-    '#description' => t('Password will be required to have this many letters.'),
+    '#description' => t('Password will be required to have at least this many letters.'),
   );
 
   return $sub_form;
@@ -36,14 +36,7 @@ function password_policy_alpha_count_admin_form($form, &$form_state, $constraint
  * Constraint callback for letter count constraint.
  */
 function password_policy_alpha_count_constraint($password, $account, $constraint) {
-  $count = $constraint->config['alpha_count'];
-  $regex_string = "/.*";
-  if ($count && $count > 0) {
-    for ($i = 1 ; $i<=$count; $i++) {
-      $regex_string .='[a-zA-Z].*';
-    }
-  }
-
-  $regex_string .= '/';
-  return preg_match($regex_string, $password);
+  $matches = array();
+  $count = preg_match_all('/[[:alpha:]]/', $password, $matches);
+  return $count >= $constraint->config['alpha_count'];
 }
