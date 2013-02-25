@@ -43,15 +43,8 @@ function password_policy_symbol_count_admin_form($form, &$form_state, $constrain
  * Admin form callback for symbol count constraint.
  */
 function password_policy_symbol_count_constraint($password, $account, $constraint) {
-  $count = $constraint->config['symbol_count'];
-  $symbols = addcslashes($constraint->config['symbol_count_symbols'], ']^\-/');
-  $regex_string = "/.*";
-  if ($count && $count > 0) {
-    for ($i = 1 ; $i<=$count; $i++) {
-      $regex_string .='[' . $symbols . '].*';
-    }
-  }
-
-  $regex_string .= '/';
-  return preg_match($regex_string, $password);
+  $matches = array();
+  $pattern = '/[' . preg_quote($constraint->config['symbol_count_symbols'], '/') . ']/';
+  $count = preg_match_all($pattern, $password, $matches);
+  return $count >= $constraint->config['symbol_count'];
 }
