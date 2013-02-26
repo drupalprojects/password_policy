@@ -21,7 +21,11 @@ class PasswordPolicy {
    * @param Object
    *   Database object as returned by ctools_export_crud_load().
    */
-  function __construct($policy) {
+  function __construct($policy = NULL) {
+    if ($policy == NULL) {
+      $policy = ctools_export_crud_new('password_policy');
+    }
+
     ctools_include('export');
     $this->name = $policy->name;
     $this->config = isset($policy->config) ? unserialize($policy->config) : array();
