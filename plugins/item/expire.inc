@@ -10,6 +10,7 @@ $plugin = array(
   'class' => 'PasswordPolicyExpire',
   'config' => array(
     'expire_limit' => 0,
+    'expire_warning_message' => 'Your Password has expired please change it now',
     'expire_warning_email_sent' => "-14 days",
     'expire_warning_email_message' => '',
     'expire_warning_email_subject' => '[user:name] you password on [site:name] ([site:url]) is going to expire on [password_expiration_date:long] please login and change it ([user:edit-url]) before then.',
@@ -32,6 +33,12 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#title' => 'Expire limit',
     '#default_value' => $constraint->config['expire_limit'],
     '#description' => "Password will expire after being used for this long (use normal English, like 90 days or 5 hours)",
+  );
+  $sub_form['expire_fieldset']['expire_warning_message'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Warning message',
+    '#default_value' => $constraint->config['expire_warning_message'],
+    '#description' => t('A message to show to users on screen when requiring them to change password. <strong>If left empty, no message will be shown.</strong>'),
   );
   $sub_form['expire_fieldset']['expire_warning_email_sent'] = array(
     '#type' => 'textfield',
@@ -153,7 +160,9 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
 //            $_SESSION['password_policy_GET'] = $_GET;
 //            $_SESSION['password_policy_POST'] = $_POST;
           }
-          drupal_set_message(t('Your Password has expired please change it now'), 'warning');
+          if (!empty($this->config['expire_warning_message'])) {
+            drupal_set_message($this->config['expire_warning_message'], 'warning');
+          }
           password_policy_goto($uri);
         }
         // If we are on the user edit screen, set the destination so we go back.
