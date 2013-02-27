@@ -227,7 +227,7 @@ class PasswordPolicy {
    */
   static function matched_policies($account) {
     $policies = array();
-    foreach (PasswordPolicy::all_policies() as $policy) {
+    foreach (PasswordPolicy::enabled_policies() as $policy) {
       if ($policy->match($account)) {
         $policies[] = $policy;
       }
