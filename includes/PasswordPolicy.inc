@@ -5,9 +5,7 @@
  */
 
 /**
- * Class PasswordPolicy
- *
- * This class is used for managing password Policies
+ * Defines a class used for managing Password Policies.
  */
 class PasswordPolicy {
   public $name;
@@ -35,11 +33,7 @@ class PasswordPolicy {
   }
 
   /**
-   * PasswordPolicy::admin_form()
-   *
-   * used to produce administation form for this policy
-   *
-   * Mostly just asking each plugin for its part of the form
+   * Create the administation form for this policy.
    */
   function admin_form(&$form, &$form_state) {
     // Condition settings.
@@ -84,10 +78,9 @@ class PasswordPolicy {
   }
 
   /**
-   * PasswordPolicy::admin_from_submit()
+   * Form submit callback for policy administration form.
    *
-   * we need to move our config to $form_state['item']->config;
-   * each constraint should parse the form_state and update the config
+   * Collect configuration from all plugins into a single configuration variable.
    */
   function admin_form_submit($form, &$form_state) {
     foreach ($this->items as $item) {
@@ -96,6 +89,9 @@ class PasswordPolicy {
     $form_state['item']->config = serialize($this->config);
   }
 
+  /**
+   * Collect messages generated from all plugins.
+   */
   function message() {
     $items = array();
     foreach ($this->active_constraints() as $constraint) {
@@ -105,9 +101,7 @@ class PasswordPolicy {
   }
 
   /**
-   * PasswordPolicy::constraint()
-   *
-   * Constraint that a password complies with the policy
+   * Check all constraints that a password complies with the policy.
    */
   function constraint($pass, $account) {
     $errors = array();
@@ -119,10 +113,7 @@ class PasswordPolicy {
     return $errors;
   }
 
-
   /**
-   * PasswordPolicy::active_constraints()
-   *
    * Return all constraints that are active.
    */
   function active_constraints() {
@@ -134,7 +125,7 @@ class PasswordPolicy {
   }
 
   /**
-   * PasswordPolicy::constraint_condition()
+   * Return whether all active constraints match.
    */
   function match($account) {
     $does_match = FALSE;
@@ -145,8 +136,6 @@ class PasswordPolicy {
   }
 
   /**
-   * PasswordPolicy::cron()
-   *
    * Run cron for each of the items that is a cron item
    */
   function cron() {
@@ -158,8 +147,6 @@ class PasswordPolicy {
   }
 
   /**
-   * PasswordPolicy::init()
-   *
    * Run init for each of the items that is a cron item
    */
   function init($account) {
@@ -169,8 +156,6 @@ class PasswordPolicy {
   }
 
   /**
-   * PasswordPolicy::load_plugins()
-   *
    * Load all constraint and condition plugins and instantiate object
    * for each saving them in to the module.
    */
@@ -182,7 +167,7 @@ class PasswordPolicy {
   }
 
   /**
-   * get all items of a particular type
+   * Get all items of a particular type.
    */
   function get_items($type) {
     $this->cache[$type] = isset($this->cache[$type]) ? $this->cache[$type] : array();
@@ -201,7 +186,6 @@ class PasswordPolicy {
     foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
       $this->_load_plugin($info);
     }
-
     foreach (ctools_get_plugins('password_policy', 'condition') as $info) {
       $this->_load_plugin($info);
     }
@@ -210,17 +194,9 @@ class PasswordPolicy {
     }
   }
 
-  static function policy($name = NULL) {
-    if (isset($name)) {
-      ctools_include('export');
-      $policy = ctools_export_crud_load('password_policy', $name);
-    }
-    else {
-      $policy = ctools_export_crud_new('password_policy');
-    }
-    return new PasswordPolicy($policy);
-  }
-
+  /**
+   * Retrieve all policies.
+   */
   static function all_policies() {
     ctools_include('export');
     $policies = array();
@@ -231,6 +207,9 @@ class PasswordPolicy {
     return $policies;
   }
 
+  /**
+   * Retrieve all enabled policies.
+   */
   static function enabled_policies() {
     ctools_include('export');
     $policies = array();
@@ -242,6 +221,10 @@ class PasswordPolicy {
     }
     return $policies;
   }
+
+  /**
+   * Retrieve all policies that match the current account.
+   */
   static function matched_policies($account) {
     $policies = array();
     foreach (PasswordPolicy::all_policies() as $policy) {
