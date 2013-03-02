@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_int_count_admin_form',
   'constraint callback' =>  'password_policy_int_count_constraint',
-  'message' => 'Password must have int_count integers',
+  'message' => 'Password must have at least int_count digit(s).',
   'prime value' => 'int_count',
   'config' => array(
     'int_count' => NULL,

@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_consecutive_admin_form',
   'constraint callback' =>  'password_policy_consecutive_constraint',
-  'message' => 'Password can not have consecutive_char_count consecutive letters',
+  'message' => 'Password can not have consecutive_char_count consecutive letters.',
   'prime value' => 'consecutive_char_count',
   'config' => array(
     'consecutive_char_count' => NULL,
