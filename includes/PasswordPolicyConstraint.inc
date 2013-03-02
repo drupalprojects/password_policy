@@ -36,7 +36,7 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
     parent::__construct($info, $policy);
   }
 
-  function constraint($pass, $account) {
+  function check($pass, $account) {
     if ($func = $this->func('constraint callback')) {
       return $func($pass, $account, $this);
     }

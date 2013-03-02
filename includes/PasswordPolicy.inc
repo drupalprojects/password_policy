@@ -21,10 +21,10 @@ class PasswordPolicy {
    */
   function __construct($policy = NULL) {
     if ($policy == NULL) {
+      ctools_include('export');
       $policy = ctools_export_crud_new('password_policy');
     }
 
-    ctools_include('export');
     $this->name = $policy->name;
     $this->config = isset($policy->config) ? unserialize($policy->config) : array();
 
@@ -103,10 +103,10 @@ class PasswordPolicy {
   /**
    * Check all constraints that a password complies with the policy.
    */
-  function constraint($pass, $account) {
+  function check($pass, $account) {
     $errors = array();
     foreach ($this->active_constraints() as $constraint) {
-      if (!$constraint->constraint($pass, $account)) {
+      if (!$constraint->check($pass, $account)) {
         $errors = array_merge($errors, $constraint->fail_message($pass, $account));
       }
     }
