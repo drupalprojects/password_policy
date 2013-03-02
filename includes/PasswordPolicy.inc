@@ -133,7 +133,10 @@ class PasswordPolicy {
   function match($account) {
     $does_match = FALSE;
     foreach ($this->get_items('condition') as $condition) {
-      $does_match = $does_match || $condition->match($account);
+      // Any condition with non-default configuration is "active"
+      if ($condition->info['config'] != $condition->config) {
+        $does_match = $does_match || $condition->match($account);
+      }
     }
     return $does_match;
   }
