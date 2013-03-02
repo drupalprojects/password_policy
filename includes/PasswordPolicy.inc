@@ -119,13 +119,16 @@ class PasswordPolicy {
   function active_constraints() {
     $constraints = array();
     foreach ($this->get_items('constraint') as $constraint) {
-      $constraints[] = $constraint;
+      // Any constraint with non-default configuration is "active"
+      if ($constraint->info['config'] != $constraint->config) {
+        $constraints[] = $constraint;
+      }
     }
     return $constraints;
   }
 
   /**
-   * Return whether all active constraints match.
+   * Return whether all active conditions match.
    */
   function match($account) {
     $does_match = FALSE;
