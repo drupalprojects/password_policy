@@ -51,6 +51,17 @@ Drupal.evaluatePasswordStrength = function (password, translate) {
  */
 Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
   attach: function (context) {
+    $('fieldset#edit-alpha-case-fieldset', context).drupalSetSummary(function (context) {
+      alpha_case = $('input[name="alpha_case"]', context).is(':checked');
+      console.log(alpha_case);
+      if (!alpha_case) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('Upper and lower case letters required');
+      }
+    });
+    
     $('fieldset#edit-alpha-count-fieldset', context).drupalSetSummary(function (context) {
       alpha_count = $('input[name="alpha_count"]', context).val();
       if (!alpha_count) {
