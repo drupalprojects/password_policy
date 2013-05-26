@@ -24,8 +24,6 @@ Drupal.behaviors.passwordOverride = {
           { password: encodeURIComponent(passwordInput.val()) },
           function(data) {
             pw_status = data;
-            // NOTE: Resetting focus appears to hide the cursor in Firefox.
-            passwordInput.focus();
           }
         );
       };
