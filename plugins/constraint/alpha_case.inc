@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_alpha_case_admin_form',
   'constraint callback' =>  'password_policy_alpha_case_constraint',
-  'message' => 'Password must have upper and lower case letters.',
+  'message' => t('Password must have upper and lower case letters.'),
   'prime value' => 'alpha_case',
   'config' => array(
     'alpha_case' => NULL,

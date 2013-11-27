@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_char_count_admin_form',
   'constraint callback' =>  'password_policy_char_count_constraint',
-  'message' => 'Password must have at least char_count character(s).',
+  'message' => t('Password must have at least @char_count character(s).'),
   'prime value' => 'char_count',
   'config' => array(
     'char_count' => NULL,
