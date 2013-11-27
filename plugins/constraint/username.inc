@@ -34,6 +34,11 @@ function password_policy_username_admin_form($form, &$form_state, $constraint) {
  * Admin form callback for username constraint.
  */
 function password_policy_username_constraint($password, $account, $constraint) {
+  // Pass constraint if there's no name such as when this policy is used on new
+  // account registration.
+  if (empty($account->name)) {
+    return TRUE;
+  }
   $regex_string = '/' . $account->name . '/';
   return !preg_match($regex_string, $password);
 }
