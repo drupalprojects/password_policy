@@ -44,25 +44,40 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'textfield',
     '#title' => 'When to send warning emails',
     '#default_value' => $constraint->config['expire_warning_email_sent'],
-    '#description' => t('A comma separated list of time intervals, when to send warning emails. (Use normal English, like 90 days or 5 hours).  If prefixed with a negative (like -2 days) then this will be before the expiration.'),
+    '#description' => t('A comma separated list of time intervals, when to send warning emails. (Use normal English, like 90 days or 5 hours).  If prefixed with a negative (like -2 days) then this will be before the expiration. If left empty, no email will be sent.'),
   );
   $sub_form['expire_fieldset']['expire_warning_email_subject'] = array(
     '#type' => 'textfield',
     '#title' => 'Warning subject',
     '#default_value' => $constraint->config['expire_warning_email_subject'],
     '#description' => t(''),
+    '#states' => array(
+      'visible' => array(
+         ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+       ),
+    ),
   );
   $sub_form['expire_fieldset']['expire_warning_email_message'] = array(
     '#type' => 'textarea',
     '#title' => 'Warning message',
     '#default_value' => $constraint->config['expire_warning_email_message'],
     '#description' => t(''),
+    '#states' => array(
+      'visible' => array(
+         ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+       ),
+    ),
   );
   $sub_form['expire_fieldset']['expire_warning_email_message_token'] = array(
     '#theme' => 'token_tree',
     '#token_types' => array('user', 'site', 'current-date', 'password_expiration_date'),
     '#global_types' => FALSE,
     '#click_insert' => TRUE,
+    '#states' => array(
+      'visible' => array(
+         ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+       ),
+    ),
   );
   return $sub_form;
 }
@@ -187,6 +202,11 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * and then notify them of there to soon be expired password
    */
   function cron() {
+    // Dont do anything if the policy does not require notification emails.
+    if (empty($this->config['expire_warning_email_sent'])) {
+      return;
+    }
+
     $notice_interval_strings = explode(',', $this->config['expire_warning_email_sent']);
     $expire_interval_string = $this->config['expire_limit'];
     $policy_name = $this->policy->name;
