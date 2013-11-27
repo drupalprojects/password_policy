@@ -17,13 +17,20 @@ Drupal.behaviors.passwordOverride = {
     // update it.  Then we call focus to all the normal drupal password update.
     $('input.password-field', context).once('passwordOverride', function () {
       passwordInput = $(this);
-      passwordCheck = function (e) {
+      passwordCheck = function (e, isCallback) {
+        if (typeof isCallback != 'undefined') {
+          return;
+        }
         e.stopImmediatePropagation();
         $.post(
-          '/password_policy/check',
+          Drupal.settings.basePath + 'password_policy/check',
           { password: encodeURIComponent(passwordInput.val()) },
           function(data) {
             pw_status = data;
+            // Trigger the event again to force the text to be updated, but
+            // pass a dummy parameter to the event handler to avoid an
+            // infinite loop.
+            passwordInput.triggerHandler('keyup', [ true ]);
           }
         );
       };
