@@ -203,6 +203,17 @@ class PasswordPolicy {
   /**
    * Retrieve all policies.
    */
+  static function policy($name) {
+    ctools_include('export');
+    $info = ctools_export_crud_load('password_policy', $name);
+    if($info) {
+      return new PasswordPolicy($info);
+    }
+  }
+  
+  /**
+   * Retrieve all policies.
+   */
   static function all_policies() {
     ctools_include('export');
     $policies = array();
