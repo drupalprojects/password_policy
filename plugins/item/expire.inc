@@ -192,6 +192,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
     $policy_name = $this->policy->name;
 
     foreach ($notice_interval_strings as $notice_interval_string) {
+      $notice_interval_string = trim($notice_interval_string);
       // see if we should be subtracting from expire interval
       $from_interval = drupal_substr($notice_interval_string, 0, 1) == '-';
       $notice_interval_string = ltrim($notice_interval_string, '-');
