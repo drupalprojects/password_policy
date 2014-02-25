@@ -77,6 +77,16 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
       }
     });
 
+    $('fieldset#edit-delay-fieldset', context).drupalSetSummary(function (context) {
+      delay = $('input[name="delay"]', context).val();
+      if (!delay) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('@delay between changes', {'@delay': delay});
+      }
+    });
+
     $('fieldset#edit-char-count-fieldset', context).drupalSetSummary(function (context) {
       char_count = $('input[name="char_count"]', context).val();
       if (!char_count) {
