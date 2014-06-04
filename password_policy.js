@@ -87,6 +87,16 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
       }
     });
 
+    $('fieldset#edit-blacklist-fieldset', context).drupalSetSummary(function (context) {
+      blacklist = $('textarea[name="blacklist"]', context).val();
+      if (!blacklist) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('Must not be in blacklist');
+      }
+    });
+
     $('fieldset#edit-char-count-fieldset', context).drupalSetSummary(function (context) {
       char_count = $('input[name="char_count"]', context).val();
       if (!char_count) {
