@@ -435,8 +435,10 @@ function password_policy_password_change_settings_submit($form, &$form_state) {
         $uids[] = $uid;
       }
     }
-    $sql = 'UPDATE {password_policy_force_change} SET force_change = 1 WHERE uid IN (' . db_placeholders($uids, 'int') . ')';
-    db_query($sql, $uids);
+    if (!empty($uids)) {
+      $sql = 'UPDATE {password_policy_force_change} SET force_change = 1 WHERE uid IN (' . db_placeholders($uids, 'int') . ')';
+      db_query($sql, $uids);
+    }
     $selected_roles[] = $role;
   }
   if (count($selected_roles)) {
