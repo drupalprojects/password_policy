@@ -210,7 +210,7 @@ class PasswordPolicy {
       return new PasswordPolicy($info);
     }
   }
-  
+
   /**
    * Retrieve all policies.
    */
