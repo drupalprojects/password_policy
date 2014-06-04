@@ -175,6 +175,17 @@ Drupal.behaviors.passwordPolicyConditionSettingsSummary = {
       return vals.join(', ');
     });
 
+    $('fieldset#edit-authmap-fieldset', context).drupalSetSummary(function (context) {
+      var vals = [];
+      $('input[type="checkbox"]:checked', context).each(function() {
+        vals.push($.trim($(this).next('label').text()));
+      });
+      if (!vals.length) {
+        vals.push(Drupal.t('Not restricted'));
+      }
+      return vals.join(', ');
+    });
+
     $('fieldset#edit-global-fieldset', context).drupalSetSummary(function (context) {
       var global = $('input[name="global"]:checked', context);
       if (global.val()) {
