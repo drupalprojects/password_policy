@@ -12,7 +12,7 @@ Drupal.behaviors.passwordOverride = {
       indicatorText: ''
     }
 
-    // We take over the keyup function on password and instead make a call to 
+    // We take over the keyup function on password and instead make a call to
     // the server to evaluate the password. When we get the status back we
     // update it.  Then we call focus to all the normal drupal password update.
     $('input.password-field', context).once('passwordOverride', function () {
@@ -66,7 +66,7 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
         return Drupal.t('Upper and lower case letters required');
       }
     });
-    
+
     $('fieldset#edit-alpha-count-fieldset', context).drupalSetSummary(function (context) {
       alpha_count = $('input[name="alpha_count"]', context).val();
       if (!alpha_count) {
@@ -106,7 +106,7 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
         return Drupal.t('At least @count characters', {'@count': char_count});
       }
     });
-    
+
     $('fieldset#edit-consecutive-char-count-fieldset', context).drupalSetSummary(function (context) {
       consecutive_char_count = $('input[name="consecutive_char_count"]', context).val();
       if (!consecutive_char_count) {
@@ -114,6 +114,16 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
       }
       else {
         return Drupal.t('No more than @count consecutive characters', {'@count': consecutive_char_count});
+      }
+    });
+
+    $('fieldset#edit-drupal-strength-fieldset', context).drupalSetSummary(function (context) {
+      drupal_strength = $('input[name="drupal_strength"]', context).val();
+      if (!drupal_strength) {
+        return Drupal.t('Not enforced');
+      }
+      else {
+        return Drupal.t('At least level of @level Drupal strength', {'@level': drupal_strength});
       }
     });
 
