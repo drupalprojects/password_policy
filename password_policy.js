@@ -9,7 +9,7 @@ Drupal.behaviors.passwordOverride = {
     pw_status = {
       strength: 0,
       message: '',
-      indicatorText: '',
+      indicatorText: ''
     }
 
     // We take over the keyup function on password and instead make a call to 
@@ -42,7 +42,7 @@ Drupal.behaviors.passwordOverride = {
     Drupal.evaluatePasswordStrength = function (password, translate) {
       return pw_status;
     };
-  },
+  }
 };
 
 // We are overriding the normal evaluatePasswordStrength and instead are
