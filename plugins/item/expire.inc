@@ -140,6 +140,16 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * the user edit page until they set a new password
    */
   function init($account) {
+    // If this is a command line request (Drush, etc), skip processing.
+    if (drupal_is_cli()) {
+      return FALSE;
+    }
+
+    $stop = module_invoke_all('password_policy_expire_url_exclude', $account);
+    if (!empty($stop)) {
+      return FALSE;
+    }
+
     // @TODO this should not be necessary
     password_policy_user_load(array($account->uid => $account));
     if ($account->uid == 0) {
