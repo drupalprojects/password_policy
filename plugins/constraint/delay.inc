@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_delay_admin_form',
   'constraint callback' =>  'password_policy_delay_constraint',
-  'message' => t('Password can not be changed within @delay of the last change.'),
+  'message' => t('Password cannot be changed within @delay of the last change.'),
   'prime value' => 'delay',
   'config' => array(
     'delay' => NULL,
