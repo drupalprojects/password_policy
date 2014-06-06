@@ -69,4 +69,3 @@ Credits
 Drupal 4.7 version was written by David Ayre <drupal at ayre dot ca>
 Refactored and maintained by Miglius Alaburda <miglius at gmail dot com>
 Sponsored by Bryght, SPAWAR, McDean
-

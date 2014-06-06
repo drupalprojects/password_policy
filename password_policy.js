@@ -111,4 +111,3 @@ Drupal.behaviors.password = function(context) {
     confirmInput.keyup(passwordDelayedCheck).blur(passwordCheck);
   });
 };
-

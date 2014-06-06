@@ -61,4 +61,3 @@ function password_policy_password_tab_submit($form, &$form_state) {
     $form_state['redirect'] = array($redirect['path'], isset($redirect['query']) ? $redirect['query'] : NULL, isset($redirect['fragment']) ? $redirect['fragment'] : NULL);
   }
 }
-

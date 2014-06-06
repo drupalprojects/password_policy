@@ -40,4 +40,3 @@ function password_policy_constraint_length_js($constraint, $uid) {
   $s .= "  }\n";
   return $s;
 }
-

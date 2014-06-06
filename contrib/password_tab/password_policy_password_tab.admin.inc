@@ -55,4 +55,3 @@ function password_policy_password_tab_admin_settings_submit($form, &$form_state)
       break;
   }
 }
-

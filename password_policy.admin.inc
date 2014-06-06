@@ -464,4 +464,3 @@ function password_policy_password_change_settings_submit($form, &$form_state) {
     drupal_set_message(t('No roles were selected.'));
   }
 }
-

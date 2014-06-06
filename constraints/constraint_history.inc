@@ -45,4 +45,3 @@ function _password_policy_constraint_history_old_passwords($constraint, $uid) {
   }
   return $pass;
 }
-

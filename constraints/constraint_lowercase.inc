@@ -57,4 +57,3 @@ function password_policy_constraint_lowercase_js($constraint, $uid) {
   $s .= "  }\n";
   return $s;
 }
-

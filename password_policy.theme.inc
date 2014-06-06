@@ -40,4 +40,3 @@ function theme_password_policy_admin_list($form) {
 
   return $output;
 }
-
