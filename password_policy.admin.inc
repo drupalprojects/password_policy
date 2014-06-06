@@ -112,6 +112,15 @@ function password_policy_admin_settings_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Lists roles to which a policy applies.
+ *
+ * @param $pid
+ *   Policy id.
+ *
+ * @return
+ *   Array of role names.
+ */
 function _password_policy_admin_list_roles($pid) {
   $roles = array();
   $result = db_query('SELECT r.name FROM {role} r INNER JOIN {password_policy_role} p ON r.rid = p.rid WHERE p.pid = %d', $pid);
