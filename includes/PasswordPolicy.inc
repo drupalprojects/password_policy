@@ -206,7 +206,7 @@ class PasswordPolicy {
   static function policy($name) {
     ctools_include('export');
     $info = ctools_export_crud_load('password_policy', $name);
-    if($info) {
+    if ($info) {
       return new PasswordPolicy($info);
     }
   }

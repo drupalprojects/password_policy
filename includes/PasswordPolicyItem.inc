@@ -50,7 +50,7 @@ class PasswordPolicyItem {
   // see if the constraint is active
   function is_active() {
     if (isset($this->info['prime value'])) {
-      return (bool)$this->config[$this->info['prime value']];
+      return (bool) $this->config[$this->info['prime value']];
     }
     else {
       return TRUE;

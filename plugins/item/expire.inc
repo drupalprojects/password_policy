@@ -53,8 +53,8 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#description' => t(''),
     '#states' => array(
       'visible' => array(
-         ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
-       ),
+        ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+      ),
     ),
   );
   $sub_form['expire_fieldset']['expire_warning_email_message'] = array(
@@ -64,8 +64,8 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#description' => t(''),
     '#states' => array(
       'visible' => array(
-         ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
-       ),
+        ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+      ),
     ),
   );
   $sub_form['expire_fieldset']['expire_warning_email_message_token'] = array(
@@ -75,8 +75,8 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#click_insert' => TRUE,
     '#states' => array(
       'visible' => array(
-         ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
-       ),
+        ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+      ),
     ),
   );
   return $sub_form;
@@ -234,13 +234,13 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       $expire_interval = password_policy_parse_interval($expire_interval_string);
       $expire_int = password_policy_parse_interval($expire_interval_string);
       if ($from_interval) {
-          $notice_int = $expire_int - $notice_int;
+        $notice_int = $expire_int - $notice_int;
       }
       $candidates = _password_policy_expire_query_users($notice_int, $policy_name);
       foreach ($candidates as $candidate) {
         $account = user_load($candidate->uid);
         if ($this->policy->match($account)) {
-          $message = _password_policy_expire_notify($account, $candidate, $candidate->created+$expire_int, $this);
+          $message = _password_policy_expire_notify($account, $candidate, $candidate->created + $expire_int, $this);
           if ($message['result']) {
             watchdog('password_policy', 'Password expiration warning mailed to %username at %email.', array('%username' => $account->name, '%email' => $account->mail));
             $notice_history = (object) array(
