@@ -33,7 +33,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Create the administation form for this policy.
+   * Create the administration form for this policy.
    */
   function admin_form(&$form, &$form_state) {
     // Condition settings.
