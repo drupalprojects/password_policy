@@ -14,7 +14,7 @@ class PasswordPolicy {
   public $cache;
 
   /**
-   * PasswordPolicy::__construct
+   * Constructor for PasswordPolicy.
    *
    * @param Object
    *   Database object as returned by ctools_export_crud_load().
@@ -33,7 +33,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Create the administration form for this policy.
+   * Creates the administration form for this policy.
    */
   function admin_form(&$form, &$form_state) {
     // Condition settings.
@@ -80,7 +80,8 @@ class PasswordPolicy {
   /**
    * Form submit callback for policy administration form.
    *
-   * Collect configuration from all plugins into a single configuration variable.
+   * Collects configuration from all plugins into a single configuration
+   * variable.
    */
   function admin_form_submit($form, &$form_state) {
     foreach ($this->items as $item) {
@@ -90,7 +91,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Collect messages generated from all plugins.
+   * Collects messages generated from all plugins.
    */
   function message() {
     $items = array();
@@ -101,7 +102,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Check all constraints that a password complies with the policy.
+   * Checks all constraints that a password complies with the policy.
    */
   function check($pass, $account) {
     $errors = array();
@@ -114,7 +115,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Return all constraints that are active.
+   * Returns all constraints that are active.
    */
   function active_constraints() {
     $constraints = array();
@@ -128,7 +129,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Return whether all active conditions match.
+   * Returns whether all active conditions match.
    */
   function match($account) {
     $does_match = FALSE;
@@ -142,7 +143,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Run cron for each of the items that is a cron item
+   * Runs cron for each of the items that is a cron item.
    */
   function cron() {
     foreach ($this->get_items('cron') as $item) {
@@ -153,7 +154,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Run init for each of the items that is a cron item
+   * Runs init for each of the items that is a cron item.
    */
   function init($account) {
     foreach ($this->get_items('init') as $item) {
@@ -162,7 +163,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Load all constraint and condition plugins and instantiate object
+   * Loads all constraint and condition plugins and instantiate object
    * for each saving them in to the module.
    */
   function _load_plugin($info) {
@@ -173,7 +174,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Get all items of a particular type.
+   * Gets all items of a particular type.
    */
   function get_items($type) {
     $this->cache[$type] = isset($this->cache[$type]) ? $this->cache[$type] : array();
@@ -201,7 +202,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Retrieve all policies.
+   * Retrieves all policies.
    */
   static function policy($name) {
     ctools_include('export');
@@ -212,7 +213,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Retrieve all policies.
+   * Retrieves all policies.
    */
   static function all_policies() {
     ctools_include('export');
@@ -225,7 +226,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Retrieve all enabled policies.
+   * Retrieves all enabled policies.
    */
   static function enabled_policies() {
     ctools_include('export');
@@ -240,7 +241,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Retrieve all policies that match the current account.
+   * Retrieves all policies that match the current account.
    */
   static function matched_policies($account) {
     $policies = array();

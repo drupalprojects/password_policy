@@ -134,10 +134,8 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
   public $pp_type = array('item', 'cron', 'init');
 
   /**
-   * PasswordPolicyExpire::init()
-   *
-   * On init we check if the user password has expired. If so,  we send them to
-   * the user edit page until they set a new password
+   * Checks on init if the user password has expired. If so, we send the user
+   * to the user edit page until they set a new password.
    */
   function init($account) {
     // If this is a command line request (Drush, etc), skip processing.
@@ -206,10 +204,8 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
   }
 
   /**
-   * PasswordPolicyExpire::cron
-   *
-   * Pull all user that have expired passwords insure they are active with this policy
-   * and then notify them of there to soon be expired password
+   * Pulls all users that have expired passwords, insure they are active with
+   * this policy, and then notify them of their soon-to-be expired password.
    */
   function cron() {
     // Dont do anything if the policy does not require notification emails.
@@ -223,14 +219,14 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
 
     foreach ($notice_interval_strings as $notice_interval_string) {
       $notice_interval_string = trim($notice_interval_string);
-      // see if we should be subtracting from expire interval
+      // See if we should be subtracting from expire interval.
       $from_interval = drupal_substr($notice_interval_string, 0, 1) == '-';
       $notice_interval_string = ltrim($notice_interval_string, '-');
 
       // Convert notice interval to secs.
       $notice_int = password_policy_parse_interval($notice_interval_string);
 
-      // if we need to subtract from expire do so
+      // If we need to subtract from expire do so.
       $expire_interval = password_policy_parse_interval($expire_interval_string);
       $expire_int = password_policy_parse_interval($expire_interval_string);
       if ($from_interval) {
