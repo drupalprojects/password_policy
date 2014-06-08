@@ -38,25 +38,25 @@ function password_policy_drupal_strength_admin_form($form, &$form_state, $constr
 function password_policy_drupal_strength_constraint($password, $account, $constraint) {
   $weaknesses = 0;
   $strength = 100;
-  $hasLowercase = preg_match('/[a-z]+/', $password);
-  $hasUppercase = preg_match('/[A-Z]+/', $password);
-  $hasNumbers = preg_match('/[0-9]+/', $password);
-  $hasPunctuation = preg_match('/[^a-zA-Z0-9]+/', $password);
+  $has_lowercase = preg_match('/[a-z]+/', $password);
+  $has_uppercase = preg_match('/[A-Z]+/', $password);
+  $has_numbers = preg_match('/[0-9]+/', $password);
+  $has_punctuation = preg_match('/[^a-zA-Z0-9]+/', $password);
   // Lose 5 points for every character less than 6, plus a 30 point penalty.
   if (strlen($password) < 6) {
     $strength -= ((6 - strlen($password)) * 5) + 30;
   }
   // Count weaknesses.
-  if (!$hasLowercase) {
+  if (!$has_lowercase) {
     $weaknesses++;
   }
-  if (!$hasUppercase) {
+  if (!$has_uppercase) {
     $weaknesses++;
   }
-  if (!$hasNumbers) {
+  if (!$has_numbers) {
     $weaknesses++;
   }
-  if (!$hasPunctuation) {
+  if (!$has_punctuation) {
     $weaknesses++;
   }
   // Apply penalty for each weakness (balanced against length penalty).
