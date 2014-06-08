@@ -137,7 +137,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * Checks on init if the user password has expired. If so, we send the user
    * to the user edit page until they set a new password.
    */
-  function init($account) {
+  public function init($account) {
     // If this is a command line request (Drush, etc), skip processing.
     if (drupal_is_cli()) {
       return FALSE;
@@ -207,7 +207,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * Pulls all users that have expired passwords, insure they are active with
    * this policy, and then notify them of their soon-to-be expired password.
    */
-  function cron() {
+  public function cron() {
     // Dont do anything if the policy does not require notification emails.
     if (empty($this->config['expire_warning_email_sent'])) {
       return;

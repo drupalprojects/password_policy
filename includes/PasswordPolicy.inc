@@ -19,7 +19,7 @@ class PasswordPolicy {
    * @param object $policy
    *   Database object as returned by ctools_export_crud_load().
    */
-  function __construct($policy = NULL) {
+  public function __construct($policy = NULL) {
     if ($policy == NULL) {
       ctools_include('export');
       $policy = ctools_export_crud_new('password_policy');
@@ -35,7 +35,7 @@ class PasswordPolicy {
   /**
    * Creates the administration form for this policy.
    */
-  function admin_form(&$form, &$form_state) {
+  public function admin_form(&$form, &$form_state) {
     // Condition settings.
     $form['condition_title'] = array(
       '#type' => 'item',
@@ -83,7 +83,7 @@ class PasswordPolicy {
    * Collects configuration from all plugins into a single configuration
    * variable.
    */
-  function admin_form_submit($form, &$form_state) {
+  public function admin_form_submit($form, &$form_state) {
     foreach ($this->items as $item) {
       $item->admin_form_submit($form, $form_state);
     }
@@ -93,7 +93,7 @@ class PasswordPolicy {
   /**
    * Collects messages generated from all plugins.
    */
-  function message() {
+  public function message() {
     $items = array();
     foreach ($this->active_constraints() as $constraint) {
       $items = array_merge($items, $constraint->message());
@@ -104,7 +104,7 @@ class PasswordPolicy {
   /**
    * Checks all constraints that a password complies with the policy.
    */
-  function check($pass, $account) {
+  public function check($pass, $account) {
     $errors = array();
     foreach ($this->active_constraints() as $constraint) {
       if (!$constraint->check($pass, $account)) {
@@ -117,7 +117,7 @@ class PasswordPolicy {
   /**
    * Returns all constraints that are active.
    */
-  function active_constraints() {
+  public function active_constraints() {
     $constraints = array();
     foreach ($this->get_items('constraint') as $constraint) {
       // Any constraint with non-default configuration is "active"
@@ -131,7 +131,7 @@ class PasswordPolicy {
   /**
    * Returns whether all active conditions match.
    */
-  function match($account) {
+  public function match($account) {
     $does_match = FALSE;
     foreach ($this->get_items('condition') as $condition) {
       // Any condition with non-default configuration is "active"
@@ -145,7 +145,7 @@ class PasswordPolicy {
   /**
    * Runs cron for each of the items that is a cron item.
    */
-  function cron() {
+  public function cron() {
     foreach ($this->get_items('cron') as $item) {
       if ($item->is_active()) {
         $item->cron();
@@ -156,7 +156,7 @@ class PasswordPolicy {
   /**
    * Runs init for each of the items that is a cron item.
    */
-  function init($account) {
+  public function init($account) {
     foreach ($this->get_items('init') as $item) {
       $item->init($account);
     }
@@ -166,7 +166,7 @@ class PasswordPolicy {
    * Loads all constraint and condition plugins and instantiate object
    * for each saving them in to the module.
    */
-  function _load_plugin($info) {
+  private function _load_plugin($info) {
     if (!isset($this->config[$info['name']])) {
       $this->config[$info['name']] = array();
     }
@@ -176,7 +176,7 @@ class PasswordPolicy {
   /**
    * Gets all items of a particular type.
    */
-  function get_items($type) {
+  private function get_items($type) {
     $this->cache[$type] = isset($this->cache[$type]) ? $this->cache[$type] : array();
     if (empty($this->cache[$type])) {
       foreach ($this->items as $item) {
@@ -188,7 +188,7 @@ class PasswordPolicy {
     return $this->cache[$type];
   }
 
-  function load_plugins() {
+  private function load_plugins() {
     ctools_include('plugins');
     foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
       $this->_load_plugin($info);
@@ -204,7 +204,7 @@ class PasswordPolicy {
   /**
    * Retrieves all policies.
    */
-  static function policy($name) {
+  public static function policy($name) {
     ctools_include('export');
     $info = ctools_export_crud_load('password_policy', $name);
     if ($info) {
@@ -215,7 +215,7 @@ class PasswordPolicy {
   /**
    * Retrieves all policies.
    */
-  static function all_policies() {
+  public static function all_policies() {
     ctools_include('export');
     $policies = array();
     $infos = ctools_export_crud_load_all('password_policy');
@@ -228,7 +228,7 @@ class PasswordPolicy {
   /**
    * Retrieves all enabled policies.
    */
-  static function enabled_policies() {
+  public static function enabled_policies() {
     ctools_include('export');
     $policies = array();
     $infos = ctools_export_crud_load_all('password_policy');
@@ -243,7 +243,7 @@ class PasswordPolicy {
   /**
    * Retrieves all policies that match the current account.
    */
-  static function matched_policies($account) {
+  public static function matched_policies($account) {
     $policies = array();
     foreach (PasswordPolicy::enabled_policies() as $policy) {
       if ($policy->match($account)) {
