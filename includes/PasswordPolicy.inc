@@ -16,7 +16,7 @@ class PasswordPolicy {
   /**
    * Constructor for PasswordPolicy.
    *
-   * @param Object
+   * @param object $policy
    *   Database object as returned by ctools_export_crud_load().
    */
   function __construct($policy = NULL) {
