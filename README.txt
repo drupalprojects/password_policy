@@ -35,17 +35,15 @@ Current constraints include:
 
 The module also implements configurable password expiration features:
 
-  * When a password is not changed for a certain amount of time the user is blocked.
-  * Expiration of the passwords can begin after expiration time after enabling of the
-    policy or immediately all users with a passwords older then expiration time will
-    be blocked (retroactive behavior).
-  * The notifications (warnings) are mailed to the users several times (configurable)
-    before the password expires. Drupal message is shown on login before the expiration
-    and the user is forwarded to a password change page.
+  * When a password is not changed for a certain amount of time the user will
+    be forced to change their password on next login.
+  * Optionally, the user will also be blocked upon password expiration.
+  * Expiration of passwords can begin after expiration time from enabling
+    the policy or immediately all users with passwords older than expiration
+    time will be blocked (retroactive behavior).
+  * Expiration notifications (warnings) are mailed to the users several times
+    (configurable) before the password expires.
   * Warning e-mail message's subject and body are configurable.
-  * When the password expires the user can be immediately blocked, or he can be let to
-    login to the site once to change his password. If he does not change the password
-    on that login, he won't be able to login again (will be bocked).
 
 Security note
 ==========================================

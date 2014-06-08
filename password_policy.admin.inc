@@ -34,7 +34,7 @@ function password_policy_admin_settings() {
     '#type' => 'radios',
     '#title' => t('Blocking expired accounts'),
     '#default_value' => variable_get('password_policy_block', 0),
-    '#options' => array('0' => t('Expired accounts are blocked. Only administrators can unblock them.'), '1' => t('The user with expired account is not blocked, but sent to a change password page. If the password is not changed, the account is blocked and the user cannot login again.')),
+    '#options' => array('0' => t('Expired accounts are blocked. Only administrators can unblock them. Users whose accounts have expired will be forced to change their passwords at next login (after being unblocked).'), '1' => t('Expired accounts are not blocked. Users whose accounts have expired will be forced to change their passwords at next login.')),
   );
 
   // Visibility
