@@ -32,7 +32,7 @@ function password_policy_delay_admin_form($form, &$form_state, $constraint) {
 }
 
 /**
- * Callback for delay constraint.
+ * Constraint callback for delay constraint.
  */
 function password_policy_delay_constraint($password, $account, $constraint) {
   // Determine user.

@@ -33,7 +33,7 @@ function password_policy_past_passwords_count_admin_form($form, &$form_state, $c
 }
 
 /**
- * Admin form callback for password history constraint.
+ * Constraint callback for password history constraint.
  */
 function password_policy_past_passwords_count_constraint($password, $account, $constraint) {
   global $user;

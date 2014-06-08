@@ -15,7 +15,7 @@ $plugin = array(
 );
 
 /**
- * Admin form callback for case sensivity constraint.
+ * Admin form callback for case sensitivity constraint.
  */
 function password_policy_alpha_case_admin_form($form, &$form_state, $constraint) {
   $sub_form['alpha_case_fieldset'] = array(
@@ -33,7 +33,7 @@ function password_policy_alpha_case_admin_form($form, &$form_state, $constraint)
 }
 
 /**
- * Constraint callback for letter count constraint.
+ * Constraint callback for case sensitivity constraint.
  */
 function password_policy_alpha_case_constraint($password, $account, $constraint) {
   $upper = preg_match('/[A-Z]/', $password);

@@ -15,7 +15,7 @@ $plugin = array(
 );
 
 /**
- * Admin form callback for character count constraint.
+ * Admin form callback for Drupal strength constraint.
  */
 function password_policy_drupal_strength_admin_form($form, &$form_state, $constraint) {
   $sub_form['drupal_strength_fieldset'] = array(
@@ -33,7 +33,7 @@ function password_policy_drupal_strength_admin_form($form, &$form_state, $constr
 }
 
 /**
- * Admin form callback for character count constraint.
+ * Constraint callback for Drupal strength constraint.
  */
 function password_policy_drupal_strength_constraint($password, $account, $constraint) {
   $weaknesses = 0;

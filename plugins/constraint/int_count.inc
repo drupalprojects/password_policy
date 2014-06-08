@@ -32,7 +32,7 @@ function password_policy_int_count_admin_form($form, &$form_state, $constraint) 
 }
 
 /**
- * Admin form callback for numeric count constraint.
+ * Constraint callback for numeric count constraint.
  */
 function password_policy_int_count_constraint($password, $account, $constraint) {
   $matches = array();

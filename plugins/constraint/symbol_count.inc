@@ -40,7 +40,7 @@ function password_policy_symbol_count_admin_form($form, &$form_state, $constrain
 }
 
 /**
- * Admin form callback for symbol count constraint.
+ * Constraint callback for symbol count constraint.
  */
 function password_policy_symbol_count_constraint($password, $account, $constraint) {
   $matches = array();

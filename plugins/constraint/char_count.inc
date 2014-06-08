@@ -33,7 +33,7 @@ function password_policy_char_count_admin_form($form, &$form_state, $constraint)
 }
 
 /**
- * Admin form callback for character count constraint.
+ * Constraint callback for character count constraint.
  */
 function password_policy_char_count_constraint($password, $account, $constraint) {
   return drupal_strlen($password) >= $constraint->config['char_count'];
