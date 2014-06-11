@@ -394,7 +394,7 @@ function password_policy_password_change_settings() {
     '#type' => 'checkboxes',
     '#options' => $roles,
     '#title' => t('Force users in the following roles to change their password'),
-    '#description' => t('Users who are not signed in will be required to change their password immediately upon sign in. Users who are currently signed in will be required to change their password upon their next page click, but after changing their password will be redirected back to the page they were attempting to access.'),
+    '#description' => t('Users who are not logged in will be required to change their password immediately upon login. Users who are currently logged in will be required to change their password upon their next page request, but after changing their password will be redirected back to the page they were attempting to access.'),
   );
 
   $form['password_policy_exclude_pages'] = array(
