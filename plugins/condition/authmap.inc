@@ -6,7 +6,7 @@
 
 $plugin = array(
   'admin form callback' => 'password_policy_authmap_admin_form',
-  'condition callback' =>  'password_policy_authmap_condition',
+  'condition callback' => 'password_policy_authmap_condition',
   'prime value' => 'authmap',
   'config' => array(
     'authmodules' => array(),

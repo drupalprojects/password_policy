@@ -6,7 +6,7 @@
 
 $plugin = array(
   'admin form callback' => 'password_policy_past_passwords_count_admin_form',
-  'constraint callback' =>  'password_policy_past_passwords_count_constraint',
+  'constraint callback' => 'password_policy_past_passwords_count_constraint',
   'message' => t('Password cannot match @past_passwords past passwords.'),
   'prime value' => 'past_passwords',
   'config' => array(

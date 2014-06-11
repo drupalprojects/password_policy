@@ -6,7 +6,7 @@
 
 $plugin = array(
   'admin form callback' => 'password_policy_username_admin_form',
-  'constraint callback' =>  'password_policy_username_constraint',
+  'constraint callback' => 'password_policy_username_constraint',
   'message' => t('Password must not contain their username.'),
   'prime value' => 'username',
   'config' => array(
