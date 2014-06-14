@@ -158,12 +158,14 @@ function password_policy_admin_list() {
 }
 
 /**
- * Submit hook for the form on the default list view for the password policy module.
+ * Submit hook for the form on the default list view for the password policy
+ * module.
  */
 function password_policy_admin_list_submit($form, &$form_state) {
   foreach ($form_state['values']['enabled'] as $pid => $enabled) {
     db_query("UPDATE {password_policy} SET weight = %d WHERE pid = %d", $form_state['values']['weight'][$pid], $pid);
-    // Ensure we don't reset the timestamp on policies that are already enabled.
+    // Ensure we don't reset the timestamp on policies that are already
+    // enabled.
     if ($enabled) {
       db_query("UPDATE {password_policy} SET enabled = 1, created = %d WHERE pid = %d AND enabled = 0", time(), $pid);
     }
@@ -350,8 +352,8 @@ function password_policy_admin_form_submit($form, &$form_state) {
 }
 
 /**
- * Confirmation form for the deletion of a password policy.  Deletion takes place
- * in password_policy_admin_delete_submit().
+ * Confirmation form for the deletion of a password policy.  Deletion takes
+ * place in password_policy_admin_delete_submit().
  */
 function password_policy_admin_delete($form_state, $pid) {
   if (is_numeric($pid) && $policy = _password_policy_load_policy_by_pid($pid)) {
