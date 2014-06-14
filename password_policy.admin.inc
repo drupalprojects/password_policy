@@ -401,7 +401,7 @@ function password_policy_password_change_settings() {
     '#title' => t('Page Exclusion List'),
     '#type' => 'textarea',
     '#description' => t('The user will be able to access these pages without changing their password. This should always include the logout path.'),
-    '#default_value' => variable_get('password_policy_exclude_pages', 'logout'),  
+    '#default_value' => variable_get('password_policy_exclude_pages', 'logout'),
     '#wysiwyg' => FALSE,
   );
 

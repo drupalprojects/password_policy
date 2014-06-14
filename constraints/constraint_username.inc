@@ -26,7 +26,9 @@ function password_policy_constraint_username_error($constraint) {
  */
 function password_policy_constraint_username_validate($password, $constraint, $uid) {
   $account = user_load(array('uid' => $uid));
-  if ($account->name == '') { return TRUE; }
+  if ($account->name == '') {
+    return TRUE;
+  }
   $username_lowercase = drupal_strtolower($account->name);
   $password_lowercase = drupal_strtolower($password);
   if ($constraint && (strpos($password_lowercase, $username_lowercase) !== FALSE)) {
@@ -40,7 +42,9 @@ function password_policy_constraint_username_validate($password, $constraint, $u
  */
 function password_policy_constraint_username_js($constraint, $uid) {
   $account = user_load(array('uid' => $uid));
-  if ($account->name == '') { return ''; }
+  if ($account->name == '') {
+    return '';
+  }
   $s = '';
   if ($constraint) {
     $s .= "  var username='". $account->name ."';\n";
