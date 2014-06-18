@@ -173,8 +173,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       if ($_GET['q'] != 'password_policy/check') {
         $uri = "user/{$account->uid}/edit";
 
-        // If we are not on the user page let's go there, but let's remember
-        // where we were.
+        // If not on the user page, go there, but remember where we were.
         if ($_GET['q'] != $uri) {
           // If we have been here before, we do not want to override this
           // info (it might be an ajax call).
