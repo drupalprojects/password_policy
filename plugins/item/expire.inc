@@ -173,8 +173,8 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       if (($_GET['q'] != 'password_policy/check') && !drupal_is_cli()) {
         $uri = "user/{$account->uid}/edit";
 
-        // If we are not on the user page lets go there, but lets remember where
-        // were where.
+        // If we are not on the user page let's go there, but let's remember
+        // where we were.
         if ($_GET['q'] != $uri) {
           // If we have been here before, we do not want to override this
           // info (it might be an ajax call).
