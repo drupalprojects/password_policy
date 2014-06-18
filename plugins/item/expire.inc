@@ -169,8 +169,8 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
     }
     // Check to see that the password has expired.
     if ($account->password_history[0]->created + $expire_int < time()) {
-      // If we are on the check ajax page or using a CLI, then skip.
-      if (($_GET['q'] != 'password_policy/check') && !drupal_is_cli()) {
+      // If we are on the check ajax page, then skip.
+      if ($_GET['q'] != 'password_policy/check') {
         $uri = "user/{$account->uid}/edit";
 
         // If we are not on the user page let's go there, but let's remember
