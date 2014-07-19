@@ -171,8 +171,10 @@ class PasswordPolicy {
   }
 
   /**
-   * Loads all constraint and condition plugins and instantiate object
-   * for each saving them in to the module.
+   * Loads a Password Policy plugin.
+   *
+   * @param object $info
+   *   Password Policy plugin information.
    */
   private function _load_plugin($info) {
     if (!isset($this->config[$info['name']])) {
@@ -196,6 +198,9 @@ class PasswordPolicy {
     return $this->cache[$type];
   }
 
+  /**
+   * Loads all Password Policy plugins.
+   */
   private function load_plugins() {
     ctools_include('plugins');
     foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
