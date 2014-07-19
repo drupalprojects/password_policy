@@ -171,6 +171,22 @@ class PasswordPolicy {
   }
 
   /**
+   * Loads all Password Policy plugins.
+   */
+  private function load_plugins() {
+    ctools_include('plugins');
+    foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
+      $this->_load_plugin($info);
+    }
+    foreach (ctools_get_plugins('password_policy', 'condition') as $info) {
+      $this->_load_plugin($info);
+    }
+    foreach (ctools_get_plugins('password_policy', 'item') as $info) {
+      $this->_load_plugin($info);
+    }
+  }
+
+  /**
    * Loads a Password Policy plugin.
    *
    * @param object $info
@@ -196,22 +212,6 @@ class PasswordPolicy {
       }
     }
     return $this->cache[$type];
-  }
-
-  /**
-   * Loads all Password Policy plugins.
-   */
-  private function load_plugins() {
-    ctools_include('plugins');
-    foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
-      $this->_load_plugin($info);
-    }
-    foreach (ctools_get_plugins('password_policy', 'condition') as $info) {
-      $this->_load_plugin($info);
-    }
-    foreach (ctools_get_plugins('password_policy', 'item') as $info) {
-      $this->_load_plugin($info);
-    }
   }
 
   /**
