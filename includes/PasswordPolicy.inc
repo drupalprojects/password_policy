@@ -210,7 +210,7 @@ class PasswordPolicy {
   }
 
   /**
-   * Retrieves all policies.
+   * Retrieves policy by name.
    */
   public static function policy($name) {
     ctools_include('export');
