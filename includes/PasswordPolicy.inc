@@ -102,7 +102,15 @@ class PasswordPolicy {
   }
 
   /**
-   * Checks all constraints that a password complies with the policy.
+   * Checks password versus each of the policy's active constraints.
+   *
+   * @param string $pass
+   *   Password.
+   * @param object $account
+   *   User account.
+   *
+   * @return array
+   *   Failure messages for failed constraints.
    */
   public function check($pass, $account) {
     $errors = array();
