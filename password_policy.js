@@ -58,7 +58,6 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
   attach: function (context) {
     $('fieldset#edit-alpha-case-fieldset', context).drupalSetSummary(function (context) {
       alpha_case = $('input[name="alpha_case"]', context).is(':checked');
-      console.log(alpha_case);
       if (!alpha_case) {
         return Drupal.t('Not enforced');
       }
