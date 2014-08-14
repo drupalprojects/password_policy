@@ -25,7 +25,22 @@ function password_policy_constraint_history_error($constraint) {
  * Password validation.
  */
 function password_policy_constraint_history_validate($password, $constraint, $uid) {
-  return !in_array(md5($password), _password_policy_constraint_history_old_passwords($constraint, $uid));
+  $old_hashes = _password_policy_constraint_history_old_passwords($constraint, $uid);
+  if (module_exists('phpass')) {
+    module_load_include('inc', 'phpass', 'password');
+    $account = new stdClass();
+    foreach ($old_hashes as $old_hash) {
+      $account->pass = $old_hash;
+      if (user_check_password($password, $account)) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+  else {
+    $hash = md5($password);
+    return !in_array($hash, $old_hashes);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////
