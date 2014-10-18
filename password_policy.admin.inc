@@ -5,8 +5,9 @@
  * Admin page callback file for the password_policy module.
  */
 
-//////////////////////////////////////////////////////////////////////////////
-// Password policy admin settings
+/****************************************************************************/
+/* Password policy admin settings                                           */
+/****************************************************************************/
 
 /**
  * Settings form display.

@@ -5,8 +5,9 @@
  * Module admin page callbacks.
  */
 
-//////////////////////////////////////////////////////////////////////////////
-// Password policy password tab settings
+/****************************************************************************/
+/* Password policy password tab settings                                    */
+/****************************************************************************/
 
 /**
  * Implements the settings page.

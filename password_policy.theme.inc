@@ -4,8 +4,9 @@
  * Theme callback file for the password_policy module.
  */
 
-//////////////////////////////////////////////////////////////////////////////
-// Password policy admin themes
+/****************************************************************************/
+/* Password policy admin themes                                             */
+/****************************************************************************/
 
 /**
  * Custom theme for rendering a radio list of defined policies.
