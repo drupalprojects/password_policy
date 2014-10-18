@@ -271,8 +271,8 @@ function password_policy_admin_form($form_state, $policy = NULL) {
       '#size' => 5,
       '#default_value' => isset($policy['policy'][$constraint]) ? $policy['policy'][$constraint] : NULL,
       '#maxlength' => 2,
-      '#title' => $desc['name'],
-      '#description' => $desc['description'],
+      '#title' => filter_xss($desc['name']),
+      '#description' => filter_xss($desc['description']),
     );
   }
 
