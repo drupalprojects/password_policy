@@ -48,7 +48,7 @@ function password_policy_constraint_username_js($constraint, $uid) {
   }
   $s = '';
   if ($constraint) {
-    $s .= "  var username='". $account->name ."';\n";
+    $s .= "  var username='" . $account->name . "';\n";
     $s .= "  var username_lowercase=username.toLowerCase();\n";
     $s .= "  var password_lowercase=value.toLowerCase();\n";
     $s .= "  if (password_lowercase.indexOf(username_lowercase) != -1) {\n";
