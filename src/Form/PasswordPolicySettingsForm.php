@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\password_policy\Form;
+namespace Drupal\PasswordPolicy\Form;
 
 
 use Drupal\Core\Form\ConfigFormBase;
