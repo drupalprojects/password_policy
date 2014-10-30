@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\PasswordPolicy\Constraints\PasswordLength.
+ * Contains \Drupal\PasswordPolicyLength\Constraints\PasswordLength.
  */
 
 //TODO - Add in "tokens" into annotations (see: error message, which should show #chars from config)
 
-namespace Drupal\PasswordPolicy\Plugin\PasswordConstraint;
+namespace Drupal\PasswordPolicyLength\Plugin\PasswordConstraint;
 
 use Drupal\PasswordPolicy\PasswordConstraintInterface;
 
@@ -32,7 +32,7 @@ class PasswordLength implements PasswordConstraintInterface {
 	 *   Whether or not the password meets the constraint in the plugin.
 	 */
 	function validate($password) {
-		$config = $this->config('password_policy_length');
+		$config = $this->config('password_policy_length.settings');
 		if(strlen($password) < $config->get('character_length')) {
 			return FALSE;
 		}

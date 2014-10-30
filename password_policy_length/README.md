@@ -1,4 +1,6 @@
-password_policy
+password_policy_length
 ===============
 
-Password Policy Drupal Module
+Password Policy Length Drupal Module
+
+Implements a plugin for a Password Policy constraint
