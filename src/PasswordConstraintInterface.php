@@ -13,19 +13,12 @@ namespace Drupal\PasswordPolicy;
 interface PasswordConstraintInterface {
 
   /**
-   * Returns a render array to display when the pants are on.
-   *
-   * @return array
-   *   A render array.
+   * Returns a true/false status as to if the password meets the requirements of the constraint.
+   * @param password
+	 *   The password entered by the end user
+   * @return boolean
+   *   Whether or not the password meets the constraint in the plugin.
    */
-  public function viewPantsOn();
-
-  /**
-   * Returns a render array to display when the pants are off.
-   *
-   * @return array
-   *   A render array.
-   */
-  public function viewPantsOff();
+  public function validate($password);
 
 }

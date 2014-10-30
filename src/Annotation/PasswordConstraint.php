@@ -51,4 +51,11 @@ class PasswordConstraint extends Plugin {
 	 */
 	public $error_message;
 
+	/**
+	 * The path to the configuration screen.
+	 *
+	 * @var string
+	 */
+	public $config_path;
+
 }
