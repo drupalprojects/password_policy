@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\PasswordPolicy\PasswordConstraintManager.
+ * Contains \Drupal\PasswordPolicy\PasswordConstraintPluginManager.
  */
 
 namespace Drupal\PasswordPolicy;
