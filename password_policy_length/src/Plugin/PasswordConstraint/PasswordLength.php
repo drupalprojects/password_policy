@@ -2,14 +2,14 @@
 
 /**
  * @file
- * Contains \Drupal\PasswordPolicyLength\Constraints\PasswordLength.
+ * Contains Drupal\password_policy_length\Constraints\PasswordLength.
  */
 
 //TODO - Add in "tokens" into annotations (see: error message, which should show #chars from config)
 
-namespace Drupal\PasswordPolicyLength\Plugin\PasswordConstraint;
+namespace Drupal\password_policy_length\Plugin\PasswordConstraint;
 
-use Drupal\PasswordPolicy\PasswordConstraintInterface;
+use Drupal\password_policy\PasswordConstraintInterface;
 
 /**
  * Enforces a specific character length for passwords.

@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\PasswordPolicy\Annotation\PasswordConstraint.
+ * Contains Drupal\password_policy\Annotation\PasswordConstraint.
  */
 
-namespace Drupal\PasswordPolicy\Annotation;
+namespace Drupal\password_policy\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 

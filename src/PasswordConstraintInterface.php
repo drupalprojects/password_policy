@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\PasswordPolicy\PasswordConstraintInterface.
+ * Contains Drupal\password_policy\PasswordConstraintInterface.
  */
 
-namespace Drupal\PasswordPolicy;
+namespace Drupal\password_policy;
 
 /**
  * Defines the interface for pants types.

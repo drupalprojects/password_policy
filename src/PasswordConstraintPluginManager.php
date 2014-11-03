@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains Drupal\PasswordPolicy\PasswordConstraintPluginManager.
+ * Contains Drupal\password_policy\PasswordConstraintPluginManager.
  */
 
-namespace Drupal\PasswordPolicy;
+namespace Drupal\password_policy;
 
 use Drupal\Core\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -12,9 +12,9 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManager;
 
 
-class PasswordConstraintPluginManager extends DefaultPluginManager {
+class PasswordConstraintPluginManager extends \Drupal\Core\Plugin\DefaultPluginManager {
 	/**
-	 * Constructs a new PantsTypeManager.
+	 * Constructs a new PasswordConstraintPluginManager.
 	 *
 	 * @param \Traversable $namespaces
 	 *   An object that implements \Traversable which contains the root paths
@@ -25,7 +25,7 @@ class PasswordConstraintPluginManager extends DefaultPluginManager {
 	 *   The module handler.
 	 */
 	public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-		parent::__construct('Plugin/PasswordConstraint', $namespaces, $module_handler, 'Drupal\PasswordPolicy\PasswordConstraintInterface', 'Drupal\PasswordPolicy\Annotation\PasswordConstraint');
+		parent::__construct('Plugin/PasswordConstraint', $namespaces, $module_handler, 'Drupal\password_policy\PasswordConstraintInterface', 'Drupal\password_policy\Annotation\PasswordConstraint');
 		$this->alterInfo('password_policy_constraint_info');
 		$this->setCacheBackend($cache_backend, 'password_policy_constraint');
 	}
