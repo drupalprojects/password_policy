@@ -9,7 +9,7 @@
 
 namespace Drupal\password_policy_length\Plugin\PasswordConstraint;
 
-use Drupal\password_policy\PasswordConstraintInterface;
+use Drupal\password_policy\PasswordConstraintBase;
 
 /**
  * Enforces a specific character length for passwords.
@@ -17,12 +17,12 @@ use Drupal\password_policy\PasswordConstraintInterface;
  * @PasswordConstraint(
  *   id = "password_policy_length_constraint",
  *   title = @Translation("Password character length"),
- *   description = @Translation("Password character length"),
+ *   description = @Translation("Verifying that a password has a minimum character length"),
  *   error_message = @Translation("The length of your password is too short."),
  *   config_path = "admin/config/security/password/length"
  * )
  */
-class PasswordLength implements PasswordConstraintInterface {
+class PasswordLength extends PasswordConstraintBase {
 
 	/**
 	 * Returns a true/false status as to if the password meets the requirements of the constraint.
