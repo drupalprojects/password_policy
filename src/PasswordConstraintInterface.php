@@ -14,12 +14,14 @@ interface PasswordConstraintInterface {
 
   /**
    * Returns a true/false status as to if the password meets the requirements of the constraint.
+	 * @param policy_id
+	 *   The policy ID for the specific policy to verify
    * @param password
 	 *   The password entered by the end user
    * @return boolean
    *   Whether or not the password meets the constraint in the plugin.
    */
-  public function validate($password);
+  public function validate($policy_id, $password);
 
 	/**
 	 * Returns a translated string for the constraint title.
@@ -40,9 +42,15 @@ interface PasswordConstraintInterface {
 	public function getErrorMessage();
 
 	/**
-	 * Returns the configuration path for the constraint settings.
+	 * Returns the constraint's form ID to create a policy.
 	 * @return string
 	 */
-	public function getConfigPath();
+	public function getFormId();
+
+	/**
+	 * Returns the policies for the constraint.
+	 * @return array
+	 */
+	public function getPolicies();
 
 }

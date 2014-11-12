@@ -1,11 +1,12 @@
 <?php
 
-namespace Drupal\PasswordPolicy\Form;
+namespace Drupal\password_policy\Form;
 
 
-use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
 
-class PasswordPolicySettingsForm extends ConfigFormBase {
+class PasswordPolicySettingsForm extends FormBase {
 
 
 	/**
@@ -15,94 +16,62 @@ class PasswordPolicySettingsForm extends ConfigFormBase {
 		return 'password_policy_settings_form';
 	}
 
-	public function buildForm(array $form, array &$form_state) {
-		$config = $this->config('password_policy.settings');
+	public function buildForm(array $form, FormStateInterface $form_state) {
+		global $base_path;
+		//force password reset
 
-		$form = array();
-		$form['enable'] = array(
-			'#type' => 'radios',
-			'#title' => t('Enable Secure Pages'),
-			'#default_value' => $config->get('enable'),
-			'#options' => array(t('Disabled'), t('Enabled')),
-			// @TODO '#disabled' => !securepages_test(),
-			'#description' => t('To start using secure pages this setting must be enabled. This setting will only be able to changed when the web server has been configured for SSL.<br />If this test has failed then go <a href="!url">here</a>', array('!url' => preg_replace(';^http://;i', 'https://', url($_GET['q'], array('absolute' => TRUE))))),
-		);
-		$form['switch'] = array(
-			'#type' => 'checkbox',
-			'#title' => t('Switch back to http pages when there are no matches'),
-			'#return_value' => TRUE,
-			'#default_value' => $config->get('switch'),
+		//show each constraint and table of its policies
+		$form['constraints'] = array(
+			'#type' => 'vertical_tabs',
 		);
 
-		$form['basepath'] = array(
-			'#type' => 'textfield',
-			'#title' => t('Non-secure Base URL'),
-			'#default_value' => $config->get('basepath'),
-		);
+		$plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
+		$plugin_manager->getDefinitions();
+		$all_plugins = $plugin_manager->getDefinitions();
+		//loop over each constraint
+		$i = 0;
+		foreach($all_plugins as $plugin) {
+			//show name as item
+			$form['constraint'.$i] = array(
+				'#type' => 'fieldset',
+				'#title' => $plugin['title'],
+				'#group' => 'constraints'
+			);
 
-		$form['basepath_ssl'] = array(
-			'#type' => 'textfield',
-			'#title' => t('Secure Base URL'),
-			'#default_value' => $config->get('basepath_ssl'),
-		);
+			//show link to add policy
+			$form['constraint'.$i]['add_policy'] = array(
+				'#type' => 'item',
+				'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id']))
+			);
 
-		$form['secure'] = array(
-			'#type' => 'radios',
-			'#title' => t('Pages which will be be secure'),
-			'#default_value' => $config->get('secure'),
-			'#options' => array(t('Make secure every page except the listed pages.'), t('Make secure only the listed pages.')),
-		);
+			//show table of policies
+			$policy_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')->createInstance($plugin['id']);
+			$policy_rows = $policy_instance->getPolicies();
 
-		$form['pages'] = array(
-			'#type' => 'textarea',
-			'#title' => t('Pages'),
-			'#default_value' => $config->get('pages'),
-			'#cols' => 40,
-			'#rows' => 5,
-			'#description' => t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are '<em>blog</em>' for the main blog page and '<em>blog/*</em>' for every personal blog. '<em>&lt;front&gt;</em>' is the front page."),
-		);
-		$form['ignore'] = array(
-			'#type' => 'textarea',
-			'#title' => t('Ignore pages'),
-			'#default_value' => $config->get('ignore'),
-			'#cols' => 40,
-			'#rows' => 5,
-			'#description' => t("The pages listed here will be ignored and be either returned in http or https. Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are '<em>blog</em>' for the blog page and '<em>blog/*</em>' for every personal blog. '<em>&lt;front&gt;</em>' is the front page."),
-		);
+			$table_rows = array();
+			foreach($policy_rows as $policy_key => $policy_value){
+				$table_rows[] = array(
+					'label' => $policy_value,
+					'update' => t('<a href="@pathtopolicy">Update policy</a>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id'].'/'.$policy_key)),
+				);
+			}
 
-		$role_options = array();
-		$roles = user_roles(TRUE);
-		foreach ($roles as $role) {
-			$role_options[$role->id()] = $role->label();
+			$form['constraint'.$i]['available_policies'] = array(
+				'#title' => 'Available Policies',
+				'#type' => 'table',
+				'#header' => array(t('Policy Definition'), t('')),
+				'#empty' => t('There are no constraints for the selected user roles'),
+				'#weight' => '4',
+				'#rows' => $table_rows,
+			);
+
+			$i++;
 		}
-
-		$form['roles'] = array(
-			'#type' => 'checkboxes',
-			'#title' => 'User roles',
-			'#description' => t('Users with the chosen role(s) are always redirected to https, regardless of path rules.'),
-			'#options' => $role_options, //array_map('\Drupal\Core\Utility\String::checkPlain', $role_options),
-			'#default_value' => $config->get('roles'),
-		);
-		$form['forms'] = array(
-			'#type' => 'textarea',
-			'#title' => t('Secure forms'),
-			'#default_value' => $config->get('forms'),
-			'#cols' => 40,
-			'#rows' => 5,
-			'#description' => t('List of form ids which will have the https flag set to TRUE.'),
-		);
-		$form['debug'] = array(
-			'#type' => 'checkbox',
-			'#title' => t('Enable Debugging'),
-			'#default_value' => $config->get('debug'),
-			'#description' => t('Turn on debugging to allow easier testing of settings'),
-		);
-
-		return parent::buildForm($form, $form_state);
+		return $form;
 	}
 
-	public function submitForm(array &$form, array &$form_state) {
-		$config = $this->config('securepages.settings')
+	public function submitForm(array &$form, FormStateInterface $form_state) {
+		/*$config = $this->config('securepages.settings')
 			->set('enable', $form_state['values']['enable'])
 			->set('switch', $form_state['values']['switch'])
 			->set('basepath', $form_state['values']['basepath'])
@@ -116,6 +85,6 @@ class PasswordPolicySettingsForm extends ConfigFormBase {
 		$config->save();
 
 		parent::submitForm($form, $form_state);
-		drupal_set_message('foobar');
+		drupal_set_message('foobar');*/
 	}
 }

@@ -52,10 +52,10 @@ class PasswordConstraint extends Plugin {
 	public $error_message;
 
 	/**
-	 * The path to the configuration screen.
+	 * The form id for the policy form.
 	 *
 	 * @var string
 	 */
-	public $config_path;
+	public $form_id;
 
 }

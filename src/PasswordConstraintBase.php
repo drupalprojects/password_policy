@@ -16,7 +16,7 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
 	 * @return boolean
 	 *   Whether or not the password meets the constraint in the plugin.
 	 */
-	public function validate($password){
+	public function validate($policy_id, $password){
 		//all classes should plan to override this specific function, for now, just assume TRUE
 		return TRUE;
 	}
@@ -49,7 +49,15 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
 	 * Returns the configuration path for the constraint settings.
 	 * @return string
 	 */
-	public function getConfigPath(){
-		return $this->pluginDefinition['config_path'];
+	public function getFormId(){
+		return $this->pluginDefinition['form_id'];
+	}
+
+	/**
+	 * Returns an array of key value pairs.
+	 * @return array
+	 */
+	public function getPolicies(){
+		return array();
 	}
 }
