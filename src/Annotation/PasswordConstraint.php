@@ -52,10 +52,24 @@ class PasswordConstraint extends Plugin {
 	public $error_message;
 
 	/**
-	 * The form id for the policy form.
+	 * The path to the policy form.
 	 *
 	 * @var string
 	 */
-	public $form_id;
+	public $policy_path;
+
+	/**
+	 * The path to the policy update form. Note: MUST use token for the ID
+	 *
+	 * @var string
+	 */
+	public $policy_update_path;
+
+	/**
+	 * The token for the ID in the policy_update_path.
+	 *
+	 * @var string
+	 */
+	public $policy_update_token;
 
 }

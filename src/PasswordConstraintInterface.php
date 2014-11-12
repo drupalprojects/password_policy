@@ -42,10 +42,22 @@ interface PasswordConstraintInterface {
 	public function getErrorMessage();
 
 	/**
-	 * Returns the constraint's form ID to create a policy.
+	 * Returns the constraint's path to create a policy.
 	 * @return string
 	 */
-	public function getFormId();
+	public function getPolicyPath();
+
+	/**
+	 * Returns the constraint's path to update a policy.
+	 * @return string
+	 */
+	public function getPolicyUpdatePath();
+
+	/**
+	 * Returns the token for the identifier found in the update path.
+	 * @return string
+	 */
+	public function getPolicyUpdateToken();
 
 	/**
 	 * Returns the policies for the constraint.

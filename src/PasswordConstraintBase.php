@@ -46,11 +46,27 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
 	}
 
 	/**
-	 * Returns the configuration path for the constraint settings.
+	 * Returns the path for adding policies.
 	 * @return string
 	 */
-	public function getFormId(){
-		return $this->pluginDefinition['form_id'];
+	public function getPolicyPath(){
+		return $this->pluginDefinition['policy_path'];
+	}
+
+	/**
+	 * Returns the path for updating existing policies.
+	 * @return string
+	 */
+	public function getPolicyUpdatePath(){
+		return $this->pluginDefinition['policy_update_path'];
+	}
+
+	/**
+	 * Returns the token for the identifier in the update path.
+	 * @return string
+	 */
+	public function getPolicyUpdateToken(){
+		return $this->pluginDefinition['policy_update_token'];
 	}
 
 	/**

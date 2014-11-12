@@ -41,7 +41,9 @@ class PasswordPolicySettingsForm extends FormBase {
 			//show link to add policy
 			$form['constraint'.$i]['add_policy'] = array(
 				'#type' => 'item',
-				'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id']))
+				//NOTE: The implementation below assumes use of PasswordPolicyPolicyForm. I am going in a new direction due to issues with the form API
+				//'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id']))
+				'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.$plugin['policy_path']))
 			);
 
 			//show table of policies
@@ -52,7 +54,7 @@ class PasswordPolicySettingsForm extends FormBase {
 			foreach($policy_rows as $policy_key => $policy_value){
 				$table_rows[] = array(
 					'label' => $policy_value,
-					'update' => t('<a href="@pathtopolicy">Update policy</a>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id'].'/'.$policy_key)),
+					'update' => t('<a href="'.$base_path.$plugin['policy_update_path'].'">Update policy</a>', array($plugin['policy_update_token']=>$policy_key)),
 				);
 			}
 

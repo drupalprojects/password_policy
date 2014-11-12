@@ -21,13 +21,26 @@ class PasswordPolicyLengthSettingsForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function buildForm(array $form, FormStateInterface $form_state) {
-		//$config = \Drupal::config('password_policy_length.settings');
-
 		$form = array();
+
+		//get plugin
+		$policy_id = '';
+		$path_args = explode('/', current_path());
+		if(count($path_args)==7) {
+			$policy_id = $path_args[6];
+			//load the policy
+			$policy = db_select('password_policy_length_policies', 'p')->fields('p')->condition('pid', $policy_id)->execute()->fetchObject();
+		}
+
+		$form['pid'] = array(
+			'#type' => 'hidden',
+			'#value' => (is_numeric($policy_id))?$policy_id:'',
+		);
+
 		$form['character_length'] = array(
 			'#type' => 'textfield',
 			'#title' => t('Number of characters'),
-			//'#default_value' => $config->get('character_length'),
+			'#default_value' => (is_numeric($policy_id))?$policy->character_length:'',
 		);
 
 		$form['submit'] = array(
@@ -46,16 +59,24 @@ class PasswordPolicyLengthSettingsForm extends FormBase {
 		if(!is_numeric($form_state->getValue('character_length')) or $form_state->getValue('character_length')<0) {
 			$form_state->setErrorByName('character_length', $this->t('The character length must be a positive number.'));
 		}
+		//TODO - Add validation for unique number
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function submitForm(array &$form, FormStateInterface $form_state) {
-		db_insert('password_policy_length_policies')
-			->fields(array('character_length'))
-			->values(array('character_length'=>$form_state->getValue('character_length')))
-			->execute();
+		if($form_state->getValue('pid')) {
+			db_update('password_policy_length_policies')
+				->fields(array('character_length' => $form_state->getValue('character_length')))
+				->condition('pid', $form_state->getValue('pid'))
+				->execute();
+		} else {
+			db_insert('password_policy_length_policies')
+				->fields(array('character_length'))
+				->values(array('character_length' => $form_state->getValue('character_length')))
+				->execute();
+		}
 		drupal_set_message('Password length settings have been stored');
 	}
 }

@@ -20,7 +20,9 @@ use Drupal\Core\Config\Config;
  *   title = @Translation("Password character length"),
  *   description = @Translation("Verifying that a password has a minimum character length"),
  *   error_message = @Translation("The length of your password is too short."),
- *   form_id = "Drupal\password_policy_length\Form\PasswordPolicyLengthSettingsForm"
+ *   policy_path = "admin/config/security/password/constraint/length",
+ *   policy_update_path = "admin/config/security/password/constraint/length/@pid",
+ *   policy_update_token = "@pid"
  * )
  */
 class PasswordLength extends PasswordConstraintBase {
