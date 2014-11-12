@@ -16,15 +16,18 @@ class PasswordConstraintPermissions {
 		//create a perm per plugin
 		foreach ($plugins as $plugin) {
 			//dpm($plugin);
-			//$plugin_instance = $plugin_manager::createInstance($plugin->id);
+			$plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')->createInstance($plugin['id']);
+
+			$policies = $plugin_instance->getPolicies();
 
 			//dpm($plugin_instance);
-
-			$permission = 'enforce ' . $plugin->id . ' constraint';
-			$permissions[$permission] = [
-				'title' => 'Enforce constraint: ' . $plugin['title'],
-				'description' => $plugin['description'],
-			];
+			foreach($policies as $policy_key => $policy_text) {
+				$permission = 'enforce ' . $plugin['id'] . '.'.$policy_key.' constraint';
+				$permissions[$permission] = [
+					'title' => 'Apply password policy: '.$policy_text,
+					'description' => $plugin['description'],
+				];
+			}
 		}
 		return $permissions;
 	}

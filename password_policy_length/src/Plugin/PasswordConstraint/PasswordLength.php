@@ -38,7 +38,7 @@ class PasswordLength extends PasswordConstraintBase {
 		$policy = db_select('password_policy_length_policies', 'p')
 			->fields('p');
 
-		$policy = $policy->condition('', $policy_id)
+		$policy = $policy->condition('pid', $policy_id)
 			->execute()
 			->fetch();
 
