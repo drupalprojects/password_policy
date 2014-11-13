@@ -83,9 +83,11 @@ class PasswordPolicySettingsForm extends FormBase {
 			$role_options[$role->id()] = $role->label();
 		}
 
+		//TODO - Make this a confirm form
 		$form['password_reset']['fs2']['roles'] = array(
 			'#type' => 'checkboxes',
 			'#title' => 'User roles',
+			'#required' => TRUE,
 			'#options' => $role_options,
 		);
 
@@ -148,5 +150,41 @@ class PasswordPolicySettingsForm extends FormBase {
 	}
 
 	public function submitForm(array &$form, FormStateInterface $form_state) {
+		//$roles = $form_state->getValue(array('password_reset', 'fs2', 'roles'));
+		$roles = $form_state->getValue('roles');
+		dpm($roles);
+		foreach($roles as $role_key => $role_value){
+			if($role_value) {
+				//get role users, gotta be a cleaner way to do this
+				$users = array();
+				if($role_value=='authenticated') { //get all users
+					$user_rows = db_select('users', 'u')
+						->fields('u', array('uid'))
+						->execute()
+						->fetchAll();
+				} else { //role specific
+					$user_rows = db_select('users_roles', 'ur')
+						->fields('ur', array('uid'))
+						->condition('rid', $role_key)
+						->execute()
+						->fetchAll();
+				}
+
+				foreach ($user_rows as $user_row) {
+					dpm($user_row);
+					$users[] = $user_row->uid;
+				}
+
+				if (count($users)) {
+					//run db update
+					db_update('password_policy_user_reset')
+						->fields(array('expired' => '1', 'timestamp' => time()))
+						->condition('uid', $users, 'IN')
+						->execute();
+				}
+			}
+		}
+
+		drupal_set_message('The users of the selected roles will be forced to reset their passwords');
 	}
 }
