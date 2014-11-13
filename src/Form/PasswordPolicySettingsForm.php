@@ -31,7 +31,9 @@ class PasswordPolicySettingsForm extends FormBase {
 		);
 
 
-		//force password reset
+		/**
+		 * PASSWORD RESET
+		 */
 		$form['password_reset'] = array(
 			'#type' => 'details',
 			'#title' => 'Password reset',
@@ -39,16 +41,18 @@ class PasswordPolicySettingsForm extends FormBase {
 			'#group' => 'constraints'
 		);
 
+		//fieldset 1 will be for the policies
 		$form['password_reset']['fs1'] = array(
 			'#type' => 'fieldset',
 			'#title' => 'Policies',
 		);
-
+		//add a new reset policy
 		$form['password_reset']['fs1']['add_link'] = array(
 			'#type' => 'item',
 			'#markup' => t('<p><a href="@resetpath">Add password reset policy</a></p>', array('@resetpath'=>$base_path.'admin/config/security/password/policy/reset')),
 		);
 
+		//list reset policies
 		$table_rows = array();
 		$policy_rows = db_select("password_policy_reset", 'p')->fields('p')->execute()->fetchAll();
 		foreach($policy_rows as $policy_object){
@@ -67,10 +71,32 @@ class PasswordPolicySettingsForm extends FormBase {
 			'#rows' => $table_rows,
 		);
 
+		//manual password reset form
 		$form['password_reset']['fs2'] = array(
 			'#type' => 'fieldset',
 			'#title' => 'Manual Password Reset',
 		);
+
+		$role_options = array();
+		$roles = user_roles(TRUE);
+		foreach ($roles as $role) {
+			$role_options[$role->id()] = $role->label();
+		}
+
+		$form['password_reset']['fs2']['roles'] = array(
+			'#type' => 'checkboxes',
+			'#title' => 'User roles',
+			'#options' => $role_options,
+		);
+
+		$form['password_reset']['fs2']['submit'] = array(
+			'#type' => 'submit',
+			'#value' => 'Force password reset now'
+		);
+
+		/**
+		 * CONSTRAINTS / PLUGINS
+		 */
 
 		//constraint plugins
 		$plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
