@@ -8,6 +8,24 @@ namespace Drupal\password_policy;
 class PasswordConstraintPermissions {
 	public function permissions() {
 		$permissions = [];
+		/**
+		 * PERMISSIONS DEFINED FROM PASSWORD RESET
+		 */
+		$policies = db_select('password_policy_reset', 'ppr')
+			->fields('ppr', array())
+			->execute()
+			->fetchAll();
+		foreach($policies as $policy) {
+			$permission = 'enforce password_reset.'.$policy->pid.' constraint';
+			$permissions[$permission] = [
+				'title' => 'Apply password reset policy: Reset after '.$policy->number_of_days.' days',
+				'description' => 'All passwords will be automatically forced to reset after the specified number of days',
+			];
+		}
+
+		/**
+		 * PERMISSIONS DEFINED FROM PLUGINS
+		 */
 		//load plugins
 		$plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
 		//dpm($plugin_manager);
