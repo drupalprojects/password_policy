@@ -42,7 +42,6 @@ class PasswordPolicySettingsForm extends FormBase {
 		$form['password_reset']['fs1'] = array(
 			'#type' => 'fieldset',
 			'#title' => 'Policies',
-			'#description' => 'Configure password reset policies',
 		);
 
 		$form['password_reset']['fs1']['add_link'] = array(
@@ -50,10 +49,27 @@ class PasswordPolicySettingsForm extends FormBase {
 			'#markup' => t('<p><a href="@resetpath">Add password reset policy</a></p>', array('@resetpath'=>$base_path.'admin/config/security/password/policy/reset')),
 		);
 
+		$table_rows = array();
+		$policy_rows = db_select("password_policy_reset", 'p')->fields('p')->execute()->fetchAll();
+		foreach($policy_rows as $policy_object){
+			$table_rows[] = array(
+				'label' => t('Password reset after @days days', array('@days'=>$policy_object->number_of_days)),
+				'update' => t('<a href="@resetupdatepath">Update policy</a>', array('@resetupdatepath'=>$base_path.'admin/config/security/password/policy/reset/'.$policy_object->pid)),
+			);
+		}
+
+		$form['password_reset']['fs1']['policy_rows'] = array(
+			'#title' => 'Available Policies',
+			'#type' => 'table',
+			'#header' => array(t('Policy Definition'), t('')),
+			'#empty' => t('There are no policies defined for this constraint'),
+			'#weight' => '4',
+			'#rows' => $table_rows,
+		);
+
 		$form['password_reset']['fs2'] = array(
 			'#type' => 'fieldset',
-			'#title' => 'Force Password Reset',
-			'#description' => 'Manually reset passwords',
+			'#title' => 'Manual Password Reset',
 		);
 
 		//constraint plugins
@@ -95,7 +111,7 @@ class PasswordPolicySettingsForm extends FormBase {
 				'#title' => 'Available Policies',
 				'#type' => 'table',
 				'#header' => array(t('Policy Definition'), t('')),
-				'#empty' => t('There are no constraints for the selected user roles'),
+				'#empty' => t('There are no policies defined for this constraint'),
 				'#weight' => '4',
 				'#rows' => $table_rows,
 			);

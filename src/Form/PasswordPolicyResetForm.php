@@ -52,7 +52,8 @@ class PasswordPolicyResetForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function validateForm(array &$form, FormStateInterface $form_state) {
-		if(!is_int($form_state->getValue('number_of_days')) or $form_state->getValue('number_of_days')<=0) {
+		$days = $form_state->getValue('number_of_days');
+		if(!is_numeric($days) or $days<=0) {
 			$form_state->setErrorByName('number_of_days', $this->t('The number of days must be a positive integer.'));
 		}
 		//TODO - Add validation for unique number
