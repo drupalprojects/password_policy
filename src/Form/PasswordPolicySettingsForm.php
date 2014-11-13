@@ -18,13 +18,40 @@ class PasswordPolicySettingsForm extends FormBase {
 
 	public function buildForm(array $form, FormStateInterface $form_state) {
 		global $base_path;
-		//force password reset
+
+		$form['introduction'] = array(
+			'#type' => 'item',
+			'#markup' => '<p>Password policies are defined through each constraint. A policy is an instance of the constraint. Click on the tab for the constraint below to create policies.</p><p>To apply the policies, go to the permissions page and select the roles to apply to the policy.</p>',
+		);
 
 		//show each constraint and table of its policies
 		$form['constraints'] = array(
 			'#type' => 'vertical_tabs',
+			'#title' => 'Constraints & Policies',
 		);
 
+
+		//force password reset
+		$form['password_reset'] = array(
+			'#type' => 'details',
+			'#title' => 'Password reset',
+			'#description' => '',
+			'#group' => 'constraints'
+		);
+
+		$form['password_reset']['fs1'] = array(
+			'#type' => 'fieldset',
+			'#title' => 'Policies',
+			'#description' => 'Configure password reset policies',
+		);
+
+		$form['password_reset']['fs2'] = array(
+			'#type' => 'fieldset',
+			'#title' => 'Force Password Reset',
+			'#description' => 'Manually reset passwords',
+		);
+
+		//constraint plugins
 		$plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
 		$plugin_manager->getDefinitions();
 		$all_plugins = $plugin_manager->getDefinitions();
@@ -33,8 +60,9 @@ class PasswordPolicySettingsForm extends FormBase {
 		foreach($all_plugins as $plugin) {
 			//show name as item
 			$form['constraint'.$i] = array(
-				'#type' => 'fieldset',
+				'#type' => 'details',
 				'#title' => $plugin['title'],
+				'#description' => $plugin['description'],
 				'#group' => 'constraints'
 			);
 
@@ -43,7 +71,7 @@ class PasswordPolicySettingsForm extends FormBase {
 				'#type' => 'item',
 				//NOTE: The implementation below assumes use of PasswordPolicyPolicyForm. I am going in a new direction due to issues with the form API
 				//'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id']))
-				'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.$plugin['policy_path']))
+				'#markup' => t('<a href="@pathtopolicy">Add a new policy for this constraint</a>', array('@pathtopolicy'=>$base_path.$plugin['policy_path']))
 			);
 
 			//show table of policies
@@ -73,20 +101,5 @@ class PasswordPolicySettingsForm extends FormBase {
 	}
 
 	public function submitForm(array &$form, FormStateInterface $form_state) {
-		/*$config = $this->config('securepages.settings')
-			->set('enable', $form_state['values']['enable'])
-			->set('switch', $form_state['values']['switch'])
-			->set('basepath', $form_state['values']['basepath'])
-			->set('basepath_ssl', $form_state['values']['basepath_ss;'])
-			->set('pages', $form_state['values']['pages'])
-			->set('ignore', $form_state['values']['ignore'])
-			->set('roles', $form_state['values']['roles'])
-			->set('forms', $form_state['values']['forms'])
-			->set('debug', $form_state['values']['debug']);
-
-		$config->save();
-
-		parent::submitForm($form, $form_state);
-		drupal_set_message('foobar');*/
 	}
 }
