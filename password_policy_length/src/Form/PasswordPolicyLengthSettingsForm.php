@@ -23,7 +23,7 @@ class PasswordPolicyLengthSettingsForm extends FormBase {
 	public function buildForm(array $form, FormStateInterface $form_state) {
 		$form = array();
 
-		//get plugin
+		//get policy
 		$policy_id = '';
 		$path_args = explode('/', current_path());
 		if(count($path_args)==7) {

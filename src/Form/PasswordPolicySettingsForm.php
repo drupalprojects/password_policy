@@ -45,6 +45,11 @@ class PasswordPolicySettingsForm extends FormBase {
 			'#description' => 'Configure password reset policies',
 		);
 
+		$form['password_reset']['fs1']['add_link'] = array(
+			'#type' => 'item',
+			'#markup' => t('<p><a href="@resetpath">Add password reset policy</a></p>', array('@resetpath'=>$base_path.'admin/config/security/password/policy/reset')),
+		);
+
 		$form['password_reset']['fs2'] = array(
 			'#type' => 'fieldset',
 			'#title' => 'Force Password Reset',
