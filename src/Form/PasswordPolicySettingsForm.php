@@ -152,7 +152,6 @@ class PasswordPolicySettingsForm extends FormBase {
 	public function submitForm(array &$form, FormStateInterface $form_state) {
 		//$roles = $form_state->getValue(array('password_reset', 'fs2', 'roles'));
 		$roles = $form_state->getValue('roles');
-		dpm($roles);
 		foreach($roles as $role_key => $role_value){
 			if($role_value) {
 				//get role users, gotta be a cleaner way to do this
@@ -171,7 +170,6 @@ class PasswordPolicySettingsForm extends FormBase {
 				}
 
 				foreach ($user_rows as $user_row) {
-					dpm($user_row);
 					$users[] = $user_row->uid;
 				}
 
