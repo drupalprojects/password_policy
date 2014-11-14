@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\Core\Routing\CurrentRouteMatch;
+use Symfony\Cmf\Component\Routing\RouteObjectInterface;
 
 class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
 
@@ -20,9 +20,10 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
 	public function checkForUserPasswordExpiration(GetResponseEvent $event) {
 		$account = \Drupal::currentUser();
 		$uid = $account->id();
-		$request = \Drupal::request();
-		//dpm($uid);
-		if ($uid and CurrentRouteMatch::) {
+		$route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
+
+		//TODO - Consider excluding admins here
+		if ($uid and $route_name!='entity.user.edit_form') {
 			//TODO - Implement caching for expiration, this should be a cache.get around uid in lieu of db hit
 			$expired_user = db_select("password_policy_user_reset", 'p')
 				->fields('p', array())
@@ -32,7 +33,9 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
 
 			if($expired_user->fetch()){
 				$url = new Url('entity.user.edit_form', array('user'=>$uid));
+				$url = $url->toString();
 				$event->setResponse(new RedirectResponse($url));
+				drupal_set_message('Your password has expired, please update it', 'error');
 			}
 		}
 	}
