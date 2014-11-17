@@ -22,8 +22,15 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
 		$uid = $account->id();
 		$route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
 
+		///system/ajax
+		$ignored_routes = array(
+			'entity.user.edit_form',
+			'system.ajax',
+		);
+
+
 		//TODO - Consider excluding admins here
-		if ($uid and $route_name!='entity.user.edit_form') {
+		if ($uid and !in_array($route_name, $ignored_routes)) {
 			//TODO - Implement caching for expiration, this should be a cache.get around uid in lieu of db hit
 			$expired_user = db_select("password_policy_user_reset", 'p')
 				->fields('p', array())
