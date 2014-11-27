@@ -22,7 +22,7 @@ Drupal.behaviors.passwordOverride = {
           return;
         }
         e.stopImmediatePropagation();
-        prefix = Drupal.settings.passwordPolicy.cleanUrl ? '?q=' : '';
+        prefix = Drupal.settings.passwordPolicy.cleanUrl ? '' : '?q=';
         $.post(
           Drupal.settings.basePath + prefix + 'password_policy/check',
           { password: encodeURIComponent(passwordInput.val()) },
