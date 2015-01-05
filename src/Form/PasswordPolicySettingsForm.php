@@ -59,7 +59,7 @@ class PasswordPolicySettingsForm extends FormBase {
 			$table_rows[] = array(
 				'label' => t('Password reset after @days days', array('@days'=>$policy_object->number_of_days)),
 				'update' => t('<a href="@resetupdatepath">Update policy</a>', array('@resetupdatepath'=>$base_path.'admin/config/security/password-policy/reset/'.$policy_object->pid)),
-				'delete' => t('<a onclick="if(confirm(\'Are you sure you wish to delete this policy?\')){ location.href=\'@resetdeletepath\'; }">Delete policy</a>', array('@deletepath'=>$base_path.'admin/config/security/password-policy/reset/delete'.$policy_object->pid)),
+				'delete' => t('<a href="@resetdeletepath">Delete policy</a>', array('@resetdeletepath'=>$base_path.'admin/config/security/password-policy/reset/delete/'.$policy_object->pid)),
 			);
 		}
 

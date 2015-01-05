@@ -24,7 +24,7 @@ class PasswordPolicyResetForm extends FormBase {
 		//get policy
 		$policy_id = '';
 		$path_args = explode('/', current_path());
-		if(count($path_args)==7) {
+		if(count($path_args)==7 and is_numeric($path_args[6])) {
 			$policy_id = $path_args[6];
 			//load the policy
 			$policy = db_select('password_policy_reset', 'p')->fields('p')->condition('pid', $policy_id)->execute()->fetchObject();
@@ -75,5 +75,7 @@ class PasswordPolicyResetForm extends FormBase {
 				->execute();
 		}
 		drupal_set_message('Your policy has been added');
+		$form_state->setRedirect('password_policy.settings');
+		//TODO - Consider removal of permissions here
 	}
 }
