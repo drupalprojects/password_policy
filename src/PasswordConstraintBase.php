@@ -76,4 +76,38 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
 	public function getPolicies(){
 		return array();
 	}
+
+	/**
+	 * Deletes the specific policy.
+	 * @return boolean
+	 */
+	public function deletePolicy($policy_id){
+		return TRUE;
+	}
+
+	/**
+	 * Check if the specific policy id exists.
+	 * @return boolean
+	 */
+	public function policyExists($policy_id){
+		return FALSE;
+	}
+
+	/**
+	 * Returns the title of the policy.
+	 * @return string
+	 */
+	public function getPolicy($policy_id)
+	{
+		return NULL;
+	}
+
+	/**
+	 * Returns the constraint's form ID to create a policy.
+	 * @return string
+	 */
+	public function getFormId()
+	{
+		// TODO: Implement getFormId() method.
+	}
 }

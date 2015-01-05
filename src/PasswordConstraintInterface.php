@@ -65,4 +65,23 @@ interface PasswordConstraintInterface {
 	 */
 	public function getPolicies();
 
+	/**
+	 * Returns the policy for the constraint.
+	 * @return string
+	 */
+	//TODO - This should be an object returned
+	public function getPolicy($policy_id);
+
+	/**
+	 * Deletes the specific policy.
+	 * @return boolean
+	 */
+	public function deletePolicy($policy_id);
+
+	/**
+	 * Check the specific policy id exists.
+	 * @return boolean
+	 */
+	public function policyExists($policy_id);
+
 }

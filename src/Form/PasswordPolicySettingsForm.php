@@ -49,7 +49,7 @@ class PasswordPolicySettingsForm extends FormBase {
 		//add a new reset policy
 		$form['password_reset']['fs1']['add_link'] = array(
 			'#type' => 'item',
-			'#markup' => t('<p><a href="@resetpath">Add password reset policy</a></p>', array('@resetpath'=>$base_path.'admin/config/security/password/policy/reset')),
+			'#markup' => t('<p><a href="@resetaddpath">Add password reset policy</a></p>', array('@resetaddpath'=>$base_path.'admin/config/security/password-policy/reset')),
 		);
 
 		//list reset policies
@@ -58,14 +58,15 @@ class PasswordPolicySettingsForm extends FormBase {
 		foreach($policy_rows as $policy_object){
 			$table_rows[] = array(
 				'label' => t('Password reset after @days days', array('@days'=>$policy_object->number_of_days)),
-				'update' => t('<a href="@resetupdatepath">Update policy</a>', array('@resetupdatepath'=>$base_path.'admin/config/security/password/policy/reset/'.$policy_object->pid)),
+				'update' => t('<a href="@resetupdatepath">Update policy</a>', array('@resetupdatepath'=>$base_path.'admin/config/security/password-policy/reset/'.$policy_object->pid)),
+				'delete' => t('<a onclick="if(confirm(\'Are you sure you wish to delete this policy?\')){ location.href=\'@resetdeletepath\'; }">Delete policy</a>', array('@deletepath'=>$base_path.'admin/config/security/password-policy/reset/delete'.$policy_object->pid)),
 			);
 		}
 
 		$form['password_reset']['fs1']['policy_rows'] = array(
 			'#title' => 'Available Policies',
 			'#type' => 'table',
-			'#header' => array(t('Policy Definition'), t('')),
+			'#header' => array(t('Policy Definition'), t(''), t('')),
 			'#empty' => t('There are no policies defined for this constraint'),
 			'#weight' => '4',
 			'#rows' => $table_rows,
@@ -132,13 +133,14 @@ class PasswordPolicySettingsForm extends FormBase {
 				$table_rows[] = array(
 					'label' => $policy_value,
 					'update' => t('<a href="'.$base_path.$plugin['policy_update_path'].'">Update policy</a>', array($plugin['policy_update_token']=>$policy_key)),
+					'delete' => t('<a href="@deletepolicy">Delete policy</a>', array('@deletepolicy'=>$base_path.'admin/config/security/password-policy/delete-policy/'.$plugin['id'].'/'.$policy_key)),
 				);
 			}
 
 			$form['constraint'.$i]['available_policies'] = array(
 				'#title' => 'Available Policies',
 				'#type' => 'table',
-				'#header' => array(t('Policy Definition'), t('')),
+				'#header' => array(t('Policy Definition'), t(''), t('')),
 				'#empty' => t('There are no policies defined for this constraint'),
 				'#weight' => '4',
 				'#rows' => $table_rows,
@@ -150,7 +152,6 @@ class PasswordPolicySettingsForm extends FormBase {
 	}
 
 	public function submitForm(array &$form, FormStateInterface $form_state) {
-		//$roles = $form_state->getValue(array('password_reset', 'fs2', 'roles'));
 		$roles = $form_state->getValue('roles');
 		foreach($roles as $role_key => $role_value){
 			if($role_value) {

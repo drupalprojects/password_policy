@@ -65,4 +65,58 @@ class PasswordLength extends PasswordConstraintBase {
 		}
 		return $array;
 	}
+
+	/**
+	 * Deletes the specific policy.
+	 * @return boolean
+	 */
+	public function deletePolicy($policy_id){
+
+		$result = db_delete('password_policy_length_policies')
+			->condition('pid', $policy_id)
+			->execute();
+
+		if($result){
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	/**
+	 * Check the specific policy exists.
+	 * @return boolean
+	 */
+	public function policyExists($policy_id){
+
+		$result = db_select('password_policy_length_policies', 'p')
+			->fields('p')
+			->condition('pid', $policy_id)
+			->execute()
+		  ->fetchAll();
+
+		if(count($result)>0){
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	/**
+	 * Return the specific policy exists.
+	 * @return string
+	 */
+	public function getPolicy($policy_id){
+
+		$result = db_select('password_policy_length_policies', 'p')
+			->fields('p')
+			->condition('pid', $policy_id)
+			->execute()
+			->fetchAll();
+
+		if(count($result)>0){
+			$obj = $result->fetchObject();
+
+			return 'Minimum character length ' . $obj->character_length;
+		}
+		return FALSE;
+	}
 }
