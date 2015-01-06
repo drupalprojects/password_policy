@@ -11,6 +11,7 @@ namespace Drupal\password_policy_length\Plugin\PasswordConstraint;
 
 use Drupal\password_policy\PasswordConstraintBase;
 use Drupal\Core\Config\Config;
+use Drupal\password_policy\PasswordPolicyValidation;
 
 /**
  * Enforces a specific character length for passwords.
@@ -42,10 +43,12 @@ class PasswordLength extends PasswordConstraintBase {
 			->execute()
 			->fetch();
 
+		$validation = new PasswordPolicyValidation();
+
 		if(strlen($password) < $policy->character_length) {
-			return FALSE;
+			$validation->setErrorMessage('The length of the password is '.strlen($password).' characters, which is less than the '.$policy->character_length.' characters of the policy');
 		}
-		return TRUE;
+		return $validation;
 	}
 
 	/**

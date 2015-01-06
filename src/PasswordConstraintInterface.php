@@ -21,6 +21,7 @@ interface PasswordConstraintInterface {
    * @return boolean
    *   Whether or not the password meets the constraint in the plugin.
    */
+	//TODO - Remove this, put in policy
   public function validate($policy_id, $password);
 
 	/**
@@ -39,12 +40,14 @@ interface PasswordConstraintInterface {
 	 * Returns a translated error message for the constraint.
 	 * @return string
 	 */
+	//TODO - Remove this, put in policy
 	public function getErrorMessage();
 
 	/**
 	 * Returns the constraint's path to create a policy.
 	 * @return string
 	 */
+	//TODO - Rename this to "getPolicyCreatePath"
 	public function getPolicyPath();
 
 	/**
@@ -69,7 +72,7 @@ interface PasswordConstraintInterface {
 	 * Returns the policy for the constraint.
 	 * @return string
 	 */
-	//TODO - This should be an object returned
+	//TODO - This should be a PasswordPolicyBase object returned
 	public function getPolicy($policy_id);
 
 	/**
