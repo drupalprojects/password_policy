@@ -15,10 +15,14 @@ use Drupal\simpletest\WebTestBase;
  * @group password_policy
  */
 class PasswordResetPolicy extends WebTestBase {
+
+	public static $modules = array('password_policy', 'node');
+
+	/**
+	 * Run any setup required.
+	 */
 	function setUp(){
 		parent::setUp();
-
-		$this->drupalModuleEnable('password_policy');
 	}
 
 	/**
@@ -30,6 +34,15 @@ class PasswordResetPolicy extends WebTestBase {
 		$user1 = $this->drupalCreateUser(array('administer site configuration'));
 		$this->drupalLogin($user1);
 
+		// Assert that user row was created and unexpired
+		$user_expiration = db_select("password_policy_user_reset", "ur")
+			->fields("ur", array())
+			->condition('uid', $user1->id())
+			->execute()
+			->fetchObject();
+
+		$this->assertNotNull($user_expiration, 'User expiration record was not created after user add');
+
 		// Create new password reset policy.
 		$edit = array();
 		$edit['number_of_days'] = '10';
@@ -39,39 +52,38 @@ class PasswordResetPolicy extends WebTestBase {
 		$id = db_select("password_policy_reset", 'p')
 			->fields('p', array('pid'))
 			->orderBy('p.pid', 'DESC')
-			->range(1, 1)
 			->execute()
 			->fetchObject();
 
 		// Create user with permission to create policy.
-		$user1 = $this->drupalCreateUser(array('enforce password_reset.'.$id->pid.' constraint'));
+		$user2 = $this->drupalCreateUser(array('enforce password_reset.'.$id->pid.' constraint'));
+		$uid = $user2->id();
 
-		// Assert that user row was created and unexpired
-		$user_expiration = db_select("password_policy_user_reset")
-			->condition('uid', $user1->id())
-			->execute()
-			->fetchObject();
-
-		$this->assertNotNull($user_expiration, 'User expiration record was not created after user add');
+		$this->verbose('USER ID =>'.$uid);
 
 		// Run cron to rebuild reset tables.
 		$this->cronRun();
 
 		// Assert that user row was created and unexpired
-		$user_expiration = db_select("password_policy_user_reset")
-			->condition('uid', $user1->id())
+		$user_expiration = db_select("password_policy_user_reset", 'ur')
+			->fields('ur', array())
+			->condition('ur.uid', $uid)
 			->execute()
 			->fetchObject();
+
+		//DEBUGGING
+		$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
 
 		$this->assertFalse($user_expiration->expired, 'User password was improperly expired after CRON and user creation');
 
 		// Verify user can access any page.
-		$this->drupalLogin($user1);
+		$this->drupalLogin($user2);
+
 
 		// Expire password.
 		db_update("password_policy_user_reset")
-			->fields(array('timestamp'=>strtotime("-5 days")))
-			->condition('uid', $user1->id())
+			->fields(array('timestamp'=>strtotime("-15 days")))
+			->condition('uid', $uid)
 			->execute();
 
 		// Log out.
@@ -81,37 +93,57 @@ class PasswordResetPolicy extends WebTestBase {
 		$this->cronRun();
 
 		// Ensure table has expired.
-		$user_expiration = db_select("password_policy_user_reset")
-			->condition('uid', $user1->id())
+		$user_expiration = db_select("password_policy_user_reset", 'ur')
+			->fields('ur', array())
+			->condition('ur.uid', $uid)
 			->execute()
 			->fetchObject();
+
+		//DEBUGGING
+		$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
 
 		$this->assertTrue($user_expiration->expired, 'CRON did not expire the user');
 
 		// Verify user is forced to go to their edit form
-		$this->drupalLogin($user1);
-		$this->assertPath("user/" . $user1->id() . "/edit");
+		$this->drupalLogin($user2);
+		$this->assertUrl("user/" . $uid . "/edit");
 
-		// Create a new node
-		$this->drupalCreateContentType(array('type'=>'foo'));
-		$this->drupalCreateNode(array('type'=>'foo', 'path'=>'foo/bar'));
+		// Create a new node type.
+		$type1 = $this->drupalCreateContentType();
+		// Create a node of that type.
+		$node_title = $this->randomMachineName();
+		$node_body = $this->randomMachineName();
+		$edit = array(
+			'type' => $type1->type,
+			'title' => $node_title,
+			'body' => array(array('value' => $node_body)),
+			'langcode' => 'en',
+		);
+		$node = $this->drupalCreateNode($edit);
 
-		// Verify if user tries to go to node, they are forced back
-		$this->drupalGet('foo/bar');
-		$this->assertUrl("user/" . $user1->id() . "/edit");
+		// Verify if user tries to go to node, they are forced back.
+		$this->drupalGet($node->url());
+		$this->assertUrl("user/" . $uid . "/edit");
 
 		// Change password.
 		$edit = array();
 		$edit['pass'] = '1';
-		$this->drupalPostForm("user/" . $user1->id() . "/edit", $edit, t('Save'));
+		$edit['current_pass'] = $user2->pass_raw;
+		$this->drupalPostForm("user/" . $uid . "/edit", $edit, t('Save'));
 
 		// Verify expiration is unset.
-		$user_expiration = db_select("password_policy_user_reset")
-			->condition('uid', $user1->id())
+		$user_expiration = db_select("password_policy_user_reset", 'ur')
+			->fields('ur', array())
+			->condition('ur.uid', $uid)
 			->execute()
 			->fetchObject();
 
 		$this->assertFalse($user_expiration->expired, 'User password was still expired after update');
+
+
+		// Verify if user tries to go to node, they are allowed.
+		$this->drupalGet($node->url());
+		$this->assertUrl($node->url());
 
 
 
