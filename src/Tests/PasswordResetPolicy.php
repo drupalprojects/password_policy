@@ -29,6 +29,7 @@ class PasswordResetPolicy extends WebTestBase {
 	 * Test password reset behaviors.
 	 */
 	function testPasswordResetBehaviors() {
+		global $base_url;
 
 		// Create user with permission to create policy.
 		$user1 = $this->drupalCreateUser(array('administer site configuration'));
@@ -59,7 +60,8 @@ class PasswordResetPolicy extends WebTestBase {
 		$user2 = $this->drupalCreateUser(array('enforce password_reset.'.$id->pid.' constraint'));
 		$uid = $user2->id();
 
-		$this->verbose('USER ID =>'.$uid);
+		// Debugging.
+		//$this->verbose('USER ID =>'.$uid);
 
 		// Run cron to rebuild reset tables.
 		$this->cronRun();
@@ -71,8 +73,10 @@ class PasswordResetPolicy extends WebTestBase {
 			->execute()
 			->fetchObject();
 
-		//DEBUGGING
-		$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
+		$this->assertNotNull($user_expiration, "User expiration record should exist");
+
+		// Debugging.
+		//$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
 
 		$this->assertFalse($user_expiration->expired, 'User password was improperly expired after CRON and user creation');
 
@@ -99,14 +103,14 @@ class PasswordResetPolicy extends WebTestBase {
 			->execute()
 			->fetchObject();
 
-		//DEBUGGING
-		$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
+		// Debugging.
+		//$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
 
 		$this->assertTrue($user_expiration->expired, 'CRON did not expire the user');
 
 		// Verify user is forced to go to their edit form
 		$this->drupalLogin($user2);
-		$this->assertUrl("user/" . $uid . "/edit");
+		$this->assertUrl($base_url."/user/" . $uid . "/edit");
 
 		// Create a new node type.
 		$type1 = $this->drupalCreateContentType();
@@ -123,7 +127,7 @@ class PasswordResetPolicy extends WebTestBase {
 
 		// Verify if user tries to go to node, they are forced back.
 		$this->drupalGet($node->url());
-		$this->assertUrl("user/" . $uid . "/edit");
+		$this->assertUrl($base_url."/user/" . $uid . "/edit");
 
 		// Change password.
 		$edit = array();
