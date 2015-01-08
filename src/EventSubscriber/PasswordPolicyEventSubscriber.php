@@ -26,6 +26,7 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
 		$ignored_routes = array(
 			'entity.user.edit_form',
 			'system.ajax',
+			'user.logout',
 		);
 
 

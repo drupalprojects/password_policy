@@ -63,9 +63,6 @@ class PasswordResetPolicy extends WebTestBase {
 		// Debugging.
 		//$this->verbose('USER ID =>'.$uid);
 
-		// Run cron to rebuild reset tables.
-		$this->cronRun();
-
 		// Assert that user row was created and unexpired
 		$user_expiration = db_select("password_policy_user_reset", 'ur')
 			->fields('ur', array())
@@ -75,13 +72,23 @@ class PasswordResetPolicy extends WebTestBase {
 
 		$this->assertNotNull($user_expiration, "User expiration record should exist");
 
+		// Run cron to rebuild reset tables.
+		$this->cronRun();
+
 		// Debugging.
 		//$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
+
+		// Assert that user row was created and unexpired
+		$user_expiration = db_select("password_policy_user_reset", 'ur')
+			->fields('ur', array())
+			->condition('ur.uid', $uid)
+			->execute()
+			->fetchObject();
 
 		$this->assertFalse($user_expiration->expired, 'User password was improperly expired after CRON and user creation');
 
 		// Verify user can access any page.
-		$this->drupalLogin($user2);
+		//$this->drupalLogin($user2);
 
 
 		// Expire password.
@@ -91,7 +98,7 @@ class PasswordResetPolicy extends WebTestBase {
 			->execute();
 
 		// Log out.
-		$this->drupalLogout();
+		//$this->drupalLogout();
 
 		// Run cron to rebuild reset tables.
 		$this->cronRun();
@@ -110,7 +117,12 @@ class PasswordResetPolicy extends WebTestBase {
 
 		// Verify user is forced to go to their edit form
 		$this->drupalLogin($user2);
-		$this->assertUrl($base_url."/user/" . $uid . "/edit");
+		// NOTE: This and other variants did not work as expected. Likely due to forced redirect.
+		//$this->assertUrl("user/" . $uid . "/edit");
+		$url = str_replace($base_url, '', $this->getUrl());
+		$this->assertEqual("/user/" . $uid . "/edit", $url);
+		$this->drupalLogout();
+
 
 		// Create a new node type.
 		$type1 = $this->drupalCreateContentType();
@@ -126,8 +138,12 @@ class PasswordResetPolicy extends WebTestBase {
 		$node = $this->drupalCreateNode($edit);
 
 		// Verify if user tries to go to node, they are forced back.
+		$this->drupalLogin($user2);
 		$this->drupalGet($node->url());
-		$this->assertUrl($base_url."/user/" . $uid . "/edit");
+		// NOTE: This and other variants did not work as expected. Not sure why not.
+		//$this->assertUrl("user/" . $uid . "/edit");
+		$url = str_replace($base_url, '', $this->getUrl());
+		$this->assertEqual("/user/" . $uid . "/edit", $url);
 
 		// Change password.
 		$edit = array();
@@ -148,6 +164,7 @@ class PasswordResetPolicy extends WebTestBase {
 		// Verify if user tries to go to node, they are allowed.
 		$this->drupalGet($node->url());
 		$this->assertUrl($node->url());
+		$this->drupalLogout();
 
 
 
