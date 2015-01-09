@@ -28,98 +28,98 @@ use Drupal\password_policy\PasswordPolicyValidation;
  */
 class PasswordLength extends PasswordConstraintBase {
 
-	/**
-	 * Returns a true/false status as to if the password meets the requirements of the constraint.
-	 * @param password
-	 *   The password entered by the end user
-	 * @return boolean
-	 *   Whether or not the password meets the constraint in the plugin.
-	 */
-	function validate($policy_id, $password) {
-		$policy = db_select('password_policy_length_policies', 'p')
-			->fields('p');
+  /**
+   * Returns a true/false status as to if the password meets the requirements of the constraint.
+   * @param password
+   *   The password entered by the end user
+   * @return boolean
+   *   Whether or not the password meets the constraint in the plugin.
+   */
+  function validate($policy_id, $password) {
+    $policy = db_select('password_policy_length_policies', 'p')
+      ->fields('p');
 
-		$policy = $policy->condition('pid', $policy_id)
-			->execute()
-			->fetch();
+    $policy = $policy->condition('pid', $policy_id)
+      ->execute()
+      ->fetch();
 
-		$validation = new PasswordPolicyValidation();
+    $validation = new PasswordPolicyValidation();
 
-		if(strlen($password) < $policy->character_length) {
-			$validation->setErrorMessage('The length of the password is '.strlen($password).' characters, which is less than the '.$policy->character_length.' characters of the policy');
-		}
-		return $validation;
-	}
+    if (strlen($password) < $policy->character_length) {
+      $validation->setErrorMessage('The length of the password is ' . strlen($password) . ' characters, which is less than the ' . $policy->character_length . ' characters of the policy');
+    }
+    return $validation;
+  }
 
-	/**
-	 * Returns an array of key value pairs, key is the ID, value is the policy.
-	 *
-	 * @return array
-	 *   List of policies.
-	 */
-	function getPolicies() {
-		$policy = db_select('password_policy_length_policies', 'p')
-			->fields('p');
+  /**
+   * Returns an array of key value pairs, key is the ID, value is the policy.
+   *
+   * @return array
+   *   List of policies.
+   */
+  function getPolicies() {
+    $policy = db_select('password_policy_length_policies', 'p')
+      ->fields('p');
 
-		$policies = $policy->execute()->fetchAll();
-		$array = array();
-		foreach($policies as $policy){
-			$array[$policy->pid] = 'Minimum character length ' . $policy->character_length;
-		}
-		return $array;
-	}
+    $policies = $policy->execute()->fetchAll();
+    $array = array();
+    foreach ($policies as $policy) {
+      $array[$policy->pid] = 'Minimum character length ' . $policy->character_length;
+    }
+    return $array;
+  }
 
-	/**
-	 * Deletes the specific policy.
-	 * @return boolean
-	 */
-	public function deletePolicy($policy_id){
+  /**
+   * Deletes the specific policy.
+   * @return boolean
+   */
+  public function deletePolicy($policy_id) {
 
-		$result = db_delete('password_policy_length_policies')
-			->condition('pid', $policy_id)
-			->execute();
+    $result = db_delete('password_policy_length_policies')
+      ->condition('pid', $policy_id)
+      ->execute();
 
-		if($result){
-			return TRUE;
-		}
-		return FALSE;
-	}
+    if ($result) {
+      return TRUE;
+    }
+    return FALSE;
+  }
 
-	/**
-	 * Check the specific policy exists.
-	 * @return boolean
-	 */
-	public function policyExists($policy_id){
+  /**
+   * Check the specific policy exists.
+   * @return boolean
+   */
+  public function policyExists($policy_id) {
 
-		$result = db_select('password_policy_length_policies', 'p')
-			->fields('p')
-			->condition('pid', $policy_id)
-			->execute()
-		  ->fetchAll();
+    $result = db_select('password_policy_length_policies', 'p')
+      ->fields('p')
+      ->condition('pid', $policy_id)
+      ->execute()
+      ->fetchAll();
 
-		if(count($result)>0){
-			return TRUE;
-		}
-		return FALSE;
-	}
+    if (count($result) > 0) {
+      return TRUE;
+    }
+    return FALSE;
+  }
 
-	/**
-	 * Return the specific policy exists.
-	 * @return string
-	 */
-	public function getPolicy($policy_id){
+  /**
+   * Return the specific policy exists.
+   * @return string
+   */
+  public function getPolicy($policy_id) {
 
-		$result = db_select('password_policy_length_policies', 'p')
-			->fields('p')
-			->condition('pid', $policy_id)
-			->execute()
-			->fetchAll();
+    $result = db_select('password_policy_length_policies', 'p')
+      ->fields('p')
+      ->condition('pid', $policy_id)
+      ->execute()
+      ->fetchAll();
 
-		if(count($result)>0){
-			$obj = $result->fetchObject();
+    if (count($result) > 0) {
+      $obj = $result->fetchObject();
 
-			return 'Minimum character length ' . $obj->character_length;
-		}
-		return FALSE;
-	}
+      return 'Minimum character length ' . $obj->character_length;
+    }
+    return FALSE;
+  }
 }

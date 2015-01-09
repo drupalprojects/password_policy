@@ -16,56 +16,56 @@ use Drupal\simpletest\WebTestBase;
  */
 class PasswordLengthBehaviors extends WebTestBase {
 
-	public static $modules = array('password_policy', 'password_policy_length');
+  public static $modules = array('password_policy', 'password_policy_length');
 
-	/**
-	 * Test password length behaviors.
-	 */
-	function testPasswordLengthBehaviors() {
-		global $base_url;
+  /**
+   * Test password length behaviors.
+   */
+  function testPasswordLengthBehaviors() {
+    global $base_url;
 
-		// Create user with permission to create policy.
-		$user1 = $this->drupalCreateUser(array('administer site configuration'));
-		$this->drupalLogin($user1);
+    // Create user with permission to create policy.
+    $user1 = $this->drupalCreateUser(array('administer site configuration'));
+    $this->drupalLogin($user1);
 
-		// Create new password length policy.
-		$edit = array();
-		$edit['character_length'] = '5';
-		$this->drupalPostForm('admin/config/security/password-policy/password-length', $edit, t('Add policy'));
+    // Create new password length policy.
+    $edit = array();
+    $edit['character_length'] = '5';
+    $this->drupalPostForm('admin/config/security/password-policy/password-length', $edit, t('Add policy'));
 
-		// Get latest ID to get policy.
-		$id = db_select("password_policy_length_policies", 'p')
-			->fields('p', array('pid'))
-			->orderBy('p.pid', 'DESC')
-			->execute()
-			->fetchObject();
+    // Get latest ID to get policy.
+    $id = db_select("password_policy_length_policies", 'p')
+      ->fields('p', array('pid'))
+      ->orderBy('p.pid', 'DESC')
+      ->execute()
+      ->fetchObject();
 
-		// Create user with policy applied.
-		$user2 = $this->drupalCreateUser(array('enforce password_policy_length_constraint.'.$id->pid.' constraint'));
-		$uid = $user2->id();
+    // Create user with policy applied.
+    $user2 = $this->drupalCreateUser(array('enforce password_policy_length_constraint.' . $id->pid . ' constraint'));
+    $uid = $user2->id();
 
-		// Login.
-		$this->drupalLogin($user2);
+    // Login.
+    $this->drupalLogin($user2);
 
-		// Change own password with one too short.
-		$edit = array();
-		$edit['pass'] = '1';
-		$edit['current_pass'] = $user2->pass_raw;
-		$this->drupalPostAjaxForm("user/" . $uid . "/edit", $edit, 'pass');
+    // Change own password with one too short.
+    $edit = array();
+    $edit['pass'] = '1';
+    $edit['current_pass'] = $user2->pass_raw;
+    $this->drupalPostAjaxForm("user/" . $uid . "/edit", $edit, 'pass');
 
-		// Verify we see an error.
-		$this->assertText('Fail - The length of the password is 1 characters, which is less than the 5 characters of the policy');
+    // Verify we see an error.
+    $this->assertText('Fail - The length of the password is 1 characters, which is less than the 5 characters of the policy');
 
-		// Change own password with one long enough.
-		$edit = array();
-		$edit['pass'] = '111111111111';
-		$edit['current_pass'] = $user2->pass_raw;
-		$this->drupalPostAjaxForm("user/" . $uid . "/edit", $edit, 'pass');
+    // Change own password with one long enough.
+    $edit = array();
+    $edit['pass'] = '111111111111';
+    $edit['current_pass'] = $user2->pass_raw;
+    $this->drupalPostAjaxForm("user/" . $uid . "/edit", $edit, 'pass');
 
-		// Verify we see do not error.
-		$this->assertNoText('Fail - The length of the password is 12 characters, which is less than the 5 characters of the policy');
+    // Verify we see do not error.
+    $this->assertNoText('Fail - The length of the password is 12 characters, which is less than the 5 characters of the policy');
 
 
-		$this->drupalLogout();
-	}
+    $this->drupalLogout();
+  }
 }
