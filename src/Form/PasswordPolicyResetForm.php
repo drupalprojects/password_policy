@@ -24,8 +24,8 @@ class PasswordPolicyResetForm extends FormBase {
 		//get policy
 		$policy_id = '';
 		$path_args = explode('/', current_path());
-		if(count($path_args)==7 and is_numeric($path_args[6])) {
-			$policy_id = $path_args[6];
+		if(count($path_args)==6 and is_numeric($path_args[5])) {
+			$policy_id = $path_args[5];
 			//load the policy
 			$policy = db_select('password_policy_reset', 'p')->fields('p')->condition('pid', $policy_id)->execute()->fetchObject();
 		}
@@ -42,7 +42,7 @@ class PasswordPolicyResetForm extends FormBase {
 			),
 			'submit' => array(
 				'#type' => 'submit',
-				'#value' => t('Add policy'),
+				'#value' => (is_numeric($policy_id))?t('Update policy'):t('Add policy'),
 			),
 		);
 		return $form;
