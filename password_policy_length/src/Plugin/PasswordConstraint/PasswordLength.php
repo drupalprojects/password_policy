@@ -21,8 +21,8 @@ use Drupal\password_policy\PasswordPolicyValidation;
  *   title = @Translation("Password character length"),
  *   description = @Translation("Verifying that a password has a minimum character length"),
  *   error_message = @Translation("The length of your password is too short."),
- *   policy_path = "admin/config/security/password/constraint/length",
- *   policy_update_path = "admin/config/security/password/constraint/length/@pid",
+ *   policy_path = "admin/config/security/password-policy/password-length",
+ *   policy_update_path = "admin/config/security/password-policy/password-length/@pid",
  *   policy_update_token = "@pid"
  * )
  */

@@ -26,8 +26,8 @@ class PasswordPolicyLengthSettingsForm extends FormBase {
 		//get policy
 		$policy_id = '';
 		$path_args = explode('/', current_path());
-		if(count($path_args)==7) {
-			$policy_id = $path_args[6];
+		if(count($path_args)==6) {
+			$policy_id = $path_args[5];
 			//load the policy
 			$policy = db_select('password_policy_length_policies', 'p')->fields('p')->condition('pid', $policy_id)->execute()->fetchObject();
 		}
@@ -45,7 +45,7 @@ class PasswordPolicyLengthSettingsForm extends FormBase {
 
 		$form['submit'] = array(
 			'#type'=>'submit',
-			'#value'=>'Add Policy',
+			'#value'=>(is_numeric($policy_id))?t('Update policy'):t('Add policy'),
 		);
 
 		return $form;
@@ -78,5 +78,6 @@ class PasswordPolicyLengthSettingsForm extends FormBase {
 				->execute();
 		}
 		drupal_set_message('Password length settings have been stored');
+		$form_state->setRedirect('password_policy.settings');
 	}
 }
