@@ -29,7 +29,7 @@ class PasswordManualReset extends WebTestBase {
 		$rid = $this->drupalCreateRole(array());
 
 		// Create new admin user.
-		$user2 = $this->drupalCreateUser(array('administer site configuration', 'administer users'));
+		$user2 = $this->drupalCreateUser(array('administer site configuration', 'administer users', 'administer permissions'));
 		$this->drupalLogin($user2);
 
 		// Update user 1 by adding role.
