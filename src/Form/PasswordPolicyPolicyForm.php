@@ -26,8 +26,11 @@ class PasswordPolicyPolicyForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     //get plugin
-    $path_args = explode('/', current_path());
-    $policy_plugin = $path_args[5];
+    //get current path
+    $url = \Drupal\Core\Url::fromRoute('<current>');
+    $current_path = $url->toString();
+    $path_args = explode('/', $current_path);
+    $policy_plugin = $path_args[6];
     //load the plugin
     $plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
     $all_plugins = $plugin_manager->getDefinitions();

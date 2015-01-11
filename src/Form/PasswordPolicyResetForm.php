@@ -23,9 +23,12 @@ class PasswordPolicyResetForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     //get policy
     $policy_id = '';
-    $path_args = explode('/', current_path());
-    if (count($path_args) == 6 and is_numeric($path_args[5])) {
-      $policy_id = $path_args[5];
+    //get current path
+    $url = \Drupal\Core\Url::fromRoute('<current>');
+    $current_path = $url->toString();
+    $path_args = explode('/', $current_path);
+    if (count($path_args) == 7 and is_numeric($path_args[6])) {
+      $policy_id = $path_args[6];
       //load the policy
       $policy = db_select('password_policy_reset', 'p')
         ->fields('p')

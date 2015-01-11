@@ -22,14 +22,17 @@ class PasswordPolicyDeleteResetForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     //get policy and plugin
-    $path_args = explode('/', current_path());
+    //get current path
+    $url = \Drupal\Core\Url::fromRoute('<current>');
+    $current_path = $url->toString();
+    $path_args = explode('/', $current_path);
 
-    if (count($path_args) != 7) {
+    if (count($path_args) != 8) {
       drupal_set_message('Improper parameters', 'error');
       return array();
     }
 
-    $policy_id = $path_args[6];
+    $policy_id = $path_args[7];
 
     if (!is_numeric($policy_id)) {
       drupal_set_message('No policy found', 'error');

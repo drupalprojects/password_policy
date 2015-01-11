@@ -22,11 +22,14 @@ class PasswordPolicyDeleteForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     //get policy and plugin
-    $path_args = explode('/', current_path());
+    //get current path
+    $url = \Drupal\Core\Url::fromRoute('<current>');
+    $current_path = $url->toString();
+    $path_args = explode('/', $current_path);
     $policy_instance = FALSE;
     $plugin_instance = FALSE;
-    if (count($path_args) == 7) {
-      $plugin_id = $path_args[5];
+    if (count($path_args) == 8) {
+      $plugin_id = $path_args[6];
       $plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')
         ->createInstance($plugin_id);
     }
@@ -34,7 +37,7 @@ class PasswordPolicyDeleteForm extends FormBase {
     //validate params
     if ($plugin_instance) {
 
-      $policy_id = $path_args[6];
+      $policy_id = $path_args[7];
       if (!$plugin_instance->policyExists($policy_id)) {
         drupal_set_message('No policy found', 'error');
         return array();
