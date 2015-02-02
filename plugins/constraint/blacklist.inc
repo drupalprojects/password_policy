@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_blacklist_admin_form',
   'constraint callback' => 'password_policy_blacklist_constraint',
-  'message' => 'Password cannot match certain disallowed passwords.',
+  'message' => t('Password cannot match certain disallowed passwords.'),
   'prime value' => 'blacklist',
   'config' => array(
     'blacklist' => '',
