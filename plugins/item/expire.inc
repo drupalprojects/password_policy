@@ -13,7 +13,6 @@ $plugin = array(
     'expire_warning_message' => 'Your Password has expired please change it now',
     'expire_warning_email_sent' => "-14 days",
     'expire_warning_email_message' => '',
-    'expire_warning_email_subject' => '[user:name] you password on [site:name] ([site:url]) is going to expire on [password_expiration_date:long] please login and change it ([user:edit-url]) before then.',
     'expire_warning_email_subject' => '[user:name] you password on [site:name] shall expire in [password_expiration_date:interval] ',
   ),
 );
