@@ -57,9 +57,9 @@ function password_policy_admin_settings() {
   );
   $form['visibility']['password_policy_show_restrictions'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show restrictions on password change page.'),
+    '#title' => t('Show all restrictions on password change page.'),
     '#default_value' => variable_get('password_policy_show_restrictions', 0),
-    '#description' => t('Should password restrictions be listed on the password change page. A javascript warning block will be shown anyways if ithe typed in password does not meet the restrictions.'),
+    '#description' => t('List all password restrictions on the password change page. The list is displayed in addition to the default dynamic, JavaScript-generated list of only the restrictions the typed password does not meet. Enabling this setting allows a user who is not using JavaScript to see the password restrictions prior to submitting their password.'),
   );
 
   // E-mail notification settings.
