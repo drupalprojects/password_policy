@@ -57,11 +57,6 @@ writing passwords on a Post-it on the backside of their keyboard.
 Consider a company policy to use strong password generator tools like
 http://supergenpass.com/ or 1Password on MacOS.
 
-Requirements
-==========================================
-Drupal 6.x
-MySQL 5.0.3 or something else which supports varchar > 255
-
 Credits
 ==========================================
 Drupal 4.7 version was written by David Ayre <drupal at ayre dot ca>
