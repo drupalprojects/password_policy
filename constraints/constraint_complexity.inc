@@ -82,7 +82,7 @@ function password_policy_constraint_complexity_js($constraint, $account) {
       }
       i++;
     }
-    num = upper + lower + digit + punct
+    num = upper + lower + digit + punct;
     if (num < $constraint) {
       strength = "low";
       msg.push(translate.constraint_complexity);

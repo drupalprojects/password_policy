@@ -43,12 +43,13 @@ function password_policy_constraint_username_js($constraint, $account) {
   $username = isset($account->name) ? $account->name : '';
   return <<<JSS
 
+    var username = '';
     var usernameInput = jQuery('input.username');
     if (usernameInput.length) {
-      var username = usernameInput.val();
+      username = usernameInput.val();
     }
     else {
-      var username = '$username';
+      username = '$username';
     }
     if (username) {
       var username_lowercase = username.toLowerCase();
