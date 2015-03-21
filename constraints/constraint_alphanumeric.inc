@@ -41,18 +41,18 @@ function password_policy_constraint_alphanumeric_validate($password, $constraint
  */
 function password_policy_constraint_alphanumeric_js($constraint, $account) {
   $s = '';
-  $s .= "  var i=0;\n";
-  $s .= "  var num=0;\n";
-  $s .= "  var chr=\"\";\n";
-  $s .= "  while(i<value.length) {\n";
-  $s .= "    chr=value.charAt(i);\n";
-  $s .= "    if(chr.toUpperCase() != chr.toLowerCase() || \"1234567890\".indexOf(chr) != -1) {\n";
+  $s .= "  var i = 0;\n";
+  $s .= "  var num = 0;\n";
+  $s .= "  var chr = \"\";\n";
+  $s .= "  while (i < value.length) {\n";
+  $s .= "    chr = value.charAt(i);\n";
+  $s .= "    if (chr.toUpperCase() != chr.toLowerCase() || \"1234567890\".indexOf(chr) != -1) {\n";
   $s .= "      num++;\n";
   $s .= "    }\n";
   $s .= "    i++;\n";
   $s .= "  }\n";
-  $s .= "  if (num<$constraint) {\n";
-  $s .= "    strength=\"low\";\n";
+  $s .= "  if (num < $constraint) {\n";
+  $s .= "    strength = \"low\";\n";
   $s .= "    msg.push(translate.constraint_alphanumeric);\n";
   $s .= "  }\n";
   return $s;

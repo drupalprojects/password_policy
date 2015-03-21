@@ -42,18 +42,18 @@ function password_policy_constraint_letter_validate($password, $constraint, $acc
  */
 function password_policy_constraint_letter_js($constraint, $account) {
   $s = '';
-  $s .= "  var i=0;\n";
-  $s .= "  var num=0;\n";
-  $s .= "  var chr=\"\";\n";
-  $s .= "  while(i<value.length) {\n";
-  $s .= "    chr=value.charAt(i);\n";
-  $s .= "    if(chr.toUpperCase() != chr.toLowerCase()) {\n";
+  $s .= "  var i = 0;\n";
+  $s .= "  var num = 0;\n";
+  $s .= "  var chr = \"\";\n";
+  $s .= "  while (i < value.length) {\n";
+  $s .= "    chr = value.charAt(i);\n";
+  $s .= "    if (chr.toUpperCase() != chr.toLowerCase()) {\n";
   $s .= "      num++;\n";
   $s .= "    }\n";
   $s .= "    i++;\n";
   $s .= "  }\n";
-  $s .= "  if (num<$constraint) {\n";
-  $s .= "    strength=\"low\";\n";
+  $s .= "  if (num < $constraint) {\n";
+  $s .= "    strength = \"low\";\n";
   $s .= "    msg.push(translate.constraint_letter);\n";
   $s .= "  }\n";
   return $s;

@@ -41,20 +41,20 @@ function password_policy_constraint_lowercase_validate($password, $constraint, $
  */
 function password_policy_constraint_lowercase_js($constraint, $account) {
   $s = '';
-  $s .= "  var i=0;\n";
-  $s .= "  var num=0;\n";
-  $s .= "  var chr=\"\";\n";
-  $s .= "  while(i<value.length) {\n";
-  $s .= "    chr=value.charAt(i);\n";
-  $s .= "    if(chr.toUpperCase() != chr.toLowerCase()) {\n";
-  $s .= "      if(chr == chr.toLowerCase()) {\n";
+  $s .= "  var i = 0;\n";
+  $s .= "  var num = 0;\n";
+  $s .= "  var chr = \"\";\n";
+  $s .= "  while (i < value.length) {\n";
+  $s .= "    chr = value.charAt(i);\n";
+  $s .= "    if (chr.toUpperCase() != chr.toLowerCase()) {\n";
+  $s .= "      if (chr == chr.toLowerCase()) {\n";
   $s .= "        num++;\n";
   $s .= "      }\n";
   $s .= "    }\n";
   $s .= "    i++;\n";
   $s .= "  }\n";
-  $s .= "  if (num<$constraint) {\n";
-  $s .= "    strength=\"low\";\n";
+  $s .= "  if (num < $constraint) {\n";
+  $s .= "    strength = \"low\";\n";
   $s .= "    msg.push(translate.constraint_lowercase);\n";
   $s .= "  }\n";
   return $s;

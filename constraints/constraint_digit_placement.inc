@@ -61,8 +61,8 @@ function password_policy_constraint_digit_placement_js($constraint, $account) {
     var length = 0;
     offset--;
 
-    while ((offset = haystack.indexOf(needle, offset+1)) != -1) {
-      if (length > 0 && (offset+needle.length) > length) {
+    while ((offset = haystack.indexOf(needle, offset + 1)) != -1) {
+      if (length > 0 && (offset + needle.length) > length) {
         return false;
       } else {
         cnt++;
@@ -71,12 +71,12 @@ function password_policy_constraint_digit_placement_js($constraint, $account) {
     return cnt;
   }
 
-  var i=0;
-  var num=0;
-  for (i=0;i<10;i++) {
+  var i = 0;
+  var num = 0;
+  for (i = 0; i < 10; i++) {
     num += substr_count(value, i);
   }
-  if (num<$constraint && value.match(/^(\d+)|(\d+)$/) != null) {
+  if (num < $constraint && value.match(/^(\d+)|(\d+)$/) != null) {
     strength="low";
     msg.push(translate.constraint_digit_placement);
   }

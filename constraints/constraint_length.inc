@@ -35,8 +35,8 @@ function password_policy_constraint_length_validate($password, $constraint, $acc
  */
 function password_policy_constraint_length_js($constraint, $account) {
   $s = '';
-  $s .= "  if (!value.length || value.length<$constraint) {\n";
-  $s .= "    strength=\"low\";\n";
+  $s .= "  if (!value.length || value.length < $constraint) {\n";
+  $s .= "    strength = \"low\";\n";
   $s .= "    msg.push(translate.constraint_length);\n";
   $s .= "  }\n";
   return $s;
