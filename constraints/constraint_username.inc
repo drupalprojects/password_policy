@@ -41,21 +41,22 @@ function password_policy_constraint_username_validate($password, $constraint, $a
  */
 function password_policy_constraint_username_js($constraint, $account) {
   $username = isset($account->name) ? $account->name : '';
-  $s = '';
-  $s .= "  var usernameInput = jQuery('input.username');\n";
-  $s .= "  if (usernameInput.length) {\n";
-  $s .= "    var username = usernameInput.val();\n";
-  $s .= "  }\n";
-  $s .= "  else {\n";
-  $s .= "    var username = '$username';\n";
-  $s .= "  }\n";
-  $s .= "  if (username) {\n";
-  $s .= "    var username_lowercase = username.toLowerCase();\n";
-  $s .= "    var password_lowercase = value.toLowerCase();\n";
-  $s .= "    if (password_lowercase.indexOf(username_lowercase) != -1) {\n";
-  $s .= "      strength = \"low\";\n";
-  $s .= "      msg.push(translate.constraint_username);\n";
-  $s .= "    }\n";
-  $s .= "  }\n";
-  return $s;
+  return <<<JSS
+
+    var usernameInput = jQuery('input.username');
+    if (usernameInput.length) {
+      var username = usernameInput.val();
+    }
+    else {
+      var username = '$username';
+    }
+    if (username) {
+      var username_lowercase = username.toLowerCase();
+      var password_lowercase = value.toLowerCase();
+      if (password_lowercase.indexOf(username_lowercase) != -1) {
+        strength = "low";
+        msg.push(translate.constraint_username);
+      }
+    }
+JSS;
 }
