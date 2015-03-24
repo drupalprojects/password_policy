@@ -207,7 +207,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * this policy, and then notify them of their soon-to-be expired password.
    */
   public function cron() {
-    // Dont do anything if the policy does not require notification emails.
+    // Don't do anything if the policy does not require notification emails.
     if (empty($this->config['expire_warning_email_sent'])) {
       return;
     }
