@@ -136,7 +136,7 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
 }
 
 class PasswordPolicyExpire extends PasswordPolicyItem {
-  public $pp_type = array('item', 'cron', 'init');
+  public $ppType = array('item', 'cron', 'init');
 
   /**
    * Checks on init if the user password has expired.

@@ -10,7 +10,7 @@
  * This class is used for item CTools plugin type.
  */
 class PasswordPolicyItem {
-  protected $pp_type = array('item');
+  protected $ppType = array('item');
   public $info;
   public $policy;
   public $config;
@@ -24,22 +24,22 @@ class PasswordPolicyItem {
     $this->policy = $policy;
   }
 
-  public function is_type($type) {
-    return in_array($type, $this->pp_type);
+  public function isType($type) {
+    return in_array($type, $this->ppType);
   }
 
   protected function func($function_name) {
     return ctools_plugin_get_function($this->info, $function_name);
   }
 
-  public function admin_form($form, &$form_state) {
+  public function adminForm($form, &$form_state) {
     if ($func = $this->func('admin form callback')) {
       return $func($form, $form_state, $this);
     }
     return array();
   }
 
-  public function admin_form_submit($form, &$form_state) {
+  public function adminFormSubmit($form, &$form_state) {
     foreach ($this->info['config'] as $id => $default) {
       if (isset($form_state['values'][$id])) {
         $this->config[$id] = $form_state['values'][$id];
@@ -48,7 +48,7 @@ class PasswordPolicyItem {
   }
 
   // See if the constraint is active.
-  public function is_active() {
+  public function isActive() {
     if (isset($this->info['prime value'])) {
       return (bool) $this->config[$this->info['prime value']];
     }

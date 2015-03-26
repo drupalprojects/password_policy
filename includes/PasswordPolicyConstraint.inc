@@ -10,7 +10,7 @@
  * This class is to test individual policy constraints.
  */
 class PasswordPolicyConstraint extends PasswordPolicyItem {
-  protected $pp_type = array('item', 'constraint');
+  protected $ppType = array('item', 'constraint');
 
   public function message() {
     $mes_temp = is_array($this->info['message']) ? $this->info['message'] : array($this->info['message']);
@@ -28,7 +28,7 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
     return $messages;
   }
 
-  public function fail_message($password, $account) {
+  public function failMessage($password, $account) {
     return $this->message();
   }
 

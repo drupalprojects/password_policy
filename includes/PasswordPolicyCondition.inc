@@ -10,7 +10,7 @@
  * This class is used for conditionally executing policies.
  */
 class PasswordPolicyCondition extends PasswordPolicyItem {
-  protected $pp_type = array('item', 'condition');
+  protected $ppType = array('item', 'condition');
 
   public function match($account) {
     if ($func = $this->func('condition callback')) {
