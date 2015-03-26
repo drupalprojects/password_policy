@@ -70,7 +70,12 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
   );
   $sub_form['expire_fieldset']['expire_warning_email_message_token'] = array(
     '#theme' => 'token_tree',
-    '#token_types' => array('user', 'site', 'current-date', 'password_expiration_date'),
+    '#token_types' => array(
+      'user',
+      'site',
+      'current-date',
+      'password_expiration_date',
+    ),
     '#global_types' => FALSE,
     '#click_insert' => TRUE,
     '#states' => array(
@@ -134,8 +139,10 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
   public $pp_type = array('item', 'cron', 'init');
 
   /**
-   * Checks on init if the user password has expired. If so, we send the user
-   * to the user edit page until they set a new password.
+   * Checks on init if the user password has expired.
+   *
+   * If the password has expired, we send the user to the user edit page until
+   * they set a new password.
    */
   public function init($account) {
     // If this is a command line request (Drush, etc), skip processing.
@@ -163,7 +170,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       $account->password_history[0] = (object) array(
         'uid' => $account->uid,
         'pass' => $account->pass,
-        'created' => time()
+        'created' => time(),
       );
       password_policy_update_password_history($account->password_history[0]);
     }
@@ -189,7 +196,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
         }
         // If we are on the user edit screen, set the destination so we go back.
         else {
-// Comment this out for now.  Causes infinite redirect loop when password expires
+// Comment out for now.  Causes infinite redirect loop when password expires.
 //          $_GET['destination'] = $_SESSION['password_policy_GET']['q'];
         }
       }
@@ -203,6 +210,8 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
   }
 
   /**
+   * Cron task for expiration plugin.
+   *
    * Pulls all users that have expired passwords, insure they are active with
    * this policy, and then notify them of their soon-to-be expired password.
    */

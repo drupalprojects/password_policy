@@ -224,7 +224,7 @@ class PasswordPolicy {
       return new PasswordPolicy($info);
     }
   }
-  
+
   /**
    * Retrieves all policies.
    */
