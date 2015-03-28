@@ -41,9 +41,9 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
   );
   $sub_form['expire_fieldset']['expire_warning_email_sent'] = array(
     '#type' => 'textfield',
-    '#title' => 'When to send warning emails',
+    '#title' => 'When to send warning e-mails',
     '#default_value' => $constraint->config['expire_warning_email_sent'],
-    '#description' => t('A comma separated list of time intervals, when to send warning emails. (Use normal English, like 90 days or 5 hours.)  If prefixed with a negative (like -2 days) then this will be before the expiration. If left empty, no email will be sent.'),
+    '#description' => t('A comma separated list of time intervals, when to send warning e-mails. (Use normal English, like 90 days or 5 hours.)  If prefixed with a negative (like -2 days) then this will be before the expiration. If left empty, no e-mail will be sent.'),
   );
   $sub_form['expire_fieldset']['expire_warning_email_subject'] = array(
     '#type' => 'textfield',
@@ -216,7 +216,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * this policy, and then notify them of their soon-to-be expired password.
    */
   public function cron() {
-    // Don't do anything if the policy does not require notification emails.
+    // Don't do anything if the policy does not require notification e-mails.
     if (empty($this->config['expire_warning_email_sent'])) {
       return;
     }
