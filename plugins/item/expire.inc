@@ -49,7 +49,6 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'textfield',
     '#title' => 'Warning e-mail subject',
     '#default_value' => $constraint->config['expire_warning_email_subject'],
-    '#description' => t(''),
     '#maxlength' => 180,
     '#states' => array(
       'visible' => array(
@@ -61,7 +60,6 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'textarea',
     '#title' => 'Warning e-mail message',
     '#default_value' => $constraint->config['expire_warning_email_message'],
-    '#description' => t(''),
     '#states' => array(
       'visible' => array(
         ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
