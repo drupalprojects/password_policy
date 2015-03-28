@@ -210,8 +210,8 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
   /**
    * Cron task for expiration plugin.
    *
-   * Pulls all users that have expired passwords, insure they are active with
-   * this policy, and then notify them of their soon-to-be expired password.
+   * Pulls all users that have expired passwords, ensures they are active with
+   * this policy, and then notifies them of their soon-to-be expired password.
    */
   public function cron() {
     // Don't do anything if the policy does not require notification e-mails.
