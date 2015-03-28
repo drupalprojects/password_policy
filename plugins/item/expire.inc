@@ -10,10 +10,10 @@ $plugin = array(
   'class' => 'PasswordPolicyExpire',
   'config' => array(
     'expire_limit' => 0,
-    'expire_warning_message' => 'Your Password has expired please change it now',
+    'expire_warning_message' => 'Your password has expired. Please change it now.',
     'expire_warning_email_sent' => "-14 days",
     'expire_warning_email_message' => '',
-    'expire_warning_email_subject' => '[user:name] you password on [site:name] shall expire in [password_expiration_date:interval] ',
+    'expire_warning_email_subject' => '[user:name], your password on [site:name] shall expire in [password_expiration_date:interval] ',
   ),
 );
 
@@ -31,7 +31,7 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'textfield',
     '#title' => 'Expire limit',
     '#default_value' => $constraint->config['expire_limit'],
-    '#description' => "Password will expire after being used for this long (use normal English, like 90 days or 5 hours)",
+    '#description' => "Password will expire after being used for this long. (Use normal English, like 90 days or 5 hours.)",
   );
   $sub_form['expire_fieldset']['expire_warning_message'] = array(
     '#type' => 'textfield',
@@ -43,7 +43,7 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'textfield',
     '#title' => 'When to send warning emails',
     '#default_value' => $constraint->config['expire_warning_email_sent'],
-    '#description' => t('A comma separated list of time intervals, when to send warning emails. (Use normal English, like 90 days or 5 hours).  If prefixed with a negative (like -2 days) then this will be before the expiration. If left empty, no email will be sent.'),
+    '#description' => t('A comma separated list of time intervals, when to send warning emails. (Use normal English, like 90 days or 5 hours.)  If prefixed with a negative (like -2 days) then this will be before the expiration. If left empty, no email will be sent.'),
   );
   $sub_form['expire_fieldset']['expire_warning_email_subject'] = array(
     '#type' => 'textfield',
