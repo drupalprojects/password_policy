@@ -31,7 +31,7 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'textfield',
     '#title' => 'Expire limit',
     '#default_value' => $constraint->config['expire_limit'],
-    '#description' => "Password will expire after being used for this long. (Use normal English, like 90 days or 5 hours.)",
+    '#description' => t("Password will expire after being used for this long. (Use normal English, like 90 days or 5 hours.)"),
   );
   $sub_form['expire_fieldset']['expire_warning_message'] = array(
     '#type' => 'textfield',
