@@ -40,7 +40,7 @@ function password_policy_constraint_lowercase_validate($password, $constraint, $
  * Javascript portion.
  */
 function password_policy_constraint_lowercase_js($constraint, $account) {
-  return <<<JSS
+  return <<<JS
 
     var i = 0;
     var num = 0;
@@ -58,5 +58,5 @@ function password_policy_constraint_lowercase_js($constraint, $account) {
       strength = "low";
       msg.push(translate.constraint_lowercase);
     }
-JSS;
+JS;
 }

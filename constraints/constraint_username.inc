@@ -41,7 +41,7 @@ function password_policy_constraint_username_validate($password, $constraint, $a
  */
 function password_policy_constraint_username_js($constraint, $account) {
   $username = isset($account->name) ? $account->name : '';
-  return <<<JSS
+  return <<<JS
 
     var username = '';
     var usernameInput = jQuery('input.username');
@@ -59,5 +59,5 @@ function password_policy_constraint_username_js($constraint, $account) {
         msg.push(translate.constraint_username);
       }
     }
-JSS;
+JS;
 }

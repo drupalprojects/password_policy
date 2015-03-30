@@ -40,7 +40,7 @@ function password_policy_constraint_digit_validate($password, $constraint, $acco
  * Javascript portion.
  */
 function password_policy_constraint_digit_js($constraint, $account) {
-  return <<<JSS
+  return <<<JS
 
     var i = 0;
     var num = 0;
@@ -56,5 +56,5 @@ function password_policy_constraint_digit_js($constraint, $account) {
       strength = "low";
       msg.push(translate.constraint_digit);
     }
-JSS;
+JS;
 }

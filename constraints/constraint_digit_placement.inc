@@ -51,7 +51,7 @@ function password_policy_constraint_digit_placement_validate($password, $constra
  * Javascript portion.
  */
 function password_policy_constraint_digit_placement_js($constraint, $account) {
-  return <<<JSS
+  return <<<JS
 
     function substr_count(haystack, needle) {
       var cnt = 0;
@@ -80,5 +80,5 @@ function password_policy_constraint_digit_placement_js($constraint, $account) {
       strength = "low";
       msg.push(translate.constraint_digit_placement);
     }
-JSS;
+JS;
 }

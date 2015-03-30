@@ -41,7 +41,7 @@ function password_policy_constraint_letter_validate($password, $constraint, $acc
  * Javascript portion.
  */
 function password_policy_constraint_letter_js($constraint, $account) {
-  return <<<JSS
+  return <<<JS
 
     var i = 0;
     var num = 0;
@@ -57,5 +57,5 @@ function password_policy_constraint_letter_js($constraint, $account) {
       strength = "low";
       msg.push(translate.constraint_letter);
     }
-JSS;
+JS;
 }
