@@ -42,13 +42,22 @@ function password_policy_constraint_username_validate($password, $constraint, $u
  * Javascript portion.
  */
 function password_policy_constraint_username_js($constraint, $uid) {
+  // Add username as JavaScript setting.
   $account = user_load(array('uid' => $uid));
-  if ($account->name == '') {
+  $username = $account->name;
+  if ($username == '') {
     return '';
   }
+  $data = array(
+    'password_policy' => array(
+      'username' => $username,
+    ),
+  );
+  drupal_add_js($data, 'setting');
+
   $s = '';
   if ($constraint) {
-    $s .= "  var username='" . $account->name . "';\n";
+    $s .= "  var username=Drupal.settings.password_policy.username;\n";
     $s .= "  var username_lowercase=username.toLowerCase();\n";
     $s .= "  var password_lowercase=value.toLowerCase();\n";
     $s .= "  if (password_lowercase.indexOf(username_lowercase) != -1) {\n";
