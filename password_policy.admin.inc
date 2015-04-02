@@ -16,11 +16,24 @@
  * Settings form display.
  */
 function password_policy_admin_settings() {
-  $form['password_policy_force_change_reset'] = array(
+  $form['force_change'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Force password change settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['force_change']['password_policy_force_change_reset'] = array(
     '#type' => 'checkbox',
     '#title' => t('Force password change on reset'),
     '#default_value' => variable_get('password_policy_force_change_reset', 0),
     '#description' => t('When a user requests a one-time login link, this option will require the user to change their password before continuing to browse the site.'),
+  );
+  $form['force_change']['password_policy_force_change_by_mail'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Force password change by e-mail'),
+    '#description' => t('Users who are forced to change their password must request a password reset link by e-mail and use it to change their password. They will be redirected to the <a href="@request_new_password">Request new password</a> page to request the link. When this setting is disabled, users who are forced to change their password will be able to change their password immediately, without verifying ownership of their e-mail address, which is less secure. Note that this setting applies to password changes forced by password expiration.',
+      array('@request_new_password' => url('user/password'))),
+    '#default_value' => _password_policy_forcing_change_by_mail(),
   );
 
   $form['expiration'] = array(
@@ -110,6 +123,7 @@ function password_policy_admin_settings_submit($form, &$form_state) {
       variable_set('password_policy_warning_subject', $form_state['values']['password_policy_warning_subject']);
       variable_set('password_policy_warning_body', $form_state['values']['password_policy_warning_body']);
       variable_set('password_policy_force_change_reset', $form_state['values']['password_policy_force_change_reset']);
+      variable_set('password_policy_force_change_by_mail', $form_state['values']['password_policy_force_change_by_mail']);
       drupal_set_message(t('The configuration options have been saved.'));
       break;
 
@@ -121,6 +135,7 @@ function password_policy_admin_settings_submit($form, &$form_state) {
       variable_del('password_policy_warning_subject');
       variable_del('password_policy_warning_body');
       variable_del('password_policy_force_change_reset');
+      variable_del('password_policy_force_change_by_mail');
       drupal_set_message(t('The configuration options have been reset to their default values.'));
       break;
   }
