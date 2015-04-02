@@ -5,6 +5,7 @@
  * Restrict placement of digits in passwords.
  *
  * @link https://drupal.org/node/316768
+ *
  * @author David Kent Norman (https://deekayen.net/)
  */
 

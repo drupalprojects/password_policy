@@ -251,6 +251,7 @@ function password_policy_admin_list_submit($form, &$form_state) {
  *   - form: A render element representing the form.
  *
  * @ingroup themeable
+ *
  * @see theme_filter_admin_overview()
  */
 function theme_password_policy_admin_list($variables) {
