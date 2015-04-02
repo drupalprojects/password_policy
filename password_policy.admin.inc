@@ -230,13 +230,28 @@ function password_policy_admin_list($form) {
  */
 function password_policy_admin_list_submit($form, &$form_state) {
   foreach ($form_state['values']['policies'] as $pid => $policy) {
-    db_query("UPDATE {password_policy} SET weight = :weight WHERE pid = :pid", array(':weight' => $policy['weight'], ':pid' => $pid));
+    db_update('password_policy')
+      ->fields(array(
+        'weight' => $policy['weight'],
+      ))
+      ->condition('pid', $pid)
+      ->execute();
     // Ensure we don't reset the timestamp on policies that are already enabled.
     if ($policy['enabled']) {
-      db_query("UPDATE {password_policy} SET enabled = 1, created = :time WHERE pid = :pid AND enabled = 0", array(':time' => time(), ':pid' => $pid));
+      db_update('password_policy')
+        ->fields(array(
+          'enabled' => 1,
+          'created' => time(),
+        ))
+        ->condition('pid', $pid)
+        ->condition('enabled', 0)
+        ->execute();
     }
     else {
-      db_query("UPDATE {password_policy} SET enabled = 0 WHERE pid = :pid", array(':pid' => $pid));
+      db_update('password_policy')
+        ->fields(array('enabled' => 0))
+        ->condition('pid', $pid)
+        ->execute();
     }
   }
 
