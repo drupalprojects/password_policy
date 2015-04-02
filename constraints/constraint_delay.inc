@@ -5,8 +5,8 @@
  * Password policy constraint callback to set a minimum delay between password
  * changes.
  *
- * @link http://drupal.org/node/316765
- * @author David Kent Norman (http://deekayen.net/)
+ * @link https://drupal.org/node/316765
+ * @author David Kent Norman (https://deekayen.net/)
  */
 
 /****************************************************************************/
