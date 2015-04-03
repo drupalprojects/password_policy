@@ -121,7 +121,7 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
   $query->isNull('nh.hid');
 
   // Check to see if the password needs a warning notification.
-  $query->condition('p.created', time() - $notice_int, '<');
+  $query->condition('p.created', REQUEST_TIME - $notice_int, '<');
 
   // Package up the candidates and return them.
   $candidates = array();
@@ -168,12 +168,12 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       $account->password_history[0] = (object) array(
         'uid' => $account->uid,
         'pass' => $account->pass,
-        'created' => time(),
+        'created' => REQUEST_TIME,
       );
       password_policy_update_password_history($account->password_history[0]);
     }
     // Check to see that the password has expired.
-    if ($account->password_history[0]->created + $expire_int < time()) {
+    if ($account->password_history[0]->created + $expire_int < REQUEST_TIME) {
       // If we are on the check ajax page, then skip.
       if ($_GET['q'] != 'password_policy/check') {
         $uri = "user/{$account->uid}/edit";
