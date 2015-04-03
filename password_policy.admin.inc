@@ -247,7 +247,7 @@ function password_policy_admin_list_submit($form, &$form_state) {
       db_update('password_policy')
         ->fields(array(
           'enabled' => 1,
-          'created' => time(),
+          'created' => REQUEST_TIME,
         ))
         ->condition('pid', $pid)
         ->condition('enabled', 0)

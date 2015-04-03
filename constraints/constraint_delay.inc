@@ -45,7 +45,7 @@ function password_policy_constraint_delay_validate($password, $constraint, $acco
 
   if ($last_change) {
     // Constraint is set in hours, so it gets converted to seconds with *60*60.
-    return time() - ($constraint * 60 * 60) > $last_change;
+    return REQUEST_TIME - ($constraint * 60 * 60) > $last_change;
   }
   return TRUE;
 }
