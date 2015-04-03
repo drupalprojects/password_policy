@@ -170,11 +170,20 @@ function password_policy_admin_list($form) {
   $options = array();
   $enabled = array();
 
-  // @ignore sniffer_array_array_longlinedeclaration:2
-  $result = db_select('password_policy', 'p', array('fetch' => PDO::FETCH_ASSOC, 'target' => 'slave'))
-      ->fields('p', array('pid', 'name', 'enabled', 'description', 'created', 'weight'))
-      ->orderBy('weight')
-      ->execute();
+  $result = db_select('password_policy', 'p', array(
+      'fetch' => PDO::FETCH_ASSOC,
+      'target' => 'slave',
+    ))
+    ->fields('p', array(
+      'pid',
+      'name',
+      'enabled',
+      'description',
+      'created',
+      'weight',
+    ))
+    ->orderBy('weight')
+    ->execute();
 
   $form['#tree'] = TRUE;
   foreach ($result as $row) {
