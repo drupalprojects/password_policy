@@ -3,9 +3,6 @@
 /**
  * @file
  * Admin page callback file for the Password Policy module.
- *
- * @ignore sniffer_commenting_functioncomment_missingparamtype:file
- * @ignore sniffer_commenting_functioncomment_missingreturntype:file
  */
 
 /****************************************************************************/
@@ -144,10 +141,10 @@ function password_policy_admin_settings_submit($form, &$form_state) {
 /**
  * Lists roles to which a policy applies.
  *
- * @param $pid
+ * @param int $pid
  *   Policy id.
  *
- * @return
+ * @return string[]
  *   Array of role names.
  */
 function _password_policy_admin_list_roles($pid) {
@@ -270,7 +267,7 @@ function password_policy_admin_list_submit($form, &$form_state) {
 /**
  * Returns HTML for the password policy administration list.
  *
- * @param $variables
+ * @param array $variables
  *   An associative array containing:
  *   - form: A render element representing the form.
  *
