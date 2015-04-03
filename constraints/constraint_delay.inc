@@ -2,8 +2,7 @@
 
 /**
  * @file
- * Password policy constraint callback to set a minimum delay between password
- * changes.
+ * Constraint callback to set a minimum delay between password changes.
  *
  * @link https://drupal.org/node/316765
  *
