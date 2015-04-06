@@ -176,13 +176,13 @@ class PasswordPolicy {
   private function loadPlugins() {
     ctools_include('plugins');
     foreach (ctools_get_plugins('password_policy', 'constraint') as $info) {
-      $this->_loadPlugin($info);
+      $this->loadPlugin($info);
     }
     foreach (ctools_get_plugins('password_policy', 'condition') as $info) {
-      $this->_loadPlugin($info);
+      $this->loadPlugin($info);
     }
     foreach (ctools_get_plugins('password_policy', 'item') as $info) {
-      $this->_loadPlugin($info);
+      $this->loadPlugin($info);
     }
   }
 
@@ -192,7 +192,7 @@ class PasswordPolicy {
    * @param object $info
    *   Password Policy plugin information.
    */
-  private function _loadPlugin($info) {
+  private function loadPlugin($info) {
     if (!isset($this->config[$info['name']])) {
       $this->config[$info['name']] = array();
     }
