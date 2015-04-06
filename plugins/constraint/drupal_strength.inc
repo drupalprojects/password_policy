@@ -59,16 +59,16 @@ function password_policy_drupal_strength_constraint($password, $account, $constr
   }
   // Count weaknesses.
   if (!$has_lowercase) {
-    $weaknesses++;
+    ++$weaknesses;
   }
   if (!$has_uppercase) {
-    $weaknesses++;
+    ++$weaknesses;
   }
   if (!$has_numbers) {
-    $weaknesses++;
+    ++$weaknesses;
   }
   if (!$has_punctuation) {
-    $weaknesses++;
+    ++$weaknesses;
   }
   // Apply penalty for each weakness (balanced against length penalty).
   switch ($weaknesses) {
