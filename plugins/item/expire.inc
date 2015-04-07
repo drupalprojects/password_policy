@@ -266,6 +266,10 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
               'hid' => $candidate->hid,
               'name' => $this->policy->name,
               'timeframe' => $notice_int,
+              // We use time() and not REQUEST_TIME so the stored sent time
+              // will be as close as possible to the time the expiration
+              // warning e-mail was sent.
+              // @ignore upgrade7x_6
               'sent' => time(),
             );
             drupal_write_record('password_policy_notice_history', $notice_history);
