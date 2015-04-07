@@ -175,35 +175,53 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
     // Check to see that the password has expired.
     if ($account->password_history[0]->created + $expire_int < REQUEST_TIME) {
       // If we are on the check ajax page, then skip.
-      if ($_GET['q'] != 'password_policy/check') {
-        $uri = "user/{$account->uid}/edit";
-
-        // If not on the user page, go there, but remember where we were.
-        if ($_GET['q'] != $uri) {
-          // If we have been here before, we do not want to override this
-          // info (it might be an ajax call).
-          if (!isset($_SESSION['password_policy_lock'])) {
-            $_SESSION['password_policy_lock'] = TRUE;
-//            $_SESSION['password_policy_GET'] = $_GET;
-//            $_SESSION['password_policy_POST'] = $_POST;
-          }
-          if (!empty($this->config['expire_warning_message'])) {
-            drupal_set_message($this->config['expire_warning_message'], 'warning');
-          }
-          password_policy_goto($uri);
-        }
-        // If we are on the user edit screen, set the destination so we go back.
-        else {
-// Comment out for now.  Causes infinite redirect loop when password expires.
-//          $_GET['destination'] = $_SESSION['password_policy_GET']['q'];
+      if (current_path() != 'password_policy/check') {
+        // If not on the password change page, go there.
+        $password_change_path = $this->getPasswordChangePath($account);
+        if (current_path() != $password_change_path) {
+          $this->setExpiredWarningMessage();
+          $this->goToPasswordChangePath($account);
         }
       }
     }
-    // Reset post and get if we are not locked.
-    elseif (isset($_SESSION['password_policy_lock'])) {
-//      $_GET = $_SESSION['password_policy_GET'];
-//      $_POST = $_SESSION['password_policy_POST'];
-      unset($_SESSION['password_policy_lock']);
+  }
+
+  /**
+   * Gets password change path.
+   *
+   * @param object $account
+   *   User object.
+   *
+   * @return string
+   *   Password change path for the user.
+   */
+  public function getPasswordChangePath($account) {
+    return "user/{$account->uid}/edit";
+  }
+
+  /**
+   * Redirects user to password change path.
+   *
+   * @param object $account
+   *   User object of user to be redirected.
+   */
+  public function goToPasswordChangePath($account) {
+    $password_change_path = $this->getPasswordChangePath($account);
+
+    // Set query to redirect user back to their original destination after
+    // leaving password change page.
+    $options = array('query' => drupal_get_destination());
+    unset($_GET['destination']);
+
+    drupal_goto($password_change_path, $options);
+  }
+
+  /**
+   * Sets warning message indicating password has expired.
+   */
+  public function setExpiredWarningMessage() {
+    if (!empty($this->config['expire_warning_message'])) {
+      drupal_set_message($this->config['expire_warning_message'], 'warning');
     }
   }
 
