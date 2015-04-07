@@ -152,14 +152,15 @@ class PasswordPolicy {
    *   TRUE if all conditions match, FALSE otherwise.
    */
   public function match($account) {
-    $does_match = FALSE;
     foreach ($this->getItems('condition') as $condition) {
       // Any condition with non-default configuration is "active"
       if ($condition->info['config'] != $condition->config) {
-        $does_match = $does_match || $condition->match($account);
+        if (!$condition->match($account)) {
+          return FALSE;
+        }
       }
     }
-    return $does_match;
+    return TRUE;
   }
 
   /**
