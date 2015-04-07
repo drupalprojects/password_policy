@@ -93,10 +93,10 @@ class PasswordPolicy {
   /**
    * Collects messages generated from all plugins.
    */
-  public function message() {
+  public function messages() {
     $items = array();
     foreach ($this->activeConstraints() as $constraint) {
-      $items = array_merge($items, $constraint->message());
+      $items = array_merge($items, $constraint->messages());
     }
     return $items;
   }
@@ -116,7 +116,7 @@ class PasswordPolicy {
     $errors = array();
     foreach ($this->activeConstraints() as $constraint) {
       if (!$constraint->check($pass, $account)) {
-        $errors = array_merge($errors, $constraint->failMessage($pass, $account));
+        $errors = array_merge($errors, $constraint->failMessages($pass, $account));
       }
     }
     return $errors;

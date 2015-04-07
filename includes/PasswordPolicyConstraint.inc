@@ -12,7 +12,7 @@
 class PasswordPolicyConstraint extends PasswordPolicyItem {
   protected $ppType = array('item', 'constraint');
 
-  public function message() {
+  public function messages() {
     $mes_temp = is_array($this->info['message']) ? $this->info['message'] : array($this->info['message']);
     $messages = array();
     foreach ($mes_temp as $id => $message) {
@@ -28,8 +28,8 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
     return $messages;
   }
 
-  public function failMessage($password, $account) {
-    return $this->message();
+  public function failMessages($password, $account) {
+    return $this->messages();
   }
 
   public function __construct($info, &$policy) {
