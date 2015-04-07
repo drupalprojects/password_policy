@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Password Policy JavaScript functionality.
+ */
+
 (function ($) {
 
 /**

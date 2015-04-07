@@ -92,6 +92,9 @@ class PasswordPolicy {
 
   /**
    * Collects messages generated from all plugins.
+   *
+   * @return string[]
+   *   Messages.
    */
   public function messages() {
     $items = array();
@@ -104,7 +107,7 @@ class PasswordPolicy {
   /**
    * Checks password versus each of the policy's active constraints.
    *
-   * @param string $pass
+   * @param string $password
    *   Password.
    * @param object $account
    *   User account.
@@ -112,11 +115,11 @@ class PasswordPolicy {
    * @return array
    *   Failure messages for failed constraints.
    */
-  public function check($pass, $account) {
+  public function check($password, $account) {
     $errors = array();
     foreach ($this->activeConstraints() as $constraint) {
-      if (!$constraint->check($pass, $account)) {
-        $errors = array_merge($errors, $constraint->failMessages($pass, $account));
+      if (!$constraint->check($password, $account)) {
+        $errors = array_merge($errors, $constraint->failMessages($password, $account));
       }
     }
     return $errors;
@@ -124,6 +127,9 @@ class PasswordPolicy {
 
   /**
    * Returns all constraints that are active.
+   *
+   * @return PasswordPolicyConstraint[]
+   *   Active constraints.
    */
   public function activeConstraints() {
     $constraints = array();
@@ -138,6 +144,12 @@ class PasswordPolicy {
 
   /**
    * Returns whether all active conditions match.
+   *
+   * @param object $account
+   *   User object.
+   *
+   * @return bool
+   *   TRUE if all conditions match, FALSE otherwise.
    */
   public function match($account) {
     $does_match = FALSE;
@@ -163,6 +175,9 @@ class PasswordPolicy {
 
   /**
    * Runs init for each of the items that is a cron item.
+   *
+   * @param object $account
+   *   User object.
    */
   public function init($account) {
     foreach ($this->getItems('init') as $item) {
@@ -201,6 +216,12 @@ class PasswordPolicy {
 
   /**
    * Gets all items of a particular type.
+   *
+   * @param string $type
+   *   Item type.
+   *
+   * @return PasswordPolicyItem[]
+   *   Items.
    */
   private function getItems($type) {
     $this->cache[$type] = isset($this->cache[$type]) ? $this->cache[$type] : array();
@@ -216,6 +237,12 @@ class PasswordPolicy {
 
   /**
    * Retrieves policy by name.
+   *
+   * @param string $name
+   *   Policy name.
+   *
+   * @return PasswordPolicy
+   *   Policy.
    */
   public static function policy($name) {
     ctools_include('export');
@@ -227,6 +254,10 @@ class PasswordPolicy {
 
   /**
    * Retrieves all policies.
+   *
+   * @return array
+   *   Associative array where keys are policy names and values are
+   *   password policies (i.e. PasswordPolicy objects).
    */
   public static function allPolicies() {
     ctools_include('export');
@@ -240,6 +271,9 @@ class PasswordPolicy {
 
   /**
    * Retrieves all enabled policies.
+   *
+   * @return PasswordPolicy[]
+   *   Enabled policies.
    */
   public static function enabledPolicies() {
     ctools_include('export');
@@ -255,6 +289,12 @@ class PasswordPolicy {
 
   /**
    * Retrieves all policies that match the current account.
+   *
+   * @param object $account
+   *   User object.
+   *
+   * @return PasswordPolicy[]
+   *   Policies matching account.
    */
   public static function matchedPolicies($account) {
     $policies = array();

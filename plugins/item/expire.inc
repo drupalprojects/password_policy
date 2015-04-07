@@ -85,6 +85,18 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
   return $sub_form;
 }
 
+/**
+ * Notifies user of upcoming password expiration by e-mail.
+ *
+ * @param object $account
+ *   User object.
+ * @param object $candidate
+ *   Various expiration-related information pertaining to user.
+ * @param int $expire
+ *   Time when password will expire, in seconds since Unix epoch.
+ * @param PasswordPolicyExpiration $item
+ *   Expiration policy item.
+ */
 function _password_policy_expire_notify($account, $candidate, $expire, $item) {
   $body = token_replace($item->config['expire_warning_email_message'], array(
     'user' => $account,
@@ -99,6 +111,22 @@ function _password_policy_expire_notify($account, $candidate, $expire, $item) {
   return $message;
 }
 
+/**
+ * Queries users who are candidates for an expiration warning.
+ *
+ * They are "candidates" in that they may or may not be covered by the
+ * expiration policy.
+ *
+ * @param int $notice_int
+ *   Beginning of notice (i.e. warning) interval, in seconds since the Unix
+ *   epoch.
+ * @param string $policy_name
+ *   Policy name.
+ *
+ * @return array
+ *   Array of candidates for password expiration warning, containing
+ *   information pertaining to expiration.
+ */
 function _password_policy_expire_query_users($notice_int, $policy_name) {
   $current_pw_query = db_select('password_policy_history', 'c');
   $current_pw_query
@@ -133,6 +161,9 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
   return $candidates;
 }
 
+/**
+ * Policy item that handles password expirations.
+ */
 class PasswordPolicyExpire extends PasswordPolicyItem {
   public $ppType = array('item', 'cron', 'init');
 
