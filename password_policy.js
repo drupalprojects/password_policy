@@ -170,7 +170,7 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
 };
 
 /**
- * Provide the summary information for the constraint settings vertical tabs.
+ * Provide the summary information for the condition settings vertical tabs.
  */
 Drupal.behaviors.passwordPolicyConditionSettingsSummary = {
   attach: function (context) {
