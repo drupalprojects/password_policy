@@ -13,7 +13,8 @@ class PasswordPolicyCondition extends PasswordPolicyItem {
   protected $ppType = array('item', 'condition');
 
   public function match($account) {
-    if ($func = $this->func('condition callback')) {
+    $func = $this->func('condition callback');
+    if ($func) {
       return $func($account, $this);
     }
   }

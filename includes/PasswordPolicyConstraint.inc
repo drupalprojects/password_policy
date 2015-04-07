@@ -41,7 +41,8 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
   }
 
   public function check($pass, $account) {
-    if ($func = $this->func('constraint callback')) {
+    $func = $this->func('constraint callback');
+    if ($func) {
       return $func($pass, $account, $this);
     }
   }

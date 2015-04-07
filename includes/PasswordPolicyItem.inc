@@ -33,7 +33,8 @@ class PasswordPolicyItem {
   }
 
   public function adminForm($form, &$form_state) {
-    if ($func = $this->func('admin form callback')) {
+    $func = $this->func('admin form callback');
+    if ($func) {
       return $func($form, $form_state, $this);
     }
     return array();
