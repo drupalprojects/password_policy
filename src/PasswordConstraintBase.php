@@ -16,7 +16,7 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
    * @return boolean
    *   Whether or not the password meets the constraint in the plugin.
    */
-  public function validate($policy_id, $password) {
+  public function validate($constraint_id, $password) {
     //all classes should plan to override this specific function, for now, just assume TRUE
     return TRUE;
   }
@@ -46,63 +46,63 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
   }
 
   /**
-   * Returns the path for adding policies.
+   * Returns the path for adding constraints.
    * @return string
    */
-  public function getPolicyPath() {
-    return $this->pluginDefinition['policy_path'];
+  public function getConstraintPath() {
+    return $this->pluginDefinition['constraint_path'];
   }
 
   /**
-   * Returns the path for updating existing policies.
+   * Returns the path for updating existing constraints.
    * @return string
    */
-  public function getPolicyUpdatePath() {
-    return $this->pluginDefinition['policy_update_path'];
+  public function getConstraintUpdatePath() {
+    return $this->pluginDefinition['constaint_update_path'];
   }
 
   /**
    * Returns the token for the identifier in the update path.
    * @return string
    */
-  public function getPolicyUpdateToken() {
-    return $this->pluginDefinition['policy_update_token'];
+  public function getConstraintsUpdateToken() {
+    return $this->pluginDefinition['constraint_update_token'];
   }
 
   /**
    * Returns an array of key value pairs.
    * @return array
    */
-  public function getPolicies() {
+  public function getConstraints() {
     return array();
   }
 
   /**
-   * Deletes the specific policy.
+   * Deletes the specific constraint.
    * @return boolean
    */
-  public function deletePolicy($policy_id) {
+  public function deleteConstraint($constraint_id) {
     return TRUE;
   }
 
   /**
-   * Check if the specific policy id exists.
+   * Check if the specific constraint id exists.
    * @return boolean
    */
-  public function policyExists($policy_id) {
+  public function constraintExists($constraint_id) {
     return FALSE;
   }
 
   /**
-   * Returns the title of the policy.
+   * Returns the title of the constraint.
    * @return string
    */
-  public function getPolicy($policy_id) {
+  public function getConstraint($constraint_id) {
     return NULL;
   }
 
   /**
-   * Returns the constraint's form ID to create a policy.
+   * Returns the constraint's form ID to create a constraint.
    * @return string
    */
   public function getFormId() {

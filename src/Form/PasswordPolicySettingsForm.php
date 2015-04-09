@@ -21,13 +21,26 @@ class PasswordPolicySettingsForm extends FormBase {
 
     $form['introduction'] = array(
       '#type' => 'item',
-      '#markup' => '<p>Password policies are defined through each constraint. A policy is an instance of the constraint. Click on the tab for the constraint below to create policies.</p><p>To apply the policies, go to the permissions page and select the roles to apply to the policy.</p>',
+      '#markup' => '<p>Password policies are a collection of constraints. Define constraints and then add the constraints to one or more policies.</p><p>To apply the policies, go to the permissions page and select the roles to apply to the policy.</p>',
     );
 
-    //show each constraint and table of its policies
-    $form['constraints'] = array(
+
+    //show each policy
+    $form['policies_container'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Policies',
+      '#description' => t('<p><a href="@policyaddpath">Add new password policy</a></p>', array('@policyaddpath' => $base_path . 'admin/config/security/password-policy/policy/add')),
+    );
+
+    //show each constraint
+    $form['constraints_container'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Constraints',
+    );
+
+    $form['constraints_container']['constraints'] = array(
       '#type' => 'vertical_tabs',
-      '#title' => 'Constraints & Policies',
+      '#title' => '',
     );
 
 
@@ -44,12 +57,12 @@ class PasswordPolicySettingsForm extends FormBase {
     //fieldset 1 will be for the policies
     $form['password_reset']['fs1'] = array(
       '#type' => 'fieldset',
-      '#title' => 'Policies',
+      '#title' => 'Constraints',
     );
     //add a new reset policy
     $form['password_reset']['fs1']['add_link'] = array(
       '#type' => 'item',
-      '#markup' => t('<p><a href="@resetaddpath">Add password reset policy</a></p>', array('@resetaddpath' => $base_path . 'admin/config/security/password-policy/reset')),
+      '#markup' => t('<p><a href="@resetaddpath">Add password reset constraint</a></p>', array('@resetaddpath' => $base_path . 'admin/config/security/password-policy/reset')),
     );
 
     //list reset policies
@@ -61,16 +74,16 @@ class PasswordPolicySettingsForm extends FormBase {
     foreach ($policy_rows as $policy_object) {
       $table_rows[] = array(
         'label' => t('Password reset after @days days', array('@days' => $policy_object->number_of_days)),
-        'update' => t('<a href="@resetupdatepath">Update policy</a>', array('@resetupdatepath' => $base_path . 'admin/config/security/password-policy/reset/' . $policy_object->pid)),
-        'delete' => t('<a href="@resetdeletepath">Delete policy</a>', array('@resetdeletepath' => $base_path . 'admin/config/security/password-policy/reset/delete/' . $policy_object->pid)),
+        'update' => t('<a href="@resetupdatepath">Update constraint</a>', array('@resetupdatepath' => $base_path . 'admin/config/security/password-policy/reset/' . $policy_object->pid)),
+        'delete' => t('<a href="@resetdeletepath">Delete constraint</a>', array('@resetdeletepath' => $base_path . 'admin/config/security/password-policy/reset/delete/' . $policy_object->pid)),
       );
     }
 
     $form['password_reset']['fs1']['policy_rows'] = array(
-      '#title' => 'Available Policies',
+      '#title' => 'Available Constraints',
       '#type' => 'table',
-      '#header' => array(t('Policy Definition'), t(''), t('')),
-      '#empty' => t('There are no policies defined for this constraint'),
+      '#header' => array(t('Constraint Definition'), t(''), t('')),
+      '#empty' => t('There are no constraints defined'),
       '#weight' => '4',
       '#rows' => $table_rows,
     );
@@ -124,7 +137,7 @@ class PasswordPolicySettingsForm extends FormBase {
         '#type' => 'item',
         //NOTE: The implementation below assumes use of PasswordPolicyPolicyForm. I am going in a new direction due to issues with the form API
         //'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id']))
-        '#markup' => t('<a href="@pathtopolicy">Add a new policy for this constraint</a>', array('@pathtopolicy' => $base_path . $plugin['policy_path']))
+        '#markup' => t('<a href="@pathtopolicy">Add a new constraint</a>', array('@pathtopolicy' => $base_path . $plugin['policy_path'] ))
       );
 
       //show table of policies
@@ -136,16 +149,16 @@ class PasswordPolicySettingsForm extends FormBase {
       foreach ($policy_rows as $policy_key => $policy_value) {
         $table_rows[] = array(
           'label' => $policy_value,
-          'update' => t('<a href="' . $base_path . $plugin['policy_update_path'] . '">Update policy</a>', array($plugin['policy_update_token'] => $policy_key)),
-          'delete' => t('<a href="@deletepolicy">Delete policy</a>', array('@deletepolicy' => $base_path . 'admin/config/security/password-policy/delete-policy/' . $plugin['id'] . '/' . $policy_key)),
+          'update' => t('<a href="' . $base_path . $plugin['policy_update_path'] . '">Update constraint</a>', array($plugin['policy_update_token'] => $policy_key)),
+          'delete' => t('<a href="@deletepolicy">Delete constraint</a>', array('@deletepolicy' => $base_path . 'admin/config/security/password-policy/delete-constraint/' . $plugin['id'] . '/' . $policy_key)),
         );
       }
 
       $form['constraint' . $i]['available_policies'] = array(
-        '#title' => 'Available Policies',
+        '#title' => 'Available Constraints',
         '#type' => 'table',
-        '#header' => array(t('Policy Definition'), t(''), t('')),
-        '#empty' => t('There are no policies defined for this constraint'),
+        '#header' => array(t('Constraint Definition'), t(''), t('')),
+        '#empty' => t('There are no constraints defined for '.$plugin['title']),
         '#weight' => '4',
         '#rows' => $table_rows,
       );

@@ -14,15 +14,15 @@ interface PasswordConstraintInterface {
 
   /**
    * Returns a true/false status as to if the password meets the requirements of the constraint.
-   * @param policy_id
-   *   The policy ID for the specific policy to verify
+   * @param constraint_id
+   *   The constraint ID for the specific constraint to verify
    * @param password
    *   The password entered by the end user
    * @return boolean
    *   Whether or not the password meets the constraint in the plugin.
    */
   //TODO - Remove this, put in policy
-  public function validate($policy_id, $password);
+  public function validate($constraint_id, $password);
 
   /**
    * Returns a translated string for the constraint title.
@@ -48,43 +48,43 @@ interface PasswordConstraintInterface {
    * @return string
    */
   //TODO - Rename this to "getPolicyCreatePath"
-  public function getPolicyPath();
+  public function getConstraintPath();
 
   /**
    * Returns the constraint's path to update a policy.
    * @return string
    */
-  public function getPolicyUpdatePath();
+  public function getConstraintUpdatePath();
 
   /**
    * Returns the token for the identifier found in the update path.
    * @return string
    */
-  public function getPolicyUpdateToken();
+  public function getConstraintUpdateToken();
 
   /**
-   * Returns the policies for the constraint.
+   * Returns the constraints.
    * @return array
    */
-  public function getPolicies();
+  public function getConstraints();
 
   /**
-   * Returns the policy for the constraint.
+   * Returns the constraint.
    * @return string
    */
   //TODO - This should be a PasswordPolicyBase object returned
-  public function getPolicy($policy_id);
+  public function getConstraint($constraint_id);
 
   /**
-   * Deletes the specific policy.
+   * Deletes the specific constraint.
    * @return boolean
    */
-  public function deletePolicy($policy_id);
+  public function deleteConstraint($constraint_id);
 
   /**
-   * Check the specific policy id exists.
+   * Check the specific constraint id exists.
    * @return boolean
    */
-  public function policyExists($policy_id);
+  public function constraintExists($constraint_id);
 
 }

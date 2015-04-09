@@ -7,14 +7,14 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 
-class PasswordPolicyDeleteForm extends FormBase {
+class PasswordPolicyDeleteConstraintForm extends FormBase {
 
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'password_policy_delete_form';
+    return 'password_policy_delete_constraint_form';
   }
 
   /**
@@ -91,12 +91,12 @@ class PasswordPolicyDeleteForm extends FormBase {
     $policy_id = $form_state->getValue('policy_id');
     $plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')
       ->createInstance($plugin_id);
-    if ($plugin_instance->deletePolicy($policy_id)) {
+    if ($plugin_instance->deleteConstraint($policy_id)) {
       //TODO - Consider removing permissions here?
-      drupal_set_message('Your policy has been deleted');
+      drupal_set_message('Your constraint has been deleted');
     }
     else {
-      drupal_set_message('There was an issue deleting your policy, please try again');
+      drupal_set_message('There was an issue deleting your constraint, please try again');
     }
     $form_state->setRedirect('password_policy.settings');
   }
