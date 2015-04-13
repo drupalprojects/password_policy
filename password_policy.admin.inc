@@ -464,7 +464,7 @@ function password_policy_admin_form_validate($form, &$form_state) {
     form_set_error('roles', t('You must select at least one role for a policy to apply to.'));
   }
   if (!empty($form_state['values']['warning']) && !preg_match("/^[0-9,]+$/", $form_state['values']['warning'])) {
-    form_set_error('warning', t('Warning must only contain digits and commas'));
+    form_set_error('warning', t('Warning must only contain digits and commas.'));
   }
 }
 
