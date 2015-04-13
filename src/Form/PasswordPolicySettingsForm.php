@@ -24,12 +24,6 @@ class PasswordPolicySettingsForm extends FormBase {
     $plugin_manager->getDefinitions();
     $all_plugins = $plugin_manager->getDefinitions();
 
-    //get all plugins
-    $policies = db_select("password_policies", 'p');
-    $policies->join('password_policy_constraints', 'pc', 'p.pid=pc.pid');
-    $policies->fields('p')
-      ->addExpression('count(pc.cid)', 'num_constraints');
-    $policies = $policies->execute()->fetchAll();
 
     //build out the form
     $form['introduction'] = array(
@@ -49,13 +43,23 @@ class PasswordPolicySettingsForm extends FormBase {
       '#markup' => t('<p><a href="@policyaddpath">Add new password policy</a></p>', array('@policyaddpath' => $base_path . 'admin/config/security/password-policy/policy/add')),
     );
 
+    //get all policies
+    $policies = db_select("password_policies", 'p');
+    $policies->leftjoin('password_policy_constraints', 'pc', 'p.pid=pc.pid');
+    $policies->fields('p')
+      ->addExpression('count(pc.cid)', 'num_constraints');
+    $policies->groupBy('p.pid');
+    $policies = $policies->execute()->fetchAll();
+
     //load all policy rows
     $policy_rows = array();
 
     foreach ($policies as $policy) {
       $policy_rows[] = array(
-        'title' => $policy->title,
+        'title' => $policy->policy_title,
         'num_constraints' => $policy->num_constraints,
+        'update_action' => t('<a href="@updatepath">Update policy</a>', array('@updatepath' => $base_path . 'admin/config/security/password-policy/policy/update/' . $policy->pid)),
+        'delete_action' => t('<a href="@deletepath">Delete policy</a>', array('@deletepath' => $base_path . 'admin/config/security/password-policy/policy/delete/' . $policy->pid)),
       );
     }
 
@@ -63,11 +67,13 @@ class PasswordPolicySettingsForm extends FormBase {
 
     //load table
     $form['policies_container']['policies_table'] = array(
-      '#type' => 'tableselect',
+      '#type' => 'table',
       '#empty' => 'No policies have been configured',
       '#header' => array(
         'title' => t('Title'),
         'num_constraints' => t('Constraints'),
+        'update_action' => t(''),
+        'delete_action' => t(''),
       ),
       '#rows' => $policy_rows,
     );

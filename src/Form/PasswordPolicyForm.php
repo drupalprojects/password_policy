@@ -27,8 +27,9 @@ class PasswordPolicyForm extends FormBase {
     $url = \Drupal\Core\Url::fromRoute('<current>');
     $current_path = $url->toString();
     $path_args = explode('/', $current_path);
-    if (count($path_args) == 7 and is_numeric($path_args[6])) {
-      $policy_id = $path_args[6];
+
+    if (count($path_args) == 8 and is_numeric($path_args[7])) {
+      $policy_id = $path_args[7];
       //load the policy
       $policy = db_select('password_policies', 'p')
         ->fields('p')
@@ -45,7 +46,7 @@ class PasswordPolicyForm extends FormBase {
       'policy_title' => array(
         '#type' => 'textfield',
         '#title' => 'Policy Title',
-        '#value' => (is_numeric($policy_id)) ? $policy->policy_text : '',
+        '#default_value' => (is_numeric($policy_id)) ? $policy->policy_title : '',
         '#required' => TRUE,
       ),
       'constraint_selectors' => array(
@@ -149,15 +150,15 @@ class PasswordPolicyForm extends FormBase {
     $plugin_types = $form_state->getValue('plugin_types');
 
     if ($form_state->getValue('pid')) {
+      $pid = $form_state->getValue('pid');
       db_update('password_policies')
         ->fields(array('policy_title' => $form_state->getValue('policy_title')))
-        ->condition('pid', $form_state->getValue('pid'))
+        ->condition('pid', $pid)
         ->execute();
-      db_delete('password_policy_constraints')->execute();
+      db_delete('password_policy_constraints')->condition('pid', $pid)->execute();
       $c=0;
       foreach($selectors as $index=>$selector){
         if($selector==TRUE) {
-          $pid = $form_state->getValue('pid');
           $cid = $constraints['constraint'.$c];
           $plugin_type = $plugin_types['plugin'.$c];
           db_insert('password_policy_constraints')
