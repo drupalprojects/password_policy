@@ -36,6 +36,12 @@ class PasswordPolicyForm extends FormBase {
         ->condition('pid', $policy_id)
         ->execute()
         ->fetchObject();
+
+      $policy_constraints = db_select('password_policy_constraints', 'p')
+        ->fields('p')
+        ->condition('pid', $policy_id)
+        ->execute()
+        ->fetchAll();
     }
 
     $form = array(
@@ -77,10 +83,16 @@ class PasswordPolicyForm extends FormBase {
       ->execute()
       ->fetchAll();
     foreach ($constraints as $index => $constraint) {
+      $selected = FALSE;
+      foreach($policy_constraints as $existing){
+        if($existing->cid == $constraint->cid and $existing->plugin_type=='password_reset'){
+          $selected = TRUE;
+        }
+      }
       $form['constraint_selectors']['selector'.$constraint_count] = array(
         '#type' => 'checkbox',
         '#title' => t('Apply password reset policy: Reset after ' . $constraint->number_of_days . ' days'),
-        '#default_value' => FALSE,
+        '#default_value' => $selected,
       );
       $form['constraints']['constraint'.$constraint_count] = array(
         '#type' => 'hidden',
