@@ -43,7 +43,8 @@ class PasswordPolicyForm extends FormBase {
         '#value' => (is_numeric($policy_id)) ? $policy_id : '',
       ),
       'policy_title' => array(
-        '#type' => 'text',
+        '#type' => 'textfield',
+        '#title' => 'Policy Title',
         '#value' => (is_numeric($policy_id)) ? $policy->policy_text : '',
         '#required' => TRUE,
       ),
