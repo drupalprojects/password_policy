@@ -30,7 +30,7 @@ class PasswordPolicyForm extends FormBase {
     if (count($path_args) == 7 and is_numeric($path_args[6])) {
       $policy_id = $path_args[6];
       //load the policy
-      $policy = db_select('password_policy_reset', 'p')
+      $policy = db_select('password_policies', 'p')
         ->fields('p')
         ->condition('pid', $policy_id)
         ->execute()
@@ -42,16 +42,90 @@ class PasswordPolicyForm extends FormBase {
         '#type' => 'hidden',
         '#value' => (is_numeric($policy_id)) ? $policy_id : '',
       ),
-      'number_of_days' => array(
-        '#type' => 'textfield',
-        '#title' => t('Number of days'),
-        '#default_value' => (is_numeric($policy_id)) ? $policy->number_of_days : '',
+      'policy_title' => array(
+        '#type' => 'text',
+        '#value' => (is_numeric($policy_id)) ? $policy->policy_text : '',
+        '#required' => TRUE,
+      ),
+      'constraint_selectors' => array(
+        '#type' => 'fieldset',
+        '#title' => t('Constraints'),
+        '#collapsible' => FALSE,
+        '#tree' => TRUE,
+      ),
+      'constraints' => array(
+        '#tree' => TRUE,
+      ),
+      'plugin_types' => array(
+        '#tree' => TRUE,
       ),
       'submit' => array(
         '#type' => 'submit',
         '#value' => (is_numeric($policy_id)) ? t('Update policy') : t('Add policy'),
       ),
     );
+
+    $constraint_count = 0;
+
+    /**
+     * PERMISSIONS DEFINED FROM PASSWORD RESET
+     */
+    $constraints = db_select('password_policy_reset', 'ppr')
+      ->fields('ppr', array())
+      ->execute()
+      ->fetchAll();
+    foreach ($constraints as $index => $constraint) {
+      $form['constraint_selectors']['selector'.$constraint_count] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Apply password reset policy: Reset after ' . $constraint->number_of_days . ' days'),
+        '#default_value' => '1',
+      );
+      $form['constraints']['constraint'.$constraint_count] = array(
+        '#type' => 'hidden',
+        '#value' => $constraint->cid,
+      );
+      $form['plugin_types']['plugin'.$constraint_count] = array(
+        '#type' => 'hidden',
+        '#value' => 'password_reset',
+      );
+      $constraint_count++;
+    }
+
+    /**
+     * PERMISSIONS DEFINED FROM PLUGINS
+     */
+    //load plugins
+    $plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
+    //dpm($plugin_manager);
+    $plugins = $plugin_manager->getDefinitions();
+
+    //create a perm per plugin
+    foreach ($plugins as $plugin) {
+      //dpm($plugin);
+      $plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')
+        ->createInstance($plugin['id']);
+
+      $constraints = $plugin_instance->getConstraints();
+
+      //dpm($plugin_instance);
+      foreach ($constraints as $index => $policy_text) {
+        $form['constraint_selectors']['selector'.$constraint_count] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Apply password policy: ' . $policy_text),
+          '#default_value' => '1',
+        );
+        $form['constraints']['constraint'.$constraint_count] = array(
+          '#type' => 'hidden',
+          '#value' => $index,
+        );
+        $form['plugin_types']['plugin'.$constraint_count] = array(
+          '#type' => 'hidden',
+          '#value' => $plugin['id'],
+        );
+        $constraint_count++;
+      }
+    }
+
     return $form;
   }
 
@@ -59,11 +133,7 @@ class PasswordPolicyForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $days = $form_state->getValue('number_of_days');
-    if (!is_numeric($days) or $days <= 0) {
-      $form_state->setErrorByName('number_of_days', $this->t('The number of days must be a positive integer.'));
-    }
-    //TODO - Add validation for unique number
+
   }
 
   /**
@@ -71,18 +141,20 @@ class PasswordPolicyForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     if ($form_state->getValue('pid')) {
-      db_update('password_policy_reset')
-        ->fields(array('number_of_days' => $form_state->getValue('number_of_days')))
+      db_update('password_policies')
+        ->fields(array('policy_title' => $form_state->getValue('policy_title')))
         ->condition('pid', $form_state->getValue('pid'))
         ->execute();
+      drupal_set_message('Your policy has been updated');
     }
     else {
-      db_insert('password_policy_reset')
-        ->fields(array('number_of_days'))
-        ->values(array('number_of_days' => $form_state->getValue('number_of_days')))
+      db_insert('password_policies')
+        ->fields(array('policy_title'))
+        ->values(array('policy_title' => $form_state->getValue('policy_title')))
         ->execute();
+      drupal_set_message('Your policy has been added');
     }
-    drupal_set_message('Your policy has been added');
+
     $form_state->setRedirect('password_policy.settings');
     //TODO - Consider removal of permissions here
   }
