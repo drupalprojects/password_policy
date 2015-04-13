@@ -109,16 +109,19 @@ class PasswordPolicyForm extends FormBase {
 
       //dpm($plugin_instance);
       foreach ($constraints as $index => $policy_text) {
-        $form['constraint_selectors']['selector'.$constraint_count] = array(
+        //$form['constraint_selectors']['selector'.$constraint_count] = array(
+        $form['constraint_selectors'][$constraint_count] = array(
           '#type' => 'checkbox',
           '#title' => t('Apply password policy: ' . $policy_text),
           '#default_value' => '1',
         );
-        $form['constraints']['constraint'.$constraint_count] = array(
+        //$form['constraints']['constraint'.$constraint_count] = array(
+        $form['constraints'][$constraint_count] = array(
           '#type' => 'hidden',
           '#value' => $index,
         );
-        $form['plugin_types']['plugin'.$constraint_count] = array(
+        //$form['plugin_types']['plugin'.$constraint_count] = array(
+        $form['plugin_types'][$constraint_count] = array(
           '#type' => 'hidden',
           '#value' => $plugin['id'],
         );
@@ -140,11 +143,30 @@ class PasswordPolicyForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $selectors = $form_state->getValue('constraint_selectors');
+    $constraints = $form_state->getValue('constraints');
+    $plugin_types = $form_state->getValue('plugin_types');
     if ($form_state->getValue('pid')) {
       db_update('password_policies')
         ->fields(array('policy_title' => $form_state->getValue('policy_title')))
         ->condition('pid', $form_state->getValue('pid'))
         ->execute();
+      db_delete('password_policy_constraints')->execute();
+      foreach($selectors as $index=>$selector){
+        if($selector==TRUE) {
+          $pid = $form_state->getValue('pid');
+          $cid = $constraints[$index];
+          $plugin_type = $plugin_types[$index];
+          db_insert('password_policy_constraints')
+            ->fields(array('pid', 'cid', 'plugin_type'))
+            ->values(array(
+              'pid' => $pid,
+              'cid' => $cid,
+              'plugin_type' => $plugin_type
+            ))
+            ->execute();
+        }
+      }
       drupal_set_message('Your policy has been updated');
     }
     else {
@@ -152,10 +174,24 @@ class PasswordPolicyForm extends FormBase {
         ->fields(array('policy_title'))
         ->values(array('policy_title' => $form_state->getValue('policy_title')))
         ->execute();
+      foreach($selectors as $index=>$selector){
+        if($selector==TRUE) {
+          $pid = $form_state->getValue('pid');
+          $cid = $constraints[$index];
+          $plugin_type = $plugin_types[$index];
+          db_insert('password_policy_constraints')
+            ->fields(array('pid', 'cid', 'plugin_type'))
+            ->values(array(
+              'pid' => $pid,
+              'cid' => $cid,
+              'plugin_type' => $plugin_type
+            ))
+            ->execute();
+        }
+      }
       drupal_set_message('Your policy has been added');
     }
 
     $form_state->setRedirect('password_policy.settings');
-    //TODO - Consider removal of permissions here
   }
 }
