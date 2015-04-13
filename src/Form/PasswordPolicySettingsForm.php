@@ -19,6 +19,19 @@ class PasswordPolicySettingsForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     global $base_path;
 
+    //constraint plugins
+    $plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
+    $plugin_manager->getDefinitions();
+    $all_plugins = $plugin_manager->getDefinitions();
+
+    //get all plugins
+    $policies = db_select("password_policies", 'p');
+    $policies->join('password_policy_constraints', 'pc', 'p.pid=pc.pid');
+    $policies->fields('p')
+      ->addExpression('count(pc.cid)', 'num_constraints');
+    $policies = $policies->execute()->fetchAll();
+
+    //build out the form
     $form['introduction'] = array(
       '#type' => 'item',
       '#markup' => '<p>Password policies are a collection of constraints. Define constraints and then add the constraints to one or more policies.</p><p>To apply the policies, go to the permissions page and select the roles to apply to the policy.</p>',
@@ -29,7 +42,34 @@ class PasswordPolicySettingsForm extends FormBase {
     $form['policies_container'] = array(
       '#type' => 'fieldset',
       '#title' => 'Policies',
-      '#description' => t('<p><a href="@policyaddpath">Add new password policy</a></p>', array('@policyaddpath' => $base_path . 'admin/config/security/password-policy/policy/add')),
+    );
+
+    $form['policies_container']['add_link'] = array(
+      '#type' => 'markup',
+      '#markup' => t('<p><a href="@policyaddpath">Add new password policy</a></p>', array('@policyaddpath' => $base_path . 'admin/config/security/password-policy/policy/add')),
+    );
+
+    //load all policy rows
+    $policy_rows = array();
+
+    foreach ($policies as $policy) {
+      $policy_rows[] = array(
+        'title' => $policy->title,
+        'num_constraints' => $policy->num_constraints,
+      );
+    }
+
+    //get the constraints from plugins
+
+    //load table
+    $form['policies_container']['policies_table'] = array(
+      '#type' => 'tableselect',
+      '#empty' => 'No policies have been configured',
+      '#header' => array(
+        'title' => t('Title'),
+        'num_constraints' => t('Constraints'),
+      ),
+      '#rows' => $policy_rows,
     );
 
     //show each constraint
@@ -54,28 +94,29 @@ class PasswordPolicySettingsForm extends FormBase {
       '#group' => 'constraints'
     );
 
-    //fieldset 1 will be for the policies
+    //fieldset 1 will be for the reset constraint
     $form['password_reset']['fs1'] = array(
       '#type' => 'fieldset',
       '#title' => 'Constraints',
     );
-    //add a new reset policy
+    //add a new reset constraint
     $form['password_reset']['fs1']['add_link'] = array(
       '#type' => 'item',
       '#markup' => t('<p><a href="@resetaddpath">Add password reset constraint</a></p>', array('@resetaddpath' => $base_path . 'admin/config/security/password-policy/reset')),
     );
 
-    //list reset policies
-    $table_rows = array();
-    $policy_rows = db_select("password_policy_reset", 'p')
+    //list reset constraints
+    $reset_constraint_rows = db_select("password_policy_reset", 'p')
       ->fields('p')
       ->execute()
       ->fetchAll();
-    foreach ($policy_rows as $policy_object) {
+
+    $table_rows = array();
+    foreach ($reset_constraint_rows as $constraint) {
       $table_rows[] = array(
-        'label' => t('Password reset after @days days', array('@days' => $policy_object->number_of_days)),
-        'update' => t('<a href="@resetupdatepath">Update constraint</a>', array('@resetupdatepath' => $base_path . 'admin/config/security/password-policy/reset/' . $policy_object->pid)),
-        'delete' => t('<a href="@resetdeletepath">Delete constraint</a>', array('@resetdeletepath' => $base_path . 'admin/config/security/password-policy/reset/delete/' . $policy_object->pid)),
+        'label' => t('Password reset after @days days', array('@days' => $constraint->number_of_days)),
+        'update' => t('<a href="@resetupdatepath">Update constraint</a>', array('@resetupdatepath' => $base_path . 'admin/config/security/password-policy/reset/' . $constraint->cid)),
+        'delete' => t('<a href="@resetdeletepath">Delete constraint</a>', array('@resetdeletepath' => $base_path . 'admin/config/security/password-policy/reset/delete/' . $constraint->cid)),
       );
     }
 
@@ -117,10 +158,7 @@ class PasswordPolicySettingsForm extends FormBase {
      * CONSTRAINTS / PLUGINS
      */
 
-    //constraint plugins
-    $plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
-    $plugin_manager->getDefinitions();
-    $all_plugins = $plugin_manager->getDefinitions();
+
     //loop over each constraint
     $i = 0;
     foreach ($all_plugins as $plugin) {

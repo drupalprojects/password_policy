@@ -79,7 +79,7 @@ class PasswordPolicyForm extends FormBase {
       $form['constraint_selectors']['selector'.$constraint_count] = array(
         '#type' => 'checkbox',
         '#title' => t('Apply password reset policy: Reset after ' . $constraint->number_of_days . ' days'),
-        '#default_value' => '1',
+        '#default_value' => FALSE,
       );
       $form['constraints']['constraint'.$constraint_count] = array(
         '#type' => 'hidden',
@@ -147,17 +147,19 @@ class PasswordPolicyForm extends FormBase {
     $selectors = $form_state->getValue('constraint_selectors');
     $constraints = $form_state->getValue('constraints');
     $plugin_types = $form_state->getValue('plugin_types');
+
     if ($form_state->getValue('pid')) {
       db_update('password_policies')
         ->fields(array('policy_title' => $form_state->getValue('policy_title')))
         ->condition('pid', $form_state->getValue('pid'))
         ->execute();
       db_delete('password_policy_constraints')->execute();
+      $c=0;
       foreach($selectors as $index=>$selector){
         if($selector==TRUE) {
           $pid = $form_state->getValue('pid');
-          $cid = $constraints[$index];
-          $plugin_type = $plugin_types[$index];
+          $cid = $constraints['constraint'.$c];
+          $plugin_type = $plugin_types['plugin'.$c];
           db_insert('password_policy_constraints')
             ->fields(array('pid', 'cid', 'plugin_type'))
             ->values(array(
@@ -167,19 +169,20 @@ class PasswordPolicyForm extends FormBase {
             ))
             ->execute();
         }
+        $c++;
       }
       drupal_set_message('Your policy has been updated');
     }
     else {
-      db_insert('password_policies')
+      $pid = db_insert('password_policies')
         ->fields(array('policy_title'))
         ->values(array('policy_title' => $form_state->getValue('policy_title')))
         ->execute();
+      $c=0;
       foreach($selectors as $index=>$selector){
         if($selector==TRUE) {
-          $pid = $form_state->getValue('pid');
-          $cid = $constraints[$index];
-          $plugin_type = $plugin_types[$index];
+          $cid = $constraints['constraint'.$c];
+          $plugin_type = $plugin_types['plugin'.$c];
           db_insert('password_policy_constraints')
             ->fields(array('pid', 'cid', 'plugin_type'))
             ->values(array(
@@ -189,6 +192,7 @@ class PasswordPolicyForm extends FormBase {
             ))
             ->execute();
         }
+        $c++;
       }
       drupal_set_message('Your policy has been added');
     }
