@@ -32,29 +32,29 @@ class PasswordPolicyDeleteResetForm extends FormBase {
       return array();
     }
 
-    $policy_id = $path_args[7];
+    $constraint_id = $path_args[7];
 
-    if (!is_numeric($policy_id)) {
-      drupal_set_message('No policy found', 'error');
+    if (!is_numeric($constraint_id)) {
+      drupal_set_message('No constraint found', 'error');
       return array();
     }
 
-    $policy = db_select('password_policy_reset', 'p')
+    $constraint = db_select('password_policy_reset', 'p')
       ->fields('p')
-      ->condition('pid', $policy_id)
+      ->condition('cid', $constraint_id)
       ->execute()
       ->fetchObject();
 
-    if (empty($policy)) {
-      drupal_set_message('No policy found', 'error');
+    if (empty($constraint)) {
+      drupal_set_message('No constraint found', 'error');
       return array();
     }
 
 
     $form = array(
-      'policy_id' => array(
+      'constraint_id' => array(
         '#type' => 'hidden',
-        '#value' => (is_numeric($policy_id)) ? $policy_id : '',
+        '#value' => (is_numeric($constraint_id)) ? $constraint_id : '',
       ),
       'description' => array(
         '#markup' => 'Are you sure you wish to delete this policy?'
@@ -78,15 +78,15 @@ class PasswordPolicyDeleteResetForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $policy_id = $form_state->getValue('policy_id');
+    $constraint_id = $form_state->getValue('constraint_id');
     $result = db_delete('password_policy_reset')
-      ->condition('pid', $policy_id)
+      ->condition('cid', $constraint_id)
       ->execute();
     if ($result) {
-      drupal_set_message('Your policy has been deleted');
+      drupal_set_message('Your constraint has been deleted');
     }
     else {
-      drupal_set_message('There was an issue deleting your policy, please try again');
+      drupal_set_message('There was an issue deleting your constraint, please try again');
     }
     $form_state->setRedirect('password_policy.settings');
   }
