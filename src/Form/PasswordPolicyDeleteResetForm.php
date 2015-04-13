@@ -57,11 +57,11 @@ class PasswordPolicyDeleteResetForm extends FormBase {
         '#value' => (is_numeric($constraint_id)) ? $constraint_id : '',
       ),
       'description' => array(
-        '#markup' => 'Are you sure you wish to delete this policy?'
+        '#markup' => 'Are you sure you wish to delete this constraint?'
       ),
       'submit' => array(
         '#type' => 'submit',
-        '#value' => t('Confirm deletion of policy'),
+        '#value' => t('Confirm deletion of constraint'),
       ),
     );
     return $form;
