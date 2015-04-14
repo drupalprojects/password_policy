@@ -33,50 +33,50 @@ class PasswordLength extends PasswordConstraintBase {
    * @param password
    *   The password entered by the end user
    * @return boolean
-   *   Whether or not the password meets the constraint in the plugin.
+   *   Whether or not the password meets the constraint
    */
-  function validate($policy_id, $password) {
-    $policy = db_select('password_policy_length_policies', 'p')
+  function validate($constraint_id, $password) {
+    $constraint = db_select('password_policy_length_constraints', 'p')
       ->fields('p');
 
-    $policy = $policy->condition('pid', $policy_id)
+    $constraint = $constraint->condition('cid', $constraint_id)
       ->execute()
       ->fetch();
 
     $validation = new PasswordPolicyValidation();
 
-    if (strlen($password) < $policy->character_length) {
-      $validation->setErrorMessage('The length of the password is ' . strlen($password) . ' characters, which is less than the ' . $policy->character_length . ' characters of the policy');
+    if (strlen($password) < $constraint->character_length) {
+      $validation->setErrorMessage('The length of the password is ' . strlen($password) . ' characters, which is less than the ' . $policy->character_length . ' characters of the constraint');
     }
     return $validation;
   }
 
   /**
-   * Returns an array of key value pairs, key is the ID, value is the policy.
+   * Returns an array of key value pairs, key is the ID, value is the constraint.
    *
    * @return array
-   *   List of policies.
+   *   List of constraints.
    */
-  function getPolicies() {
-    $policy = db_select('password_policy_length_policies', 'p')
+  function getConstraints() {
+    $constraint = db_select('password_policy_length_constraints', 'p')
       ->fields('p');
 
-    $policies = $policy->execute()->fetchAll();
+    $constraints = $constraint->execute()->fetchAll();
     $array = array();
-    foreach ($policies as $policy) {
-      $array[$policy->pid] = 'Minimum character length ' . $policy->character_length;
+    foreach ($constraints as $constraint) {
+      $array[$constraint->cid] = 'Minimum character length ' . $constraint->character_length;
     }
     return $array;
   }
 
   /**
-   * Deletes the specific policy.
+   * Deletes the specific constraint.
    * @return boolean
    */
-  public function deletePolicy($policy_id) {
+  public function deleteConstraint($constraint_id) {
 
-    $result = db_delete('password_policy_length_policies')
-      ->condition('pid', $policy_id)
+    $result = db_delete('password_policy_length_constraints')
+      ->condition('cid', $constraint_id)
       ->execute();
 
     if ($result) {
@@ -86,14 +86,14 @@ class PasswordLength extends PasswordConstraintBase {
   }
 
   /**
-   * Check the specific policy exists.
+   * Check if the specific constraint exists.
    * @return boolean
    */
-  public function policyExists($policy_id) {
+  public function constraintExists($constraint_id) {
 
-    $result = db_select('password_policy_length_policies', 'p')
+    $result = db_select('password_policy_length_constraints', 'p')
       ->fields('p')
-      ->condition('pid', $policy_id)
+      ->condition('cid', $constraint_id)
       ->execute()
       ->fetchAll();
 
@@ -104,14 +104,14 @@ class PasswordLength extends PasswordConstraintBase {
   }
 
   /**
-   * Return the specific policy exists.
+   * Return the specific constraint.
    * @return string
    */
-  public function getPolicy($policy_id) {
+  public function getConstraint($constraint_id) {
 
-    $result = db_select('password_policy_length_policies', 'p')
+    $result = db_select('password_policy_length_constraints', 'p')
       ->fields('p')
-      ->condition('pid', $policy_id)
+      ->condition('cid', $constraint_id)
       ->execute()
       ->fetchAll();
 

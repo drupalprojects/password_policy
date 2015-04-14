@@ -65,7 +65,7 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
    * Returns the token for the identifier in the update path.
    * @return string
    */
-  public function getConstraintsUpdateToken() {
+  public function getConstraintUpdateToken() {
     return $this->pluginDefinition['constraint_update_token'];
   }
 

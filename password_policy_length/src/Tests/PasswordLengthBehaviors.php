@@ -31,17 +31,17 @@ class PasswordLengthBehaviors extends WebTestBase {
     // Create new password length policy.
     $edit = array();
     $edit['character_length'] = '5';
-    $this->drupalPostForm('admin/config/security/password-policy/password-length', $edit, t('Add policy'));
+    $this->drupalPostForm('admin/config/security/password-policy/password-length', $edit, t('Add constraint'));
 
     // Get latest ID to get policy.
-    $id = db_select("password_policy_length_policies", 'p')
-      ->fields('p', array('pid'))
-      ->orderBy('p.pid', 'DESC')
+    $id = db_select("password_policy_length_constraints", 'p')
+      ->fields('p', array('cid'))
+      ->orderBy('p.cid', 'DESC')
       ->execute()
       ->fetchObject();
 
     // Create user with policy applied.
-    $user2 = $this->drupalCreateUser(array('enforce password_policy_length_constraint.' . $id->pid . ' constraint'));
+    $user2 = $this->drupalCreateUser(array('enforce password_policy_length_constraint.' . $id->cid . ' constraint'));
     $uid = $user2->id();
 
     // Login.
