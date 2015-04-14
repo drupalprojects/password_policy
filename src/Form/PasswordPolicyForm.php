@@ -123,19 +123,22 @@ class PasswordPolicyForm extends FormBase {
 
       //dpm($plugin_instance);
       foreach ($constraints as $index => $policy_text) {
-        //$form['constraint_selectors']['selector'.$constraint_count] = array(
-        $form['constraint_selectors'][$constraint_count] = array(
+        $selected = FALSE;
+        foreach($policy_constraints as $existing){
+          if($existing->cid == $index and $existing->plugin_type==$plugin['id']){
+            $selected = TRUE;
+          }
+        }
+        $form['constraint_selectors']['selector'.$constraint_count] = array(
           '#type' => 'checkbox',
           '#title' => t('Apply password policy: ' . $policy_text),
-          '#default_value' => '1',
+          '#default_value' => $selected,
         );
-        //$form['constraints']['constraint'.$constraint_count] = array(
-        $form['constraints'][$constraint_count] = array(
+        $form['constraints']['constraint'.$constraint_count] = array(
           '#type' => 'hidden',
           '#value' => $index,
         );
-        //$form['plugin_types']['plugin'.$constraint_count] = array(
-        $form['plugin_types'][$constraint_count] = array(
+        $form['plugin_types']['plugin'.$constraint_count] = array(
           '#type' => 'hidden',
           '#value' => $plugin['id'],
         );

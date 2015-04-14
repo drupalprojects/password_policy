@@ -37,40 +37,36 @@ class PasswordPolicyDeleteConstraintForm extends FormBase {
     //validate params
     if ($plugin_instance) {
 
-      $policy_id = $path_args[7];
-      if (!$plugin_instance->policyExists($policy_id)) {
-        drupal_set_message('No policy found', 'error');
+      $constraint_id = $path_args[7];
+      if (!$plugin_instance->constraintExists($constraint_id)) {
+        drupal_set_message('No constraint found', 'error');
         return array();
       }
       else {
-        //TODO - Clean this up with a Policy interface and "getPolicy($id)"
-        $all_policies = $plugin_instance->getPolicies();
-        if (array_key_exists($policy_id, $all_policies)) {
-          $policy_instance = $all_policies[$policy_id];
-        }
+        $constraint_instance = $plugin_instance->getConstraint($constraint_id);
       }
     }
 
-    if (!$policy_instance or !$plugin_instance) {
+    if (!$constraint_instance or !$plugin_instance) {
       drupal_set_message('No plugin or policy found', 'error');
       return array();
     }
 
     $form = array(
-      'policy_id' => array(
+      'cid' => array(
         '#type' => 'hidden',
-        '#value' => (is_numeric($policy_id)) ? $policy_id : '',
+        '#value' => (is_numeric($constraint_id)) ? $constraint_id : '',
       ),
       'plugin_id' => array(
         '#type' => 'hidden',
         '#value' => (!empty($plugin_id)) ? $plugin_id : '',
       ),
       'description' => array(
-        '#markup' => 'Are you sure you wish to delete this policy?'
+        '#markup' => 'Are you sure you wish to delete this constraint?'
       ),
       'submit' => array(
         '#type' => 'submit',
-        '#value' => t('Confirm deletion of policy'),
+        '#value' => t('Confirm deletion of constraint'),
       ),
     );
     return $form;
@@ -88,11 +84,10 @@ class PasswordPolicyDeleteConstraintForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $plugin_id = $form_state->getValue('plugin_id');
-    $policy_id = $form_state->getValue('policy_id');
+    $constraint_id = $form_state->getValue('cid');
     $plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')
       ->createInstance($plugin_id);
-    if ($plugin_instance->deleteConstraint($policy_id)) {
-      //TODO - Consider removing permissions here?
+    if ($plugin_instance->deleteConstraint($constraint_id)) {
       drupal_set_message('Your constraint has been deleted');
     }
     else {

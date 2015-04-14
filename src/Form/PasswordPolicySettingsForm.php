@@ -185,20 +185,20 @@ class PasswordPolicySettingsForm extends FormBase {
       );
 
       //show table of policies
-      $policy_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')
+      $plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')
         ->createInstance($plugin['id']);
-      $policy_rows = $policy_instance->getPolicies();
+      $constraint_rows = $plugin_instance->getConstraints();
 
       $table_rows = array();
-      foreach ($policy_rows as $policy_key => $policy_value) {
+      foreach ($constraint_rows as $constraint_key => $constraint_title) {
         $table_rows[] = array(
-          'label' => $policy_value,
-          'update' => t('<a href="' . $base_path . $plugin['policy_update_path'] . '">Update constraint</a>', array($plugin['policy_update_token'] => $policy_key)),
-          'delete' => t('<a href="@deletepolicy">Delete constraint</a>', array('@deletepolicy' => $base_path . 'admin/config/security/password-policy/delete-constraint/' . $plugin['id'] . '/' . $policy_key)),
+          'label' => $constraint_title,
+          'update' => t('<a href="' . $base_path . $plugin['policy_update_path'] . '">Update constraint</a>', array($plugin['policy_update_token'] => $constraint_key)),
+          'delete' => t('<a href="@deletepolicy">Delete constraint</a>', array('@deletepolicy' => $base_path . 'admin/config/security/password-policy/delete-constraint/' . $plugin['id'] . '/' . $constraint_key)),
         );
       }
 
-      $form['constraint' . $i]['available_policies'] = array(
+      $form['constraint' . $i]['available_constraints'] = array(
         '#title' => 'Available Constraints',
         '#type' => 'table',
         '#header' => array(t('Constraint Definition'), t(''), t('')),

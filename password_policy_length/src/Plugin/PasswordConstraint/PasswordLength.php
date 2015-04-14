@@ -113,12 +113,11 @@ class PasswordLength extends PasswordConstraintBase {
       ->fields('p')
       ->condition('cid', $constraint_id)
       ->execute()
-      ->fetchAll();
+      ->fetchObject();
 
-    if (count($result) > 0) {
-      $obj = $result->fetchObject();
+    if (!empty($result)) {
 
-      return 'Minimum character length ' . $obj->character_length;
+      return 'Minimum character length ' . $result->character_length;
     }
     return FALSE;
   }
