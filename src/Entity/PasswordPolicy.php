@@ -85,6 +85,13 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   /**
    * {@inheritdoc}
    */
+  public function getConstraint($constraint_id) {
+    return $this->getPluginCollection()->get($this->plugin);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getConstraints() {
     if (!$this->constraintCollection) {
       $this->constraintCollection = new PasswordPolicyConstraintCollection(\Drupal::service('plugin.manager.password_policy.password_constraint'), $this->constraints);

@@ -5,9 +5,10 @@ namespace Drupal\password_policy\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityForm;
 
 
-class PasswordPolicyForm extends FormBase {
+class PasswordPolicyForm extends EntityForm {
 
 
   /**
@@ -20,7 +21,16 @@ class PasswordPolicyForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
+    $form = parent::form($form, $form_state);
+
+    $password_policy = $this->entity;
+
+    // Change page title for the edit operation
+    if ($this->operation == 'edit') {
+      $form['#title'] = $this->t('Update policy @name', array('@name' => $password_policy->label()));
+    }
+
     //get policy
     $policy_id = '';
     //get current path
@@ -44,18 +54,28 @@ class PasswordPolicyForm extends FormBase {
         ->fetchAll();
     }
 
-    $form = array(
-      'pid' => array(
-        '#type' => 'hidden',
-        '#value' => (is_numeric($policy_id)) ? $policy_id : '',
-      ),
+    $form += array(
       'policy_title' => array(
         '#type' => 'textfield',
-        '#title' => 'Policy Title',
-        '#default_value' => (is_numeric($policy_id)) ? $policy->policy_title : '',
+        '#title' => $this->t('Policy Title'),
+        '#default_value' => $password_policy->label(),
         '#required' => TRUE,
       ),
-      'constraint_selectors' => array(
+      'pid' => array(
+        '#type' => 'machine_name',
+        '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
+        '#default_value' => $password_policy->id(),
+        '#disabled' => !$password_policy->isNew(),
+        '#machine_name' => array(
+          'source' => array('policy_title'),
+          'exists' => 'password_policy_load'
+        ),
+      ),
+      /**
+       * TO DO - How do I get a list of selectable constraints to show up?
+       */
+      'constraints' => $password_policy->getPlugin()->buildConfigurationForm(array(), $form_state)
+      /*'constraint_selectors' => array(
         '#type' => 'fieldset',
         '#title' => t('Constraints'),
         '#collapsible' => FALSE,
@@ -66,12 +86,16 @@ class PasswordPolicyForm extends FormBase {
       ),
       'plugin_types' => array(
         '#tree' => TRUE,
-      ),
-      'submit' => array(
-        '#type' => 'submit',
-        '#value' => (is_numeric($policy_id)) ? t('Update policy') : t('Add policy'),
-      ),
+      ),*/
     );
+
+
+
+
+
+
+
+
 
     $constraint_count = 0;
 
@@ -152,14 +176,25 @@ class PasswordPolicyForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function save(array $form, FormStateInterface $form_state) {
+    $password_policy = $this->entity;
 
-  }
+    $status = $password_policy->save();
 
-  /**
-   * {@inheritdoc}
-   */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+    if ($status) {
+      // Setting the success message.
+      drupal_set_message($this->t('Password policy @name has been saved', array(
+        '@name' => $password_policy->label(),
+      )));
+    }
+    else {
+      drupal_set_message($this->t('There was an issue saving the password policy @name. Please try again', array(
+        '@name' => $password_policy->label(),
+      )));
+    }
+
+
+
     $selectors = $form_state->getValue('constraint_selectors');
     $constraints = $form_state->getValue('constraints');
     $plugin_types = $form_state->getValue('plugin_types');
