@@ -165,6 +165,16 @@ class PasswordPolicyForm extends FormBase {
     $plugin_types = $form_state->getValue('plugin_types');
 
     if ($form_state->getValue('pid')) {
+
+    }
+
+
+    $config = \Drupal::service('config.factory')->getEditable('password_policy.policy');
+
+
+
+
+    if ($form_state->getValue('pid')) {
       $pid = $form_state->getValue('pid');
       db_update('password_policies')
         ->fields(array('policy_title' => $form_state->getValue('policy_title')))
