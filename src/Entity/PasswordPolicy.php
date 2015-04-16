@@ -17,9 +17,7 @@ use Drupal\password_policy\PasswordPolicyInterface;
 * @ConfigEntityType(
 *   id = "password_policy",
 *   label = @Translation("Password Policy"),
-*   fieldable = FALSE,
-*   controllers = {
-*     "list_builder" = "Drupal\flower\FlowerListBuilder",
+*   handlers = {
 *     "form" = {
 *       "add" = "Drupal\password_policy\Form\PasswordPolicyForm",
 *       "edit" = "Drupal\password_policy\Form\PasswordPolicyForm",
@@ -32,10 +30,6 @@ use Drupal\password_policy\PasswordPolicyInterface;
 *     "id" = "pid",
 *     "label" = "policy_title"
 *   },
-*   links = {
-*     "edit-form" = "password_policy.update_policy",
-*     "delete-form" = "password_policy.delete_policy"
-*   }
 * )
 */
 class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface, EntityWithPluginCollectionInterface {
@@ -55,6 +49,13 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   protected $policy_title;
 
   /**
+   * The ID of the password reset option.
+   *
+   * @var int
+   */
+  public $password_reset;
+
+  /**
    * The collection that holds the constraints for this entity.
    *
    * @var \Drupal\password_policy\PasswordPolicyConstraintCollection
@@ -66,7 +67,7 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
    *
    * @var array
    */
-  protected $constraints = array();
+  protected $policy_constraints;
 
   /**
    * {@inheritdoc}
@@ -85,16 +86,16 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   /**
    * {@inheritdoc}
    */
-  public function getConstraint($constraint_id) {
-    return $this->getPluginCollection()->get($this->plugin);
+  public function getConstraintPlugin($constraint_id) {
+    return $this->getPluginCollection()->get($constraint_id);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getConstraints() {
+  public function getConstraintPlugins() {
     if (!$this->constraintCollection) {
-      $this->constraintCollection = new PasswordPolicyConstraintCollection(\Drupal::service('plugin.manager.password_policy.password_constraint'), $this->constraints);
+      $this->constraintCollection = new PasswordPolicyConstraintCollection(\Drupal::service('plugin.manager.password_policy.password_constraint'));
     }
     return $this->constraintCollection;
   }
@@ -103,6 +104,6 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
    * {@inheritdoc}
    */
   public function getPluginCollections() {
-    return array('constraints' => $this->getEffects());
+    return array('policy_constraints' => $this->getConstraintPlugins());
   }
 }

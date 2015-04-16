@@ -2,21 +2,12 @@
 
 namespace Drupal\password_policy\Form;
 
-
-use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\EntityTypeInterface;
 
 
 class PasswordPolicyForm extends EntityForm {
-
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFormId() {
-    return 'password_policy_form';
-  }
 
   /**
    * {@inheritdoc}
@@ -31,6 +22,7 @@ class PasswordPolicyForm extends EntityForm {
       $form['#title'] = $this->t('Update policy @name', array('@name' => $password_policy->label()));
     }
 
+    /*
     //get policy
     $policy_id = '';
     //get current path
@@ -53,6 +45,7 @@ class PasswordPolicyForm extends EntityForm {
         ->execute()
         ->fetchAll();
     }
+    */
 
     $form += array(
       'policy_title' => array(
@@ -71,24 +64,73 @@ class PasswordPolicyForm extends EntityForm {
           'exists' => 'password_policy_load'
         ),
       ),
-      /**
-       * TO DO - How do I get a list of selectable constraints to show up?
-       */
-      'constraints' => $password_policy->getPlugin()->buildConfigurationForm(array(), $form_state)
-      /*'constraint_selectors' => array(
+      'password_reset' => array(
+        '#type' => 'select',
+        '#title' => t('Password Reset Option'),
+        '#options' => array('none'=>'None'),
+        '#default_value' => $password_policy->password_reset,
+        '#required' => FALSE,
+      ),
+      'policy_constraints' => array(
         '#type' => 'fieldset',
         '#title' => t('Constraints'),
         '#collapsible' => FALSE,
         '#tree' => TRUE,
       ),
-      'constraints' => array(
-        '#tree' => TRUE,
-      ),
-      'plugin_types' => array(
-        '#tree' => TRUE,
-      ),*/
     );
 
+    /**
+     * CONSTRAINTS DEFINED FROM PASSWORD RESET
+     */
+    $constraints = db_select('password_policy_reset', 'ppr')
+    ->fields('ppr', array())
+    ->execute()
+    ->fetchAll();
+    $reset_options = array();
+    foreach ($constraints as $index => $constraint) {
+      $key = $constraint->cid;
+      $form['password_reset']['#options'][$key] = 'Expire after ' . $constraint->number_of_days . ' days';
+    }
+
+    /**
+     * CONSTRAINTS DEFINED FROM PLUGINS
+     */
+    $plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint');
+    $constraint_plugins = $plugin_instance->getDefinitions();
+
+    $collection = $password_policy->getConstraintPlugins();
+
+    $plugin_count = 0;
+    foreach ($constraint_plugins as $constraint_plugin) {
+      $plugin_instance = \Drupal::service('plugin.manager.password_policy.password_constraint')
+        ->createInstance($constraint_plugin['id']);
+      $constraints = $plugin_instance->getConstraints();
+      $key = $constraint_plugin['id'];
+      $form['policy_constraints'][$plugin_count] = array(
+        '#type' => 'fieldset',
+        '#title' => t($constraint_plugin['title']),
+        '#collapsible' => FALSE,
+        '#tree' => TRUE,
+      );
+
+      $form['policy_constraints'][$plugin_count]['key'] = array(
+        '#type' => 'hidden',
+        '#value' => $key,
+      );
+
+      $constraint_count = 0;
+      foreach($constraints as $constraint_id => $constraint_text){
+        $selected = FALSE;
+        $form['policy_constraints'][$plugin_count]['constraints'][$constraint_count] = array(
+          '#type' => 'checkbox',
+          '#title' => t($constraint_text),
+          '#default_value' => $selected,
+          '#return_value' => $constraint_id,
+        );
+        $constraint_count++;
+      }
+      $plugin_count++;
+    }
 
 
 
@@ -96,12 +138,12 @@ class PasswordPolicyForm extends EntityForm {
 
 
 
-
+/*
     $constraint_count = 0;
 
     /**
      * PERMISSIONS DEFINED FROM PASSWORD RESET
-     */
+     * /
     $constraints = db_select('password_policy_reset', 'ppr')
       ->fields('ppr', array())
       ->execute()
@@ -131,7 +173,7 @@ class PasswordPolicyForm extends EntityForm {
 
     /**
      * PERMISSIONS DEFINED FROM PLUGINS
-     */
+     * /
     //load plugins
     $plugin_manager = \Drupal::service('plugin.manager.password_policy.password_constraint');
     //dpm($plugin_manager);
@@ -168,7 +210,7 @@ class PasswordPolicyForm extends EntityForm {
         );
         $constraint_count++;
       }
-    }
+    }*/
 
     return $form;
   }
@@ -177,6 +219,11 @@ class PasswordPolicyForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
+
+    $values = $form_state->getValues();
+
+    dpm($values);
+
     $password_policy = $this->entity;
 
     $status = $password_policy->save();
@@ -194,7 +241,7 @@ class PasswordPolicyForm extends EntityForm {
     }
 
 
-
+/*
     $selectors = $form_state->getValue('constraint_selectors');
     $constraints = $form_state->getValue('constraints');
     $plugin_types = $form_state->getValue('plugin_types');
@@ -257,6 +304,7 @@ class PasswordPolicyForm extends EntityForm {
       }
       drupal_set_message('Your policy has been added');
     }
+*/
 
     $form_state->setRedirect('password_policy.settings');
   }
