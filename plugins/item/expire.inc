@@ -66,22 +66,24 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
       ),
     ),
   );
-  $sub_form['expire_fieldset']['expire_warning_email_message_token'] = array(
-    '#theme' => 'token_tree',
-    '#token_types' => array(
-      'user',
-      'site',
-      'current-date',
-      'password_expiration_date',
-    ),
-    '#global_types' => FALSE,
-    '#click_insert' => TRUE,
-    '#states' => array(
-      'visible' => array(
-        ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+  if (module_exists('token')) {
+    $sub_form['expire_fieldset']['expire_warning_email_message_token'] = array(
+      '#theme' => 'token_tree',
+      '#token_types' => array(
+        'user',
+        'site',
+        'current-date',
+        'password_expiration_date',
       ),
-    ),
-  );
+      '#global_types' => FALSE,
+      '#click_insert' => TRUE,
+      '#states' => array(
+        'visible' => array(
+          ':input[name="expire_warning_email_sent"]' => array('empty' => FALSE),
+        ),
+      ),
+    );
+  }
   return $sub_form;
 }
 
