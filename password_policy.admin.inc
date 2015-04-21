@@ -275,7 +275,7 @@ function password_policy_admin_list_submit($form, &$form_state) {
  *
  * @see theme_filter_admin_overview()
  */
-function theme_password_policy_admin_list($variables) {
+function theme_password_policy_admin_list(array $variables) {
   $form = $variables['form'];
 
   $rows = array();
