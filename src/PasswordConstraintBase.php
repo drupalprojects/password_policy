@@ -7,8 +7,11 @@
 namespace Drupal\password_policy;
 
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\Core\Form\FormInterface;
+use Drupal\Core\Form\FormStateInterface;
 
-class PasswordConstraintBase extends PluginBase implements PasswordConstraintInterface {
+abstract class PasswordConstraintBase extends PluginBase implements FormInterface, PasswordConstraintInterface {
+
   /**
    * Returns a true/false status as to if the password meets the requirements of the constraint.
    * @param password
@@ -102,10 +105,54 @@ class PasswordConstraintBase extends PluginBase implements PasswordConstraintInt
   }
 
   /**
-   * Returns the constraint's form ID to create a constraint.
-   * @return string
+   * {@inheritdoc}
    */
   public function getFormId() {
-    // TODO: Implement getFormId() method.
+    return $this->getPluginDefinition()['id'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return array();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfiguration() {
+    return $this->configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setConfiguration(array $configuration) {
+    $this->configuration = $configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    return array();
   }
 }

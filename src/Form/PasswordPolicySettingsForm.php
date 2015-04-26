@@ -178,9 +178,13 @@ class PasswordPolicySettingsForm extends FormBase {
 
       //show link to add policy
       $form['constraint' . $i]['add_policy'] = array(
-        '#type' => 'item',
+        //'#type' => 'link',
+        //'#title' => $this->t('Add a new constraint'),
+        //'#url' => $this->url(),
+
         //NOTE: The implementation below assumes use of PasswordPolicyPolicyForm. I am going in a new direction due to issues with the form API
         //'#markup' => t('<p>'.$plugin['description'].'<br/> <a href="@pathtopolicy">Add a new policy for this constraint</a></p>', array('@pathtopolicy'=>$base_path.'admin/config/security/password/policy/'.$plugin['id']))
+        //'#markup' => t('<a href="@pathtopolicy">Add a new constraint</a>', array('@pathtopolicy' => $base_path . $plugin['policy_path'] ))
         '#markup' => t('<a href="@pathtopolicy">Add a new constraint</a>', array('@pathtopolicy' => $base_path . $plugin['policy_path'] ))
       );
 

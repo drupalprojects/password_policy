@@ -12,26 +12,30 @@ use Drupal\password_policy\PasswordPolicyConstraintCollection;
 use Drupal\password_policy\PasswordPolicyInterface;
 
 /**
-* Defines a Password Policy configuration entity class.
-*
-* @ConfigEntityType(
-*   id = "password_policy",
-*   label = @Translation("Password Policy"),
-*   handlers = {
-*     "form" = {
-*       "add" = "Drupal\password_policy\Form\PasswordPolicyForm",
-*       "edit" = "Drupal\password_policy\Form\PasswordPolicyForm",
-*       "delete" = "Drupal\password_policy\Form\PasswordPolicyDeleteForm"
-*     }
-*   },
-*   config_prefix = "password_policy",
-*   admin_permission = "administer site configuration",
-*   entity_keys = {
-*     "id" = "pid",
-*     "label" = "policy_title"
-*   },
-* )
-*/
+ * Defines a Password Policy configuration entity class.
+ *
+ * @ConfigEntityType(
+ *   id = "password_policy",
+ *   label = @Translation("Password Policy"),
+ *   handlers = {
+ *     "form" = {
+ *       "add" = "Drupal\password_policy\Form\PasswordPolicyForm",
+ *       "edit" = "Drupal\password_policy\Form\PasswordPolicyForm",
+ *       "delete" = "Drupal\password_policy\Form\PasswordPolicyDeleteForm"
+ *     },
+ *     "wizard" = {
+ *       "add" = "Drupal\password_policy\Wizard\PasswordPolicyWizard",
+ *       "edit" = "Drupal\password_policy\Wizard\PasswordPolicyWizard"
+ *     }
+ *   },
+ *   config_prefix = "password_policy",
+ *   admin_permission = "administer site configuration",
+ *   entity_keys = {
+ *     "id" = "pid",
+ *     "label" = "policy_title"
+ *   },
+ * )
+ */
 class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface, EntityWithPluginCollectionInterface {
 
   /**

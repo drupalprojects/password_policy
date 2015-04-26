@@ -38,7 +38,7 @@ use Drupal\password_policy\PasswordConstraintInterface;
  *   }
  * )
  */
-class PasswordConstraint extends ConfigEntityBase implements PasswordConstraintInterface {
+class PasswordConstraint extends ConfigEntityBase {
   /**
    * The PasswordConstraint ID.
    *
