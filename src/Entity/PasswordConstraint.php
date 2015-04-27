@@ -17,7 +17,6 @@ use Drupal\password_policy\PasswordConstraintInterface;
  *   id = "password_constraint",
  *   label = @Translation("PasswordConstraint"),
  *   handlers = {
- *     "list_builder" = "Drupal\password_policy\Controller\PasswordConstraintListBuilder",
  *     "form" = {
  *       "add" = "Drupal\password_policy\Form\PasswordConstraintForm",
  *       "edit" = "Drupal\password_policy\Form\PasswordConstraintForm",

@@ -18,9 +18,8 @@ use Drupal\password_policy\PasswordPolicyInterface;
  *   id = "password_policy",
  *   label = @Translation("Password Policy"),
  *   handlers = {
+ *     "list_builder" = "Drupal\password_policy\Controller\PasswordPolicyListBuilder",
  *     "form" = {
- *       "add" = "Drupal\password_policy\Form\PasswordPolicyForm",
- *       "edit" = "Drupal\password_policy\Form\PasswordPolicyForm",
  *       "delete" = "Drupal\password_policy\Form\PasswordPolicyDeleteForm"
  *     },
  *     "wizard" = {
@@ -31,9 +30,14 @@ use Drupal\password_policy\PasswordPolicyInterface;
  *   config_prefix = "password_policy",
  *   admin_permission = "administer site configuration",
  *   entity_keys = {
- *     "id" = "pid",
- *     "label" = "policy_title"
+ *     "id" = "id",
+ *     "label" = "label"
  *   },
+ *   links = {
+ *     "edit-form" = "entity.password_policy.wizard.edit",
+ *     "delete-form" = "entity.password_policy.delete_form",
+ *     "collection" = "entity.password_policy.collection"
+ *   }
  * )
  */
 class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface, EntityWithPluginCollectionInterface {
@@ -43,28 +47,21 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   *
   * @var int
   */
-  protected $pid;
+  protected $id;
 
   /**
   * The policy title.
   *
   * @var string
   */
-  protected $policy_title;
+  protected $label;
 
   /**
    * The ID of the password reset option.
    *
    * @var int
    */
-  public $password_reset;
-
-  /**
-   * The collection that holds the constraints for this entity.
-   *
-   * @var \Drupal\password_policy\PasswordPolicyConstraintCollection
-   */
-  protected $constraintCollection;
+  protected $password_reset;
 
   /**
    * Constraint instance IDs.
@@ -74,17 +71,24 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   protected $policy_constraints;
 
   /**
+   * Roles to which this policy applies.
+   *
+   * @var array
+   */
+  protected $roles;
+
+  /**
    * {@inheritdoc}
    */
   public function id() {
-    return $this->pid;
+    return $this->id;
   }
 
   /**
    * {@inheritdoc}
    */
   public function label() {
-    return $this->policy_title;
+    return $this->label;
   }
 
   /**

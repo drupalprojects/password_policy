@@ -24,6 +24,8 @@ class PasswordPolicyConstraintForm extends FormBase {
    */
   protected $manager;
 
+  protected $machine_name;
+
   public static function create(ContainerInterface $container) {
     return new static($container->get('plugin.manager.password_policy.password_constraint'));
   }
@@ -42,8 +44,10 @@ class PasswordPolicyConstraintForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, $machine_name = NULL) {
     $cached_values = $form_state->get('wizard');
+    $this->machine_name = $machine_name;
+    //drupal_set_message($this->t('Tempstore ID: !test', ['!test' => print_r($cached_values, TRUE)]));
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
     $constraints = [];
     foreach ($this->manager->getDefinitions() as $plugin_id => $definition) {
@@ -104,7 +108,7 @@ class PasswordPolicyConstraintForm extends FormBase {
       $instance = $this->manager->createInstance($constraint['id'], $constraint);
       $build = array(
         '#type' => 'operations',
-        '#links' => $this->getOperations('entity.password_policy.constraint', ['machine_name' => $cached_values['id'], 'constraint' => $row]),
+        '#links' => $this->getOperations('entity.password_policy.constraint', ['machine_name' => $cached_values['id'], 'constraint_id' => $row]),
       );
       $configured_conditions[] = array(
         $instance->getPluginId(),
@@ -130,7 +134,8 @@ class PasswordPolicyConstraintForm extends FormBase {
         )),
       ),
     );
-    $route_parameters['id'] = $route_parameters['constraint'];
+    $route_parameters['id'] = $route_parameters['constraint_id'];
+    unset($route_parameters['constraint_id']);
     $operations['delete'] = array(
       'title' => t('Delete'),
       'url' => new Url($route_name_base . '.delete', $route_parameters),

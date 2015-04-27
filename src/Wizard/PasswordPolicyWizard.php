@@ -63,9 +63,9 @@ class PasswordPolicyWizard extends EntityFormWizardBase {
         'title' => $this->t('Configure Constraints'),
         'form' => 'Drupal\password_policy\Form\PasswordPolicyConstraintForm',
       ],
-      'policy' => [
-        'title' => $this->t('Set Policy'),
-        'form' => '',
+      'roles' => [
+        'title' => $this->t('Apply to Roles'),
+        'form' => 'Drupal\password_policy\Form\PasswordPolicyRolesForm',
       ],
     ];
   }

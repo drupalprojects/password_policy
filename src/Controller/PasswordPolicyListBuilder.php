@@ -2,23 +2,24 @@
 
 /**
  * @file
- * Contains Drupal\password_policy\Controller\PasswordConstraintListBuilder.
+ * Contains Drupal\password_policy\Controller\PasswordPolicyListBuilder.
  */
 
 namespace Drupal\password_policy\Controller;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Url;
 
 /**
- * Provides a listing of PasswordConstraint.
+ * Provides a listing of Password Policies.
  */
-class PasswordConstraintListBuilder extends ConfigEntityListBuilder {
+class PasswordPolicyListBuilder extends ConfigEntityListBuilder {
   /**
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = $this->t('PasswordConstraint');
+    $header['label'] = $this->t('Password Policy');
     $header['id'] = $this->t('Machine name');
     return $header + parent::buildHeader();
   }
@@ -31,6 +32,13 @@ class PasswordConstraintListBuilder extends ConfigEntityListBuilder {
     $row['id'] = $entity->id();
     // You probably want a few more properties here...
     return $row + parent::buildRow($entity);
+  }
+
+  public function getDefaultOperations(EntityInterface $entity) {
+    $operations = parent::getDefaultOperations($entity);
+    $operations['edit']['url'] = new Url('entity.password_policy.wizard.edit', ['machine_name' => $entity->id(), 'step' => 'general']);
+
+    return $operations;
   }
 
 }

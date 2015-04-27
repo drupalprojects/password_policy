@@ -12,6 +12,12 @@ use Drupal\Core\Form\FormStateInterface;
 
 abstract class PasswordConstraintBase extends PluginBase implements FormInterface, PasswordConstraintInterface {
 
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    $this->setConfiguration($configuration);
+  }
+
   /**
    * Returns a true/false status as to if the password meets the requirements of the constraint.
    * @param password
@@ -139,14 +145,17 @@ abstract class PasswordConstraintBase extends PluginBase implements FormInterfac
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    return $this->configuration;
+    return array(
+      'id' => $this->getPluginId(),
+    ) + $this->configuration;
   }
 
   /**
    * {@inheritdoc}
    */
   public function setConfiguration(array $configuration) {
-    $this->configuration = $configuration;
+    $this->configuration = $configuration + $this->defaultConfiguration();
+    return $this;
   }
 
   /**
