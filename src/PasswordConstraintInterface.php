@@ -7,9 +7,9 @@ namespace Drupal\password_policy;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\Core\Form\FormInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 
-interface PasswordConstraintInterface extends PluginInspectionInterface, ConfigurablePluginInterface, FormInterface {
+interface PasswordConstraintInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
 
   /**
    * Returns a true/false status as to if the password meets the requirements of the constraint.
@@ -20,7 +20,7 @@ interface PasswordConstraintInterface extends PluginInspectionInterface, Configu
    * @return boolean
    *   Whether or not the password meets the constraint in the plugin.
    */
-  public function validate($constraint_id, $password);
+  public function validate($password);
 
   /**
    * Returns a translated string for the constraint title.
@@ -40,45 +40,4 @@ interface PasswordConstraintInterface extends PluginInspectionInterface, Configu
    */
   public function getErrorMessage();
 
-  /**
-   * Returns the path for adding constraints.
-   * @return string
-   */
-  public function getConstraintPath();
-
-  /**
-   * Returns the path for updating existing constraints.
-   * @return string
-   */
-  public function getConstraintUpdatePath();
-
-  /**
-   * Returns the token for the identifier in the update path.
-   * @return string
-   */
-  public function getConstraintUpdateToken();
-
-  /**
-   * Returns an array of key value pairs.
-   * @return array
-   */
-  public function getConstraints();
-
-  /**
-   * Deletes the specific constraint.
-   * @return boolean
-   */
-  public function deleteConstraint($constraint_id);
-
-  /**
-   * Check if the specific constraint id exists.
-   * @return boolean
-   */
-  public function constraintExists($constraint_id);
-
-  /**
-   * Returns the title of the constraint.
-   * @return string
-   */
-  public function getConstraint($constraint_id);
 }

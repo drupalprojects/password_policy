@@ -86,7 +86,7 @@ class ConstraintEdit extends FormBase {
       $instance = $this->manager->createInstance($constraint_id, []);
     }
     /** @var $instance \Drupal\password_policy\PasswordConstraintInterface */
-    $form = $instance->buildForm($form, $form_state);
+    $form = $instance->buildConfigurationForm($form, $form_state);
     if (isset($id)) {
       // Conditionally set this form element so that we can update or add.
       $form['id'] = [
@@ -115,7 +115,7 @@ class ConstraintEdit extends FormBase {
     $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
     /** @var $instance \Drupal\password_policy\PasswordConstraintInterface */
     $instance = $form_state->getValue('instance');
-    $instance->submitForm($form, $form_state);
+    $instance->submitConfigurationForm($form, $form_state);
     if ($form_state->hasValue('id')) {
       $cached_values['policy_constraints'][$form_state->getValue('id')] = $instance->getConfiguration();
     }
