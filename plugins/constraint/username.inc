@@ -40,6 +40,6 @@ function password_policy_username_constraint($password, $account, $constraint) {
   if (empty($account->name)) {
     return TRUE;
   }
-  $regex_string = '/' . $account->name . '/';
+  $regex_string = '/' . preg_quote($account->name, '/') . '/';
   return !preg_match($regex_string, $password);
 }
