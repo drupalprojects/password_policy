@@ -83,4 +83,5 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
     }
     return TRUE;
   }
+
 }

@@ -306,4 +306,5 @@ class PasswordPolicy {
     }
     return $policies;
   }
+
 }

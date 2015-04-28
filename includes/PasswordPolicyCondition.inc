@@ -30,4 +30,5 @@ class PasswordPolicyCondition extends PasswordPolicyItem {
     }
     return TRUE;
   }
+
 }
