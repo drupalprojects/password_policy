@@ -22,7 +22,7 @@ class PasswordPolicyGeneralForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
 
     $form['password_reset'] = [
       '#type' => 'textfield',
@@ -36,9 +36,9 @@ class PasswordPolicyGeneralForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
     $cached_values['password_reset'] = $form_state->getValue('password_reset');
-    $form_state->set('wizard', $cached_values);
+    $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
 }

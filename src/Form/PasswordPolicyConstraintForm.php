@@ -24,6 +24,9 @@ class PasswordPolicyConstraintForm extends FormBase {
    */
   protected $manager;
 
+  /**
+   * @var string
+   */
   protected $machine_name;
 
   public static function create(ContainerInterface $container) {
@@ -44,10 +47,9 @@ class PasswordPolicyConstraintForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $machine_name = NULL) {
-    $cached_values = $form_state->get('wizard');
-    $this->machine_name = $machine_name;
-    //drupal_set_message($this->t('Tempstore ID: !test', ['!test' => print_r($cached_values, TRUE)]));
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    $this->machine_name = $cached_values['id'];
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
     $constraints = [];
     foreach ($this->manager->getDefinitions() as $plugin_id => $definition) {
@@ -87,9 +89,8 @@ class PasswordPolicyConstraintForm extends FormBase {
   }
 
   public function add(array &$form, FormStateInterface $form_state) {
-    $cached_values = $form_state->get('wizard');
     $constraint = $form_state->getValue('constraint');
-    $content = \Drupal::formBuilder()->getForm('\Drupal\password_policy\Form\ConstraintEdit', $constraint, $cached_values['id']);
+    $content = \Drupal::formBuilder()->getForm('\Drupal\password_policy\Form\ConstraintEdit', $constraint, $this->machine_name);
     $content['#attached']['library'][] = 'core/drupal.dialog.ajax';
     $response = new AjaxResponse();
     $response->addCommand(new OpenModalDialogCommand($this->t('Configure Required Context'), $content, array('width' => '700')));

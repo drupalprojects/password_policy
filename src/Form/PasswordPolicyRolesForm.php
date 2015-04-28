@@ -42,7 +42,7 @@ class PasswordPolicyRolesForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $cache_values = $form_state->get('wizard');
+    $cache_values = $form_state->getTemporaryValue('wizard');
     $options = [];
     foreach ($this->storage->loadMultiple() as $role) {
       $options[$role->id()] = $role->label();
@@ -61,9 +61,9 @@ class PasswordPolicyRolesForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $cache_values = $form_state->get('wizard');
+    $cache_values = $form_state->getTemporaryValue('wizard');
     $cache_values['roles'] = array_filter($form_state->getValue('roles'));
-    $form_state->set('wizard', $cache_values);
+    $form_state->setTemporaryValue('wizard', $cache_values);
   }
 
 }
