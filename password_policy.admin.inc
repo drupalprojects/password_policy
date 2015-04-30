@@ -32,6 +32,12 @@ function password_policy_admin_settings() {
       array('@request_new_password' => url('user/password'))),
     '#default_value' => _password_policy_forcing_change_by_mail(),
   );
+  $form['force_change']['password_policy_force_change_extra_allowed_paths'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Extra allowed paths'),
+    '#default_value' => variable_get('password_policy_force_change_extra_allowed_paths', _password_policy_default_force_change_extra_allowed_paths()),
+    '#description' => t("Extra paths, one per line, that the user can access as normal when being forced to change their password. The '*' character is a wildcard. These paths are in addition to the minimally allowed paths for password changes, which are always allowed by Password Policy. This setting can be used, for example, to allow paths requested by custom AJAX on the password change page."),
+  );
 
   $form['expiration'] = array(
     '#type' => 'fieldset',
@@ -121,6 +127,7 @@ function password_policy_admin_settings_submit($form, &$form_state) {
       variable_set('password_policy_warning_body', $form_state['values']['password_policy_warning_body']);
       variable_set('password_policy_force_change_reset', $form_state['values']['password_policy_force_change_reset']);
       variable_set('password_policy_force_change_by_mail', $form_state['values']['password_policy_force_change_by_mail']);
+      variable_set('password_policy_force_change_extra_allowed_paths', $form_state['values']['password_policy_force_change_extra_allowed_paths']);
       drupal_set_message(t('The configuration options have been saved.'));
       break;
 
@@ -133,6 +140,7 @@ function password_policy_admin_settings_submit($form, &$form_state) {
       variable_del('password_policy_warning_body');
       variable_del('password_policy_force_change_reset');
       variable_del('password_policy_force_change_by_mail');
+      variable_del('password_policy_force_change_extra_allowed_paths');
       drupal_set_message(t('The configuration options have been reset to their default values.'));
       break;
   }
