@@ -99,7 +99,7 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
  * @param PasswordPolicyExpiration $item
  *   Expiration policy item.
  */
-function _password_policy_expire_notify($account, $candidate, $expire, $item) {
+function _password_policy_expire_notify($account, $candidate, $expire, PasswordPolicyExpiration $item) {
   $body = token_replace($item->config['expire_warning_email_message'], array(
     'user' => $account,
     'password_expiration_date' => $expire,

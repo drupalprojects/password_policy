@@ -20,7 +20,7 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
    * @param object $policy
    *   Database object as returned by ctools_export_crud_load().
    */
-  public function __construct($info, &$policy) {
+  public function __construct(array $info, &$policy) {
     if (isset($info['default'])) {
       $info['prime value'] = $info['name'];
       $info['config'] = array($info['name'] => $info['default']);
