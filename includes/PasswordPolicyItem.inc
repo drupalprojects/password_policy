@@ -5,7 +5,7 @@
  */
 
 /**
- * Class PasswordPolicyItem
+ * Class PasswordPolicyItem.
  *
  * This class is used for item Ctools plugin type.
  */

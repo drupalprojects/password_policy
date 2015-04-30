@@ -6,7 +6,7 @@
 (function ($) {
 
 /**
- * Overriding the standard password strength check
+ * Overrides the standard password strength check.
  */
 Drupal.behaviors.passwordOverride = {
   attach: function (context, settings) {

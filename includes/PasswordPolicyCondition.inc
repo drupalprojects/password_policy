@@ -5,7 +5,7 @@
  */
 
 /**
- * Class PasswordPolicyCondition
+ * Class PasswordPolicyCondition.
  *
  * This class is used for conditionally executing policies.
  */

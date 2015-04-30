@@ -5,7 +5,7 @@
  */
 
 /**
- * Class PasswordPolicyConstraint
+ * Class PasswordPolicyConstraint.
  *
  * This class is to test individual policy constraints.
  */
