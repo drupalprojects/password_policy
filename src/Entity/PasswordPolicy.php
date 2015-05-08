@@ -34,9 +34,9 @@ use Drupal\password_policy\PasswordPolicyInterface;
  *     "label" = "label"
  *   },
  *   links = {
- *     "edit-form" = "entity.password_policy.wizard.edit",
- *     "delete-form" = "entity.password_policy.delete_form",
- *     "collection" = "entity.password_policy.collection"
+ *     "edit-form" = "/admin/config/security/password-policy/{machine_name}/{step}",
+ *     "delete-form" = "/admin/config/security/password-policy/policy/delete/{password_policy}",
+ *     "collection" = "/admin/config/security/password-policy"
  *   }
  * )
  */
