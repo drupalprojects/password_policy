@@ -11,6 +11,7 @@ namespace Drupal\password_policy\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\user\RoleStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -47,6 +48,7 @@ class PasswordPolicyRolesForm extends FormBase {
     foreach ($this->storage->loadMultiple() as $role) {
       $options[$role->id()] = $role->label();
     }
+    unset($options[AccountInterface::ANONYMOUS_ROLE]);
     $form['roles'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Apply to Roles'),

@@ -55,18 +55,9 @@ class PasswordPolicyConstraintForm extends FormBase {
     foreach ($this->manager->getDefinitions() as $plugin_id => $definition) {
       $constraints[$plugin_id] = (string) $definition['title'];
     }
-    $form['items'] = array(
-      '#type' => 'markup',
-      '#prefix' => '<div id="configured-constraints">',
-      '#suffix' => '</div>',
-      '#theme' => 'table',
-      '#header' => array($this->t('Plugin Id'), $this->t('Summary'), $this->t('Operations')),
-      '#rows' => $this->renderRows($cached_values),
-      '#empty' => t('No constraints have been configured.')
-    );
     $form['constraint'] = [
       '#type' => 'select',
-      '#title' => $this->t('Choose a constraint'),
+      '#title' => $this->t('Add a constraint'),
       '#options' => $constraints,
     ];
     $form['add'] = [
@@ -78,6 +69,17 @@ class PasswordPolicyConstraintForm extends FormBase {
         'event' => 'click',
       ],
     ];
+
+    $form['items'] = array(
+      '#type' => 'markup',
+      '#prefix' => '<div id="configured-constraints">',
+      '#suffix' => '</div>',
+      '#theme' => 'table',
+      '#header' => array($this->t('Plugin Id'), $this->t('Summary'), $this->t('Operations')),
+      '#rows' => $this->renderRows($cached_values),
+      '#empty' => t('No constraints have been configured.')
+    );
+
     return $form;
   }
 
