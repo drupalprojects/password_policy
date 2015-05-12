@@ -55,19 +55,31 @@ class PasswordPolicyConstraintForm extends FormBase {
     foreach ($this->manager->getDefinitions() as $plugin_id => $definition) {
       $constraints[$plugin_id] = (string) $definition['title'];
     }
+
+    $form['add_constraint_title'] = [
+      '#markup' => '<h2>Add Constraint</h2>',
+    ];
+
     $form['constraint'] = [
       '#type' => 'select',
-      '#title' => $this->t('Add a constraint'),
       '#options' => $constraints,
+      '#prefix' => '<table style="width=100%"><tr><td>',
+      '#suffix' => '</td>',
     ];
     $form['add'] = [
       '#type' => 'submit',
       '#name' => 'add',
-      '#value' => t('Configure Condition'),
+      '#value' => t('Configure Constraint Settings'),
       '#ajax' => [
         'callback' => [$this, 'add'],
         'event' => 'click',
       ],
+      '#prefix' => '<td>',
+      '#suffix' => '</td></tr></table>',
+    ];
+
+    $form['constraint_list'] = [
+      '#markup' => '<h2>Policy Constraints</h2>',
     ];
 
     $form['items'] = array(
