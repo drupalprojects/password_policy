@@ -37,7 +37,7 @@ class PasswordPolicyDeleteForm extends EntityConfirmFormBase {
     $this->entity->delete();
 
     drupal_set_message(
-      $this->t('content @type: deleted @label.',
+      $this->t('The @label password policy has been deleted.',
         [
           '@type' => $this->entity->bundle(),
           '@label' => $this->entity->label()
