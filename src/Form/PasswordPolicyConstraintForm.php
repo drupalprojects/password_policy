@@ -127,7 +127,7 @@ class PasswordPolicyConstraintForm extends FormBase {
       );
       $configured_conditions[] = array(
         $instance->getPluginId(),
-        '',
+        $instance->getSummary(),
         'operations' => [
           'data' => $build,
         ],

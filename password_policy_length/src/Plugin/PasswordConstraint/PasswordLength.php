@@ -75,4 +75,13 @@ class PasswordLength extends PasswordConstraintBase {
     $this->configuration['character_length'] = $form_state->getValue('character_length');
   }
 
+  /**
+   * Returns a human-readable summary of the constraint.
+   * @return string
+   */
+  public function getSummary() {
+    return $this->t('Password character length of at least @characters', array('@characters' => $this->configuration['character_length']));
+  }
+
+
 }

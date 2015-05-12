@@ -40,4 +40,10 @@ interface PasswordConstraintInterface extends PluginInspectionInterface, Configu
    */
   public function getErrorMessage();
 
+  /**
+   * Returns a human-readable summary of the constraint.
+   * @return string
+   */
+  public function getSummary();
+
 }
