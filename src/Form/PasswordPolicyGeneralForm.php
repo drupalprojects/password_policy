@@ -26,7 +26,8 @@ class PasswordPolicyGeneralForm extends FormBase {
 
     $form['password_reset'] = [
       '#type' => 'textfield',
-      '#title' => t('Number of days'),
+      '#title' => t('Password Reset Days'),
+      '#description' => t('User password will reset after the selected number of days'),
       '#default_value' => !empty($cached_values['password_reset']) ? $cached_values['password_reset'] : 30,
     ];
     return $form;
