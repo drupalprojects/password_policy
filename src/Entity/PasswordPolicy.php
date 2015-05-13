@@ -40,7 +40,7 @@ use Drupal\password_policy\PasswordPolicyInterface;
  *   }
  * )
  */
-class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface, EntityWithPluginCollectionInterface {
+class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface {
 
   /**
   * The ID of the password policy.
@@ -57,7 +57,7 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   protected $label;
 
   /**
-   * The ID of the password reset option.
+   * The number of days between forced password resets.
    *
    * @var int
    */
@@ -92,26 +92,21 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   }
 
   /**
-   * {@inheritdoc}
+   * Return the constraints from the policy
+   *
+   * return @var array
    */
-  public function getConstraintPlugin($constraint_id) {
-    return $this->getPluginCollection()->get($constraint_id);
+  public function getConstraints(){
+    return $this->policy_constraints;
   }
 
   /**
-   * {@inheritdoc}
+   * Return the password reset setting from the policy
+   *
+   * return @var array
    */
-  public function getConstraintPlugins() {
-    if (!$this->constraintCollection) {
-      $this->constraintCollection = new PasswordPolicyConstraintCollection(\Drupal::service('plugin.manager.password_policy.password_constraint'));
-    }
-    return $this->constraintCollection;
+  public function getPasswordReset(){
+    return $this->password_reset;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getPluginCollections() {
-    return array('policy_constraints' => $this->getConstraintPlugins());
-  }
 }
