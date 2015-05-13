@@ -28,9 +28,19 @@ Drupal.behaviors.passwordOverride = {
         }
         e.stopImmediatePropagation();
         cleanUrlPrefix = Drupal.settings.passwordPolicy.cleanUrl ? '' : '?q=';
+
+        // Set parameters for password check.
+        var data = { password: encodeURIComponent(passwordInput.val()) };
+        // Set username value as parameter if it is present.
+        var usernameInput = $('input.username');
+        var username = usernameInput.val();
+        if (username) {
+          data.name = encodeURIComponent(username);
+        }
+
         $.post(
           Drupal.settings.basePath + cleanUrlPrefix + Drupal.settings.pathPrefix + 'password_policy/check',
-          { password: encodeURIComponent(passwordInput.val()) },
+          data,
           function(data) {
             pw_status = data;
             // Trigger the event again to force the text to be updated, but
