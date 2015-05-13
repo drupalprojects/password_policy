@@ -9,7 +9,8 @@ $plugin = array(
   'prime value' => 'expire_limit',
   'class' => 'PasswordPolicyExpire',
   'config' => array(
-    'expire_limit' => 0,
+    'expire_enabled' => FALSE,
+    'expire_limit' => "6 months",
     'expire_warning_message' => 'Your password has expired. Please change it now.',
     'expire_warning_email_sent' => "-14 days",
     'expire_warning_email_message' => '',
@@ -25,27 +26,45 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     '#type' => 'fieldset',
     '#title' => 'Password expiration',
     '#collapsible' => TRUE,
-    '#collapsed' => !(bool) $constraint->config['expire_limit'],
+    '#collapsed' => !$constraint->config['expire_enabled'],
   );
-  $sub_form['expire_fieldset']['expire_limit'] = array(
+  $sub_form['expire_fieldset']['expire_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Expire passwords',
+    '#default_value' => $constraint->config['expire_enabled'],
+    '#description' => t('Enable password expiration.'),
+  );
+
+  // Container for controls that should only be visible if expiration enabled.
+  $sub_form['expire_fieldset']['enabled_container'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="expire_enabled"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+  $enabled_container = &$sub_form['expire_fieldset']['enabled_container'];
+
+  $enabled_container['expire_limit'] = array(
     '#type' => 'textfield',
     '#title' => 'Expire limit',
     '#default_value' => $constraint->config['expire_limit'],
     '#description' => t("Password will expire after being used for this long. (Use normal English, like 90 days or 5 hours.)"),
   );
-  $sub_form['expire_fieldset']['expire_warning_message'] = array(
+  $enabled_container['expire_warning_message'] = array(
     '#type' => 'textfield',
     '#title' => 'Warning message',
     '#default_value' => $constraint->config['expire_warning_message'],
     '#description' => t('A message to show to users on screen when requiring them to change password. <strong>If left empty, no message will be shown.</strong>'),
   );
-  $sub_form['expire_fieldset']['expire_warning_email_sent'] = array(
+  $enabled_container['expire_warning_email_sent'] = array(
     '#type' => 'textfield',
     '#title' => 'When to send warning e-mails',
     '#default_value' => $constraint->config['expire_warning_email_sent'],
     '#description' => t('A comma separated list of time intervals, when to send warning e-mails. (Use normal English, like 90 days or 5 hours.)  If prefixed with a negative (like -2 days) then this will be before the expiration. If left empty, no e-mail will be sent.'),
   );
-  $sub_form['expire_fieldset']['expire_warning_email_subject'] = array(
+  $enabled_container['expire_warning_email_subject'] = array(
     '#type' => 'textfield',
     '#title' => 'Warning e-mail subject',
     '#default_value' => $constraint->config['expire_warning_email_subject'],
@@ -56,7 +75,7 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
       ),
     ),
   );
-  $sub_form['expire_fieldset']['expire_warning_email_message'] = array(
+  $enabled_container['expire_warning_email_message'] = array(
     '#type' => 'textarea',
     '#title' => 'Warning e-mail message',
     '#default_value' => $constraint->config['expire_warning_email_message'],
@@ -67,7 +86,7 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
     ),
   );
   if (module_exists('token')) {
-    $sub_form['expire_fieldset']['expire_warning_email_message_token'] = array(
+    $enabled_container['expire_warning_email_message_token'] = array(
       '#theme' => 'token_tree',
       '#token_types' => array(
         'user',
@@ -176,6 +195,17 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * they set a new password.
    */
   public function init($account) {
+    // Do not do anything if expiration is disabled.
+    $enabled = $this->config['expire_enabled'];
+    if (!$enabled) {
+      return;
+    }
+    // An expiration interval equal to zero means expiration is disabled.
+    $expire_int = password_policy_parse_interval($this->config['expire_limit']);
+    if (!$expire_int) {
+      return;
+    }
+
     // If this is a command line request (Drush, etc), skip processing.
     if (drupal_is_cli()) {
       return FALSE;
@@ -189,10 +219,6 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
     // @TODO this should not be necessary
     password_policy_user_load(array($account->uid => $account));
     if ($account->uid == 0) {
-      return;
-    }
-    $expire_int = password_policy_parse_interval($this->config['expire_limit']);
-    if (!$expire_int) {
       return;
     }
 
@@ -265,6 +291,12 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    * this policy, and then notifies them of their soon-to-be expired password.
    */
   public function cron() {
+    // Do not do anything if expiration is disabled.
+    $enabled = $this->config['expire_enabled'];
+    if (!$enabled) {
+      return;
+    }
+
     // Don't do anything if the policy does not require notification e-mails.
     if (empty($this->config['expire_warning_email_sent'])) {
       return;
