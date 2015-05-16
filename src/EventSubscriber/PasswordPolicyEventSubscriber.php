@@ -19,7 +19,7 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
    */
   public function checkForUserPasswordExpiration(GetResponseEvent $event) {
     $account = \Drupal::currentUser();
-    $uid = $account->id();
+    $user = entity_load('user', $account->id());
     $route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
 
     ///system/ajax
@@ -29,22 +29,16 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
       'user.logout',
     );
 
+    $user_expired = $user->get('field_password_expiration')->get(0)->getValue();
+    $user_expired = $user_expired['value'];
+
 
     //TODO - Consider excluding admins here
-    if ($uid and !in_array($route_name, $ignored_routes)) {
-      //TODO - Implement caching for expiration, this should be a cache.get around uid in lieu of db hit
-      $expired_user = db_select("password_policy_user_reset", 'p')
-        ->fields('p', array())
-        ->condition('uid', $uid)
-        ->condition('expired', '1')
-        ->execute();
-
-      if ($expired_user->fetch()) {
-        $url = new Url('entity.user.edit_form', array('user' => $uid));
-        $url = $url->toString();
-        $event->setResponse(new RedirectResponse($url));
-        drupal_set_message('Your password has expired, please update it', 'error');
-      }
+    if ($user_expired and !in_array($route_name, $ignored_routes)) {
+      $url = new Url('entity.user.edit_form', array('user' => $user->id()));
+      $url = $url->toString();
+      $event->setResponse(new RedirectResponse($url));
+      drupal_set_message('Your password has expired, please update it', 'error');
     }
   }
 

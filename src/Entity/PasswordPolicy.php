@@ -12,55 +12,56 @@ use Drupal\password_policy\PasswordPolicyConstraintCollection;
 use Drupal\password_policy\PasswordPolicyInterface;
 
 /**
-* Defines a Password Policy configuration entity class.
-*
-* @ConfigEntityType(
-*   id = "password_policy",
-*   label = @Translation("Password Policy"),
-*   handlers = {
-*     "form" = {
-*       "add" = "Drupal\password_policy\Form\PasswordPolicyForm",
-*       "edit" = "Drupal\password_policy\Form\PasswordPolicyForm",
-*       "delete" = "Drupal\password_policy\Form\PasswordPolicyDeleteForm"
-*     }
-*   },
-*   config_prefix = "password_policy",
-*   admin_permission = "administer site configuration",
-*   entity_keys = {
-*     "id" = "pid",
-*     "label" = "policy_title"
-*   },
-* )
-*/
-class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface, EntityWithPluginCollectionInterface {
+ * Defines a Password Policy configuration entity class.
+ *
+ * @ConfigEntityType(
+ *   id = "password_policy",
+ *   label = @Translation("Password Policy"),
+ *   handlers = {
+ *     "list_builder" = "Drupal\password_policy\Controller\PasswordPolicyListBuilder",
+ *     "form" = {
+ *       "delete" = "Drupal\password_policy\Form\PasswordPolicyDeleteForm"
+ *     },
+ *     "wizard" = {
+ *       "add" = "Drupal\password_policy\Wizard\PasswordPolicyWizard",
+ *       "edit" = "Drupal\password_policy\Wizard\PasswordPolicyWizard"
+ *     }
+ *   },
+ *   config_prefix = "password_policy",
+ *   admin_permission = "administer site configuration",
+ *   entity_keys = {
+ *     "id" = "id",
+ *     "label" = "label"
+ *   },
+ *   links = {
+ *     "edit-form" = "/admin/config/security/password-policy/{machine_name}/{step}",
+ *     "delete-form" = "/admin/config/security/password-policy/policy/delete/{password_policy}",
+ *     "collection" = "/admin/config/security/password-policy"
+ *   }
+ * )
+ */
+class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface {
 
   /**
   * The ID of the password policy.
   *
   * @var int
   */
-  protected $pid;
+  protected $id;
 
   /**
   * The policy title.
   *
   * @var string
   */
-  protected $policy_title;
+  protected $label;
 
   /**
-   * The ID of the password reset option.
+   * The number of days between forced password resets.
    *
    * @var int
    */
-  public $password_reset;
-
-  /**
-   * The collection that holds the constraints for this entity.
-   *
-   * @var \Drupal\password_policy\PasswordPolicyConstraintCollection
-   */
-  protected $constraintCollection;
+  protected $password_reset;
 
   /**
    * Constraint instance IDs.
@@ -70,40 +71,42 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
   protected $policy_constraints;
 
   /**
+   * Roles to which this policy applies.
+   *
+   * @var array
+   */
+  protected $roles;
+
+  /**
    * {@inheritdoc}
    */
   public function id() {
-    return $this->pid;
+    return $this->id;
   }
 
   /**
    * {@inheritdoc}
    */
   public function label() {
-    return $this->policy_title;
+    return $this->label;
   }
 
   /**
-   * {@inheritdoc}
+   * Return the constraints from the policy
+   *
+   * return @var array
    */
-  public function getConstraintPlugin($constraint_id) {
-    return $this->getPluginCollection()->get($constraint_id);
+  public function getConstraints(){
+    return $this->policy_constraints;
   }
 
   /**
-   * {@inheritdoc}
+   * Return the password reset setting from the policy
+   *
+   * return @var array
    */
-  public function getConstraintPlugins() {
-    if (!$this->constraintCollection) {
-      $this->constraintCollection = new PasswordPolicyConstraintCollection(\Drupal::service('plugin.manager.password_policy.password_constraint'));
-    }
-    return $this->constraintCollection;
+  public function getPasswordReset(){
+    return $this->password_reset;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getPluginCollections() {
-    return array('policy_constraints' => $this->getConstraintPlugins());
-  }
 }
