@@ -568,7 +568,8 @@ function password_policy_admin_delete_submit($form, &$form_state) {
     ->execute();
   db_delete('password_policy_role')
     ->condition('pid', $pid)
-    ->execute();  drupal_set_message(t('Password policy %policy was deleted.', array('%policy' => $policy['name'])));
+    ->execute();
+  drupal_set_message(t('Password policy %policy was deleted.', array('%policy' => $policy['name'])));
   watchdog('password_policy', 'Policy %name was deleted.', array('%name' => $policy['name']), WATCHDOG_NOTICE);
   drupal_goto('admin/config/people/password_policy/list');
 }
