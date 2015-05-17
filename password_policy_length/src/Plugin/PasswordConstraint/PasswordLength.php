@@ -91,8 +91,7 @@ class PasswordLength extends PasswordConstraintBase {
   }
 
   /**
-   * Returns a human-readable summary of the constraint.
-   * @return string
+   * {@inheritdoc}
    */
   public function getSummary() {
     switch($this->configuration['character_operation']) {
@@ -105,6 +104,5 @@ class PasswordLength extends PasswordConstraintBase {
     }
     return $this->t('Password character length of @operation @characters', array('@operation' => $operation,'@characters' => $this->configuration['character_length']));
   }
-
 
 }
