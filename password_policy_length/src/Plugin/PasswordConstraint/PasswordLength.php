@@ -27,7 +27,7 @@ class PasswordLength extends PasswordConstraintBase {
   /**
    * {@inheritdoc}
    */
-  function validate($password) {
+  function validate($password, $user_context) {
     $configuration = $this->getConfiguration();
     $validation = new PasswordPolicyValidation();
     switch($configuration['character_operation']) {
@@ -77,7 +77,7 @@ class PasswordLength extends PasswordConstraintBase {
    * {@inheritdoc}
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
-    if (!is_numeric($form_state->getValue('character_length')) or $form_state->getValue('character_length') < 0) {
+    if (!is_numeric($form_state->getValue('character_length')) or $form_state->getValue('character_length') <= 0) {
       $form_state->setErrorByName('character_length', $this->t('The character length must be a positive number.'));
     }
   }
