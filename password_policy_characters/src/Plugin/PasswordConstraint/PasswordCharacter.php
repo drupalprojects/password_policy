@@ -27,7 +27,7 @@ class PasswordCharacter extends PasswordConstraintBase {
   /**
    * {@inheritdoc}
    */
-  function validate($password) {
+  function validate($password, $user_context) {
     $configuration = $this->getConfiguration();
     $validation = new PasswordPolicyValidation();
     $character_distribution = count_chars($password);
@@ -38,40 +38,50 @@ class PasswordCharacter extends PasswordConstraintBase {
     $count_numeric = 0;
 
     foreach($character_distribution as $i => $val){
-      $char = chr($i);
-      if (is_numeric($char)) {
-        $count_numeric++;
-      } else if (ctype_upper($char)) {
-        $count_upper++;
-      } else if (ctype_lower($char)) {
-        $count_lower++;
-      } else {
-        $count_special++;
+      if($val) {
+        $char = chr($i);
+        if (is_numeric($char)) {
+          $count_numeric++;
+        }
+        else {
+          if (ctype_upper($char)) {
+            $count_upper++;
+          }
+          else {
+            if (ctype_lower($char)) {
+              $count_lower++;
+            }
+            else {
+              $count_special++;
+            }
+          }
+        }
       }
     }
 
     switch($configuration['character_type']) {
       case 'uppercase':
         if ($count_upper < $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has !count uppercase characters and needs have at least @length characters', ['!count' => $count_upper, '@length' => $configuration['character_count']]));
+          $validation->setErrorMessage($this->t('The password only has @count uppercase characters and needs have at least @length characters', ['@count' => $count_upper, '@length' => $configuration['character_count']]));
         }
         break;
       case 'lowercase':
-        if ($count_lower > $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has !count uppercase characters and needs have at least @length characters', ['!count' => $count_lower, '@length' => $configuration['character_count']]));
+        if ($count_lower < $configuration['character_count']) {
+          $validation->setErrorMessage($this->t('The password only has @count lowercase characters and needs have at least @length characters', ['@count' => $count_lower, '@length' => $configuration['character_count']]));
         }
         break;
       case 'special':
-        if ($count_special > $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has !count uppercase characters and needs have at least @length characters', ['!count' => $count_special, '@length' => $configuration['character_count']]));
+        if ($count_special < $configuration['character_count']) {
+          $validation->setErrorMessage($this->t('The password only has @count special characters and needs have at least @length characters', ['@count' => $count_special, '@length' => $configuration['character_count']]));
         }
         break;
       case 'numeric':
-        if ($count_numeric > $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has !count uppercase characters and needs have at least @length characters', ['!count' => $count_numeric, '@length' => $configuration['character_count']]));
+        if ($count_numeric < $configuration['character_count']) {
+          $validation->setErrorMessage($this->t('The password only has @count numeric characters and needs have at least @length characters', ['@count' => $count_numeric, '@length' => $configuration['character_count']]));
         }
         break;
     }
+
     return $validation;
   }
 

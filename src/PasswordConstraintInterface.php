@@ -20,7 +20,7 @@ interface PasswordConstraintInterface extends PluginInspectionInterface, Configu
    * @return boolean
    *   Whether or not the password meets the constraint in the plugin.
    */
-  public function validate($password);
+  public function validate($password, $user_context);
 
   /**
    * Returns a translated string for the constraint title.
