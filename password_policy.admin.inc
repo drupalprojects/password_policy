@@ -88,16 +88,16 @@ function password_policy_admin_settings() {
   $form['email']['password_policy_warning_subject'] = array(
     '#type' => 'textfield',
     '#title' => t('Subject of warning e-mail'),
-    '#default_value' => _password_policy_mail_text('warning_subject'),
+    '#default_value' => _password_policy_mail_text('warning_subject', NULL, array(), FALSE),
     '#maxlength' => 180,
-    '#description' => t('Customize the subject of the warning e-mail message, which is sent to remind of password expiration.') . ' ' . t('Available variables are:') . ' !username, !site, !uri, !uri_brief, !mailto, !date, !login_uri, !edit_uri, !days_left.',
+    '#description' => t('Customize the subject of the warning e-mail message, which is sent to remind of password expiration.') . ' ' . t('Available variables are: [user:name], [site:name], [site:url], [site:url-brief], [user:mail], [date:medium], [site:login-url], [user:edit-url], [password-policy:days-left], [password-policy:password-edit-url].'),
   );
   $form['email']['password_policy_warning_body'] = array(
     '#type' => 'textarea',
     '#title' => t('Body of warning e-mail'),
-    '#default_value' => _password_policy_mail_text('warning_body'),
+    '#default_value' => _password_policy_mail_text('warning_body', NULL, array(), FALSE),
     '#rows' => 15,
-    '#description' => t('Customize the body of the warning e-mail message, which is sent to remind of password expiration.') . ' ' . t('Available variables are:') . ' !username, !site, !uri, !uri_brief, !mailto, !date, !login_uri, !edit_uri, !days_left.',
+    '#description' => t('Customize the body of the warning e-mail message, which is sent to remind of password expiration.') . ' ' . t('Available variables are: [user:name], [site:name], [site:url], [site:url-brief], [user:mail], [date:medium], [site:login-url], [user:edit-url], [password-policy:days-left], [password-policy:password-edit-url].'),
   );
 
   $form['submit'] = array(
