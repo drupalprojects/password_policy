@@ -7,7 +7,7 @@
 $plugin = array(
   'admin form callback' => 'password_policy_drupal_strength_admin_form',
   'constraint callback' => 'password_policy_drupal_strength_constraint',
-  'message' => t('Password must match a strength level.'),
+  'message' => t('Password must match a Drupal strength level.'),
   'prime value' => 'drupal_strength',
   'config' => array(
     'drupal_strength' => NULL,
