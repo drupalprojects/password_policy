@@ -107,7 +107,7 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
       if (blacklist) {
         return Drupal.t('Must not be in blacklist');
       }
-	  else {
+      else {
         return Drupal.t('Not enforced');
       }
     });
