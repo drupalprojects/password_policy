@@ -105,22 +105,11 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
     $('fieldset#edit-blacklist-fieldset', context).drupalSetSummary(function (context) {
       blacklist = $('textarea[name="blacklist"]', context).val();
       if (blacklist) {
-        blacklist_match_substrings = $('input[name="blacklist_match_substrings"]', context).is(':checked');
-        if (blacklist_match_substrings) {
-          msg = Drupal.t('Must not contain certain strings');
-        }
-        else {
-          msg = Drupal.t('Certain strings disallowed');
-        }
-        use_tokens = $('input[name="blacklist_use_tokens"]', context).is(':checked');
-        if (use_tokens) {
-          msg += '<br />' + Drupal.t('Using tokens');
-        }
+        return Drupal.t('Must not be in blacklist');
       }
       else {
-        msg = Drupal.t('Not enforced');
+        return Drupal.t('Not enforced');
       }
-      return msg;
     });
 
     $('fieldset#edit-char-count-fieldset', context).drupalSetSummary(function (context) {
