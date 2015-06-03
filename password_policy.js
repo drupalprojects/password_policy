@@ -105,7 +105,13 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
     $('fieldset#edit-blacklist-fieldset', context).drupalSetSummary(function (context) {
       blacklist = $('textarea[name="blacklist"]', context).val();
       if (blacklist) {
-        return Drupal.t('Must not be in blacklist');
+        blacklist_match_substrings = $('input[name="blacklist_match_substrings"]', context).is(':checked');
+        if (blacklist_match_substrings) {
+          return Drupal.t('Must not contain certain strings');
+        }
+        else {
+          return Drupal.t('Certain strings disallowed');
+        }
       }
       else {
         return Drupal.t('Not enforced');
