@@ -125,7 +125,7 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
     $('fieldset#edit-consecutive-char-count-fieldset', context).drupalSetSummary(function (context) {
       consecutive_char_count = $('input[name="consecutive_char_count"]', context).val();
       if (consecutive_char_count) {
-        return Drupal.t('No more than @count consecutive characters', {'@count': consecutive_char_count});
+        return Drupal.t('Fewer than @count identical consecutive characters', {'@count': consecutive_char_count});
       }
       else {
         return Drupal.t('Not enforced');
