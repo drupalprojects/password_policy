@@ -44,13 +44,14 @@ function password_policy_username_constraint($password, $account, $constraint) {
  * Gets username against which to check password.
  */
 function _password_policy_username_get_username($account) {
+  $username = '';
   if (isset($_POST['name'])) {
     // The username will not be displayed, so there is no need to filter it
     // with check_plain() or filter_xss() as suggested by Coder.
     // @ignore security_17
     $username = rawurldecode($_POST['name']);
   }
-  else {
+  elseif ($account->uid > 0) {
     // The username input will not be present on the same form as the password
     // input in some configurations (e.g., sites using Password Tab module). So
     // fall back to retrieving the username from the user object.
