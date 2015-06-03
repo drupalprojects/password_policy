@@ -173,10 +173,9 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
     });
 
     $('fieldset#edit-username-fieldset', context).drupalSetSummary(function (context) {
-      var usernameInput = $('input[name="username"]:checked', context);
-      var username = usernameInput.val()
+      username = $('input[name="username"]', context).is(':checked');
       if (username) {
-        return usernameInput.next('label').text();
+        return Drupal.t('Must not contain their username');
       }
       else {
         return Drupal.t('Not enforced');
