@@ -26,7 +26,7 @@ function password_policy_drupal_strength_admin_form($form, &$form_state, $constr
     '#type' => 'textfield',
     '#title' => t('Drupal strength level'),
     '#default_value' => $constraint->config['drupal_strength'],
-    '#description' => t('<p>Password will be required to have match this level or higher. 0 - 100</p>
+    '#description' => t('<p>Password will be required to have this level or higher. 0 - 100</p>
 <p>Starting from a base of 100 points:</p>
 <ul><li>Having only 3 out of 4 of uppercase, lowercase, digit, and symbol loses 12.5 points</li>
 <li>Having only 2 out of 4 of uppercase, lowercase, digit, and symbol loses 25 points</li>
