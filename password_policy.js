@@ -26,7 +26,6 @@ Drupal.behaviors.passwordOverride = {
         if (typeof isCallback != 'undefined') {
           return;
         }
-        e.stopImmediatePropagation();
         cleanUrlPrefix = Drupal.settings.passwordPolicy.cleanUrl ? '' : '?q=';
 
         // Set parameters for password check.
