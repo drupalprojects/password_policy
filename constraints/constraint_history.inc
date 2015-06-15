@@ -32,10 +32,11 @@ function password_policy_constraint_history_error($constraint) {
  */
 function password_policy_constraint_history_validate($password, $constraint, $account) {
   require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+  $temporary_account = clone $account;
   $old_passwords = _password_policy_constraint_history_old_passwords($constraint, $account->uid);
   foreach ($old_passwords as $old_password) {
-    $account->pass = $old_password;
-    if (user_check_password($password, $account)) {
+    $temporary_account->pass = $old_password;
+    if (user_check_password($password, $temporary_account)) {
       return FALSE;
     }
   }
