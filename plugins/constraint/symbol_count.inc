@@ -33,7 +33,7 @@ function password_policy_symbol_count_admin_form($form, &$form_state, $constrain
     '#type' => 'textfield',
     '#title' => t('Symbol characters'),
     '#default_value' => $constraint->config['symbol_count_symbols'],
-    '#description' => t('Deteremine which characters are symbols.'),
+    '#description' => t('Determine which characters are symbols.'),
   );
 
   return $sub_form;
