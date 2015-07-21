@@ -77,9 +77,11 @@ class ConstraintEdit extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $constraint_id = NULL, $machine_name = NULL) {
     $this->machine_name = $machine_name;
     $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
+    /** @var $policy \Drupal\password_policy\Entity\PasswordPolicy */
+    $policy = $cached_values['password_policy'];
     if (is_numeric($constraint_id)) {
       $id = $constraint_id;
-      $constraint_id = $cached_values['policy_constraints'][$id];
+      $constraint_id = $policy->getConstraint($id);
       $instance = $this->manager->createInstance($constraint_id['id'], $constraint_id);
     }
     else {
@@ -113,15 +115,19 @@ class ConstraintEdit extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
+    /** @var $policy \Drupal\password_policy\Entity\PasswordPolicy */
+    $policy = $cached_values['password_policy'];
+    $constraints = $policy->getConstraints();
     /** @var $instance \Drupal\password_policy\PasswordConstraintInterface */
     $instance = $form_state->getValue('instance');
     $instance->submitConfigurationForm($form, $form_state);
     if ($form_state->hasValue('id')) {
-      $cached_values['policy_constraints'][$form_state->getValue('id')] = $instance->getConfiguration();
+      $constraints[$form_state->getValue('id')] = $instance->getConfiguration();
     }
     else {
-      $cached_values['policy_constraints'][] = $instance->getConfiguration();
+      $constraints[] = $instance->getConfiguration();
     }
+    $policy->set('policy_constraints', $constraints);
     $this->tempstore->get($this->tempstore_id)->set($this->machine_name, $cached_values);
     $form_state->setRedirect('entity.password_policy.wizard.edit', ['machine_name' => $this->machine_name, 'step' => 'constraint']);
   }

@@ -19,6 +19,7 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
    */
   public function checkForUserPasswordExpiration(GetResponseEvent $event) {
     $account = \Drupal::currentUser();
+    /** @var $user \Drupal\user\UserInterface */
     $user = entity_load('user', $account->id());
     $route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
 
@@ -29,8 +30,13 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
       'user.logout',
     );
 
-    $user_expired = $user->get('field_password_expiration')->get(0)->getValue();
-    $user_expired = $user_expired['value'];
+    $user_expired = FALSE;
+    if ($user->get('field_password_expiration')->get(0)) {
+      $user_expired = $user->get('field_password_expiration')
+        ->get(0)
+        ->getValue();
+      $user_expired = $user_expired['value'];
+    }
 
 
     //TODO - Consider excluding admins here

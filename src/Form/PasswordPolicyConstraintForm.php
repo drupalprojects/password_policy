@@ -1,18 +1,18 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: kris
- * Date: 4/24/15
- * Time: 3:57 PM
+ * @file
+ * Contains \Drupal\password_policy\Form\PasswordPolicyConstraintForm.php
  */
 
 namespace Drupal\password_policy\Form;
 
 
 use Drupal\Component\Plugin\PluginManagerInterface;
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -106,6 +106,7 @@ class PasswordPolicyConstraintForm extends FormBase {
     $constraint = $form_state->getValue('constraint');
     $content = \Drupal::formBuilder()->getForm('\Drupal\password_policy\Form\ConstraintEdit', $constraint, $this->machine_name);
     $content['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $content['submit']['#attached']['drupalSettings']['ajax'][$content['submit']['#id']]['url'] = $this->url('entity.password_policy.constraint.add', ['machine_name' => $this->machine_name, 'constraint_id' => $constraint], ['query' => [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]]);
     $response = new AjaxResponse();
     $response->addCommand(new OpenModalDialogCommand($this->t('Configure Required Context'), $content, array('width' => '700')));
     return $response;
@@ -117,8 +118,10 @@ class PasswordPolicyConstraintForm extends FormBase {
    * @return array
    */
   public function renderRows($cached_values) {
+    /** @var $policy \Drupal\password_policy\Entity\PasswordPolicy */
+    $policy = $cached_values['password_policy'];
     $configured_conditions = array();
-    foreach ($cached_values['policy_constraints'] as $row => $constraint) {
+    foreach ($policy->getConstraints() as $row => $constraint) {
       /** @var $instance \Drupal\password_policy\PasswordConstraintInterface */
       $instance = $this->manager->createInstance($constraint['id'], $constraint);
       $build = array(
@@ -143,10 +146,10 @@ class PasswordPolicyConstraintForm extends FormBase {
       'weight' => 10,
       'attributes' => array(
         'class' => array('use-ajax'),
-        'data-accepts' => 'application/vnd.drupal-modal',
-        'data-dialog-options' => json_encode(array(
+        'data-dialog-type' => 'modal',
+        'data-dialog-options' => Json::encode([
           'width' => 700,
-        )),
+        ]),
       ),
     );
     $route_parameters['id'] = $route_parameters['constraint_id'];
@@ -157,10 +160,10 @@ class PasswordPolicyConstraintForm extends FormBase {
       'weight' => 100,
       'attributes' => array(
         'class' => array('use-ajax'),
-        'data-accepts' => 'application/vnd.drupal-modal',
-        'data-dialog-options' => json_encode(array(
+        'data-dialog-type' => 'modal',
+        'data-dialog-options' => Json::encode([
           'width' => 700,
-        )),
+        ]),
       ),
     );
     return $operations;

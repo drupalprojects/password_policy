@@ -61,21 +61,21 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
    *
    * @var int
    */
-  protected $password_reset;
+  protected $password_reset = 30;
 
   /**
    * Constraint instance IDs.
    *
    * @var array
    */
-  protected $policy_constraints;
+  protected $policy_constraints = [];
 
   /**
    * Roles to which this policy applies.
    *
    * @var array
    */
-  protected $roles;
+  protected $roles = [];
 
   /**
    * {@inheritdoc}
@@ -100,6 +100,13 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
     return $this->policy_constraints;
   }
 
+  public function getConstraint($key) {
+    if (!isset($this->policy_constraints[$key])) {
+      return [];
+    }
+    return $this->policy_constraints[$key];
+  }
+
   /**
    * Return the password reset setting from the policy
    *
@@ -109,4 +116,7 @@ class PasswordPolicy extends ConfigEntityBase implements PasswordPolicyInterface
     return $this->password_reset;
   }
 
+  public function getRoles() {
+    return $this->roles;
+  }
 }

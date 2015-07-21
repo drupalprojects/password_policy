@@ -43,7 +43,9 @@ class PasswordPolicyRolesForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $cache_values = $form_state->getTemporaryValue('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    /** @var $policy \Drupal\password_policy\Entity\PasswordPolicy */
+    $policy = $cached_values['password_policy'];
     $options = [];
     foreach ($this->storage->loadMultiple() as $role) {
       $options[$role->id()] = $role->label();
@@ -54,7 +56,7 @@ class PasswordPolicyRolesForm extends FormBase {
       '#title' => $this->t('Apply to Roles'),
       '#description' => $this->t('Select Roles to which this policy applies.'),
       '#options' => $options,
-      '#default_value' => isset($cache_values['roles']) ? $cache_values['roles'] : [],
+      '#default_value' => $policy->getRoles(),
     ];
     return $form;
   }
@@ -63,9 +65,10 @@ class PasswordPolicyRolesForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $cache_values = $form_state->getTemporaryValue('wizard');
-    $cache_values['roles'] = array_filter($form_state->getValue('roles'));
-    $form_state->setTemporaryValue('wizard', $cache_values);
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    /** @var $policy \Drupal\password_policy\Entity\PasswordPolicy */
+    $policy = $cached_values['password_policy'];
+    $policy->set('roles', array_filter($form_state->getValue('roles')));
   }
 
 }
