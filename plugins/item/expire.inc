@@ -115,10 +115,10 @@ function password_policy_expire_admin_form($form, &$form_state, $constraint) {
  *   Various expiration-related information pertaining to user.
  * @param int $expire
  *   Time when password will expire, in seconds since Unix epoch.
- * @param PasswordPolicyExpiration $item
+ * @param PasswordPolicyExpire $item
  *   Expiration policy item.
  */
-function _password_policy_expire_notify($account, $candidate, $expire, PasswordPolicyExpiration $item) {
+function _password_policy_expire_notify($account, $candidate, $expire, PasswordPolicyExpire $item) {
   $body = token_replace($item->config['expire_warning_email_message'], array(
     'user' => $account,
     'password_expiration_date' => $expire,
