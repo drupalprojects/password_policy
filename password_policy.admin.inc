@@ -48,7 +48,7 @@ function password_policy_admin_settings() {
   $form['expiration']['password_policy_admin'] = array(
     '#type' => 'checkbox',
     '#title' => t('Admin (UID=1) password expires.'),
-    '#default_value' => variable_get('password_policy_admin', 0),
+    '#default_value' => variable_get('password_policy_admin', 1),
     '#description' => t('Admin account password will obey expiration policy.'),
   );
   $form['expiration']['password_policy_begin'] = array(
@@ -630,7 +630,7 @@ function password_policy_password_change_settings_submit($form, &$form_state) {
       $db_uids = db_query('SELECT uid FROM {users_roles} WHERE rid = :rid', array('rid' => $role))->fetchCol();
     }
     foreach ($db_uids as $uid) {
-      if (($uid == 1 && variable_get('password_policy_admin', 0)) || $uid > 1) {
+      if (($uid == 1 && variable_get('password_policy_admin', 1)) || $uid > 1) {
         $uids[] = $uid;
       }
     }
