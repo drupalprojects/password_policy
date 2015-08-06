@@ -98,7 +98,11 @@ class ConstraintDelete extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
-    unset($cached_values['policy_constraints'][$this->id]);
+    /** @var $policy \Drupal\password_policy\Entity\PasswordPolicy */
+    $policy = $cached_values['password_policy'];
+    $constraints = $policy->getConstraints();
+    unset($constraints[$this->id]);
+    $policy->set('policy_constraints', $constraints);
     $this->tempstore->get($this->tempstore_id)->set($this->machine_name, $cached_values);
     $form_state->setRedirect('entity.password_policy.wizard.edit', ['machine_name' => $this->machine_name, 'step' => 'constraint']);
   }

@@ -19,6 +19,7 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
    */
   public function checkForUserPasswordExpiration(GetResponseEvent $event) {
     $account = \Drupal::currentUser();
+    /** @var $user \Drupal\user\UserInterface */
     $user = entity_load('user', $account->id());
     $route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
 
@@ -29,20 +30,21 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
       'user.logout',
     );
 
+    $user_expired = FALSE;
     if ($user->get('field_password_expiration')->get(0)) {
       $user_expired = $user->get('field_password_expiration')
         ->get(0)
         ->getValue();
       $user_expired = $user_expired['value'];
+    }
 
 
-      //TODO - Consider excluding admins here
-      if ($user_expired and !in_array($route_name, $ignored_routes)) {
-        $url = new Url('entity.user.edit_form', array('user' => $user->id()));
-        $url = $url->toString();
-        $event->setResponse(new RedirectResponse($url));
-        drupal_set_message('Your password has expired, please update it', 'error');
-      }
+    //TODO - Consider excluding admins here
+    if ($user_expired and !in_array($route_name, $ignored_routes)) {
+      $url = new Url('entity.user.edit_form', array('user' => $user->id()));
+      $url = $url->toString();
+      $event->setResponse(new RedirectResponse($url));
+      drupal_set_message('Your password has expired, please update it', 'error');
     }
   }
 
