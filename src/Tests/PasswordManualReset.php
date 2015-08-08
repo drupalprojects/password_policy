@@ -25,16 +25,16 @@ class PasswordManualReset extends WebTestBase {
     // Create user with permission to create policy.
     $user1 = $this->drupalCreateUser(array());
 
-    // Create new role.
-    $rid = $this->drupalCreateRole(array());
-
     // Create new admin user.
     $user2 = $this->drupalCreateUser(array(
-      'administer site configuration',
+      'manage password reset',
       'administer users',
       'administer permissions'
     ));
     $this->drupalLogin($user2);
+
+    // Create new role.
+    $rid = $this->drupalCreateRole(array());
 
     // Update user 1 by adding role.
     $edit = array();
@@ -44,15 +44,54 @@ class PasswordManualReset extends WebTestBase {
     // Force reset users of new role.
     $edit = array();
     $edit['roles[' . $rid . ']'] = $rid;
-    $this->drupalPostForm("admin/config/security/password-policy", $edit, t('Force password reset now'));
+    $this->drupalPostForm("admin/config/security/password-policy/reset", $edit, t('Save'));
 
     // Verify expiration.
-    $user_expiration = db_select("password_policy_user_reset", 'ur')
-      ->fields('ur', array())
-      ->condition('ur.uid', $user1->id())
-      ->execute()
-      ->fetchObject();
-    $this->assertTrue($user_expiration->expired, 'User password is expired after manual reset');
+    $user = \Drupal::entityManager()->getStorage('user')->load($user1->id());
+    $this->assertEqual($user->get('field_password_expiration')[0]->value, "1", 'User password is expired after manual reset');
+  }
+
+  /**
+   * Test exclude myself.
+   */
+  function testExcludeMyself() {
+    // Create new admin user.
+    $user1 = $this->drupalCreateUser(array(
+      'manage password reset',
+      'administer users',
+      'administer permissions'
+    ));
+    $this->drupalLogin($user1);
+
+    // Create new role.
+    $rid = $this->drupalCreateRole(array());
+
+    // Update user 1 by adding role.
+    $edit = array();
+    $edit['roles[' . $rid . ']'] = $rid;
+    $this->drupalPostForm("user/" . $user1->id() . "/edit", $edit, t('Save'));
+
+    // Force reset users of new role with exclude.
+    $edit = [
+      'roles[' . $rid . ']' => $rid,
+      'exclude_myself' => '1',
+    ];
+    $this->drupalPostForm("admin/config/security/password-policy/reset", $edit, t('Save'));
+
+    // Verify page.
+    $this->verbose($this->getUrl());
+    $this->assertEqual($this->getUrl(), $this->getAbsoluteUrl('admin/config/security/password-policy'), "User should have been redirected to password policy page");
+
+    // Force reset users of new role without exclude.
+    $edit = [
+      'roles[' . $rid . ']' => $rid,
+      'exclude_myself' => '0',
+    ];
+    $this->drupalPostForm("admin/config/security/password-policy/reset", $edit, t('Save'));
+
+    // Verify page.
+    $this->verbose($this->getUrl());
+    $this->assertText('Access denied', "User should have access to the current page");
   }
 
 }

@@ -76,7 +76,12 @@ class PasswordReset extends FormBase {
     $roles = $form_state->getValue('roles');
     $role_names = [];
     foreach ($roles as $role) {
-      $role_names[] = $this->role_storage->load($role)->label();
+      if ($role_obj = $this->role_storage->load($role)) {
+        $role_names[] = $role_obj->label();
+      } else {
+        $role_names[] = $role;
+      }
+
       $users = $this->user_storage->loadByProperties(['roles'=>$role]);
       foreach ($users as $user) {
         if ($form_state->getValue('exclude_myself')=='1' and $user->id()==\Drupal::currentUser()->id()) {
