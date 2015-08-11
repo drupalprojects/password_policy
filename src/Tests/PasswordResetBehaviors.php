@@ -25,95 +25,63 @@ class PasswordResetBehaviors extends WebTestBase {
     global $base_url;
 
     // Create user with permission to create policy.
-    $user1 = $this->drupalCreateUser(array('administer site configuration'));
+    $user1 = $this->drupalCreateUser(array(
+      'administer site configuration',
+      'administer users',
+      'administer permissions'));
     $this->drupalLogin($user1);
 
-    // Assert that user row was created and unexpired
-    $user_expiration = db_select("password_policy_user_reset", "ur")
-      ->fields("ur", array())
-      ->condition('uid', $user1->id())
-      ->execute()
-      ->fetchObject();
+    // Assert that user attributes were created and unexpired
+    $user_instance = entity_load('user', $user1->id());
+    $this->assertNotNull($user_instance->get('field_last_password_reset')[0]->value, 'Last password reset was not set on user add');
+    $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '0', 'Password expiration field is not set to zero on user add');
 
-    $this->assertNotNull($user_expiration, 'User expiration record was not created after user add');
+    // Create a new role.
+    $rid = $this->drupalCreateRole(array());
 
-    // Create new password reset policy.
+    // Create user with test role.
+    $user2 = $this->drupalCreateUser();
+    $this->drupalGet("user/" . $user2->id() . "/edit");
     $edit = array();
-    $edit['number_of_days'] = '10';
-    $this->drupalPostForm("admin/config/security/password-policy/reset", $edit, t('Add policy'));
+    $edit['roles[' . $rid . ']'] = $rid;
+    $this->drupalPostForm(NULL, $edit, t('Save'));
 
-    // Get latest ID to get policy.
-    $id = db_select("password_policy_reset", 'p')
-      ->fields('p', array('pid'))
-      ->orderBy('p.pid', 'DESC')
-      ->execute()
-      ->fetchObject();
+    // Create new password reset policy for role.
+    $this->drupalGet("admin/config/security/password-policy/add");
+    $edit = [
+      'id' => 'test',
+      'label' => 'test',
+      'password_reset' => '1',
+    ];
+    // Set reset and policy info.
+    $this->drupalPostForm(NULL, $edit, 'Next');
+    // No constraints needed for reset, continue.
+    $this->drupalPostForm(NULL, [], 'Next');
+    // Set the roles for the policy.
+    $edit = [
+      'roles[' . $rid . ']' => $rid,
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Finish');
+    $this->drupalLogout();
 
-    // Create user with permission to create policy.
-    $user2 = $this->drupalCreateUser(array('enforce password_reset.' . $id->pid . ' constraint'));
-    $uid = $user2->id();
+    // Stage an expired date a few days late.
+    $user_instance = entity_load('user', $user2->id());
+    $user_instance->set('field_last_password_reset', strtotime('-5 days'));
+    $user_instance->save();
 
-    // Debugging.
-    //$this->verbose('USER ID =>'.$uid);
-
-    // Assert that user row was created and unexpired
-    $user_expiration = db_select("password_policy_user_reset", 'ur')
-      ->fields('ur', array())
-      ->condition('ur.uid', $uid)
-      ->execute()
-      ->fetchObject();
-
-    $this->assertNotNull($user_expiration, "User expiration record should exist");
-
-    // Run cron to rebuild reset tables.
+    // Run cron to trigger expiration.
     $this->cronRun();
 
-    // Debugging.
-    //$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
-
-    // Assert that user row was created and unexpired
-    $user_expiration = db_select("password_policy_user_reset", 'ur')
-      ->fields('ur', array())
-      ->condition('ur.uid', $uid)
-      ->execute()
-      ->fetchObject();
-
-    $this->assertFalse($user_expiration->expired, 'User password was improperly expired after CRON and user creation');
-
-    // Verify user can access any page.
-    //$this->drupalLogin($user2);
-
-
-    // Expire password.
-    db_update("password_policy_user_reset")
-      ->fields(array('timestamp' => strtotime("-15 days")))
-      ->condition('uid', $uid)
-      ->execute();
-
-    // Log out.
-    //$this->drupalLogout();
-
-    // Run cron to rebuild reset tables.
-    $this->cronRun();
-
-    // Ensure table has expired.
-    $user_expiration = db_select("password_policy_user_reset", 'ur')
-      ->fields('ur', array())
-      ->condition('ur.uid', $uid)
-      ->execute()
-      ->fetchObject();
-
-    // Debugging.
-    //$this->verbose('CHECKING TIMESTAMP => '.$user_expiration->timestamp);
-
-    $this->assertTrue($user_expiration->expired, 'CRON did not expire the user');
+    // Assert that user has indeed been expired.
+    $user_instance = entity_load('user', $user2->id());
+    $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '1', 'Password expiration field should be expired after CRON');
 
     // Verify user is forced to go to their edit form
-    $this->drupalLogin($user2);
-    // NOTE: This and other variants did not work as expected. Likely due to forced redirect.
-    //$this->assertUrl("user/" . $uid . "/edit");
-    $url = str_replace($base_url, '', $this->getUrl());
-    $this->assertEqual("/user/" . $uid . "/edit", $url);
+    $this->drupalGet('user/login');
+
+    // This is currently bombing. username not found.
+    $this->drupalPostForm(NULL, ['name'=>$user2->getUsername(), 'pass'=>$user2->getPassword()], 'Log in');
+    $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent to their account form after expiration");
     $this->drupalLogout();
 
 
@@ -123,7 +91,7 @@ class PasswordResetBehaviors extends WebTestBase {
     $node_title = $this->randomMachineName();
     $node_body = $this->randomMachineName();
     $edit = array(
-      'type' => $type1->type,
+      'type' => $type1->get('type'),
       'title' => $node_title,
       'body' => array(array('value' => $node_body)),
       'langcode' => 'en',
@@ -131,32 +99,26 @@ class PasswordResetBehaviors extends WebTestBase {
     $node = $this->drupalCreateNode($edit);
 
     // Verify if user tries to go to node, they are forced back.
-    $this->drupalLogin($user2);
+    $this->drupalGet('user/login');
+    $this->drupalPostForm(NULL, ['name'=>$user2->getUsername(), 'pass'=>$user2->getPassword()], 'Log in');
     $this->drupalGet($node->url());
-    // NOTE: This and other variants did not work as expected. Not sure why not.
-    //$this->assertUrl("user/" . $uid . "/edit");
-    $url = str_replace($base_url, '', $this->getUrl());
-    $this->assertEqual("/user/" . $uid . "/edit", $url);
+    $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent back to their account form instead of the node");
 
     // Change password.
+    $this->drupalGet("user/" . $user2->id() . "/edit");
     $edit = array();
     $edit['pass'] = '1';
     $edit['current_pass'] = $user2->pass_raw;
-    $this->drupalPostForm("user/" . $uid . "/edit", $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Verify expiration is unset.
-    $user_expiration = db_select("password_policy_user_reset", 'ur')
-      ->fields('ur', array())
-      ->condition('ur.uid', $uid)
-      ->execute()
-      ->fetchObject();
-
-    $this->assertFalse($user_expiration->expired, 'User password was still expired after update');
+    $user_instance = entity_load('user', $user2->id());
+    $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '0', 'Password expiration field should be empty after changing password');
 
 
     // Verify if user tries to go to node, they are allowed.
     $this->drupalGet($node->url());
-    $this->assertUrl($node->url());
+    $this->assertEqual($this->getUrl(), $this->getAbsoluteUrl($node->url()), "User should have access to the node now");
     $this->drupalLogout();
   }
 }
