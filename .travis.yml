@@ -1,47 +1,74 @@
 language: php
 
 php:
+  #- 5.3
+  #- 5.4
   - 5.5
   - 5.6
+  #- hhvm
 
-sudo: false
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php:
+      #- 5.3
+      #- 5.4
+      - 5.5
+      - 5.6
+      #- hhvm
 
-env:
-  global:
-    - PATH="$PATH:$HOME/.composer/vendor/bin"
-    - TESTDIR=$(pwd)
-    - DRUPAL_TI_MODULE_NAME="password_policy"
-    - DRUPAL_TI_SIMPLETEST_GROUP="password_policy"
-    - DRUPAL_TI_DB="drupal_travis_$$"
-    - DRUPAL_TI_DB_URL="mysql://root@127.0.0.1/$DRUPAL_TI_DB"
-    - DRUPAL_TI_WEBSERVER_URL="http://127.0.0.1"
-    - DRUPAL_TI_WEBSERVER_PORT="8080"
-    - DRUPAL_TI_SIMPLETEST_ARGS="--verbose --color --url $DRUPAL_TI_WEBSERVER_URL:$DRUPAL_TI_WEBSERVER_PORT"
-    # - DRUPAL_TI_PHPUNIT_CORE_SRC_DIRECTORY="./tests/src"
-    - DRUPAL_TI_ENVIRONMENT="drupal-8"
-
-  matrix:
-    # - DRUPAL_TI_RUNNERS="simpletest phpunit-core"
-    - DRUPAL_TI_RUNNERS="simpletest"
+mysql:
+  database: password_policy_test
+  username: root
+  encoding: utf8
 
 before_install:
-  - composer self-update
-  - composer global require "lionsad/drupal_ti:1.*"
-  - drupal-ti before_install
+  - sudo apt-get update > /dev/null
 
 install:
-  - drupal-ti install
+  # install php packages required for running a web server from drush on php 5.3
+  - sudo apt-get install -y --force-yes php5-cgi php5-mysql
+
+  # add composer's global bin directory to the path
+  # see: https://github.com/drush-ops/drush#install---composer
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+
+  # install drush globally
+  - composer global require drush/drush:dev-master
 
 before_script:
+  # remove Xdebug as we don't need it and it causes
+  # PHP Fatal error:  Maximum function nesting level of '256' reached
+  - phpenv config-rm xdebug.ini
+
+  # navigate out of module directory to prevent blown stack by recursive module lookup
+  - cd ../..
+
+  # download Drupal 8 core.
+  - wget -q -O - http://ftp.drupal.org/files/projects/drupal-8.0.x-dev.tar.gz | tar xz
+  - cd drupal-8.0.x-dev
+
+  # travis is not failing on simpletest execution
+  # https://www.drupal.org/node/2189345
+  - wget -q -O - https://www.drupal.org/files/issues/2189345-67.patch | patch -p1
+
+  # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
+  - mysql -e 'create database password_policy_test'
+  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes -v site-install testing --db-url=mysql://root:@127.0.0.1/password_policy_test
+
+
+  # reference and enable password_policy in build site
+  - mkdir /home/travis/build/drupal-8.0.x-dev/modules/password_policy
+  - cp -R /home/travis/build/d8-contrib-modules/password_policy /home/travis/build/drupal-8.0.x-dev/modules/password_policy
   - drush dl ctools -y
-  - drupal-ti before_script
-  # - DRUPAL_TI_PHPUNIT_ARGS="-c $DRUPAL_TI_DRUPAL_DIR/modules/key/phpunit.xml --coverage-text"
+  - drush en ctools -y
+  - drush en password_policy -y
+  - drush en simpletest -y
+
+  # start a web server on port 8080, run in the background; wait for initialization
+  - drush runserver 127.0.0.1:8080 &
+  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
 
 script:
-  - drupal-ti script
-
-after_script:
-  - drupal-ti after_script
-
-notifications:
-  email: false
+  - cd /home/travis/build/drupal-8.0.x-dev
+  - php core/scripts/run-tests.sh --concurrency 4 --verbose --url http://127.0.0.1:8080 --color --php /home/travis/.phpenv/shims/php password_policy
