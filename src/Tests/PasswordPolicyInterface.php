@@ -58,11 +58,6 @@ class PasswordPolicyInterface extends WebTestBase {
       'constraint' => 'password_policy_length_constraint',
     ];
     $this->drupalPostForm(NULL, $edit, 'Configure Constraint Settings');
-    // Fill out length constraint.
-    $edit = [
-      'character_length' => '5'
-    ];
-    $this->drupalPostAjaxForm(NULL, $edit, 'Save', 'admin/config/system/password_policy/constraint/add/test/password_policy_length_constraint');
     // Go to the next page.
     $this->drupalPostForm(NULL, [], 'Next');
     // Set the roles for the policy.
@@ -70,6 +65,13 @@ class PasswordPolicyInterface extends WebTestBase {
       'roles[' . $rid . ']' => $rid,
     ];
     $this->drupalPostForm(NULL, $edit, 'Finish');
+
+    // Fill out length constraint for test policy.
+    $edit = [
+      'character_length' => '5',
+      'character_operation' => 'minimum',
+    ];
+    $this->drupalPostForm('admin/config/system/password_policy/constraint/add/test/password_policy_length_constraint', $edit, 'Save');
 
     // Try failing password on form submit.
     $edit = array();
