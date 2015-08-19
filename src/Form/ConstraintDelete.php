@@ -111,7 +111,9 @@ class ConstraintDelete extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion($id = NULL, $cached_values = NULL) {
-    $context = $cached_values['contexts'][$id];
+    /** @var \Drupal\password_policy\Entity\PasswordPolicy $password_policy */
+    $password_policy = $cached_values['password_policy'];
+    $context = $password_policy->getConstraint($id);
     return $this->t('Are you sure you want to delete the @label constraint?', array(
       '@label' => $context['id'],
     ));
@@ -135,9 +137,6 @@ class ConstraintDelete extends ConfirmFormBase {
       'submit' => array(
         '#type' => 'submit',
         '#value' => $this->getConfirmText(),
-        '#validate' => array(
-          array($this, 'validate'),
-        ),
         '#submit' => array(
           array($this, 'submitForm'),
         ),
