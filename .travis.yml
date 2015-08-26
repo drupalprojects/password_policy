@@ -1,74 +1,107 @@
+# @file
+# .travis.yml - Drupal for Travis CI Integration
+#
+# Template provided by https://github.com/LionsAd/drupal_ti.
+
 language: php
 
+sudo: false
+
 php:
-  #- 5.3
-  #- 5.4
   - 5.5
   - 5.6
-  #- hhvm
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php:
-      #- 5.3
-      #- 5.4
-      - 5.5
-      - 5.6
-      #- hhvm
+
+env:
+  global:
+    # add composer's global bin directory to the path
+    # see: https://github.com/drush-ops/drush#install---composer
+    - PATH="$PATH:$HOME/.composer/vendor/bin"
+
+    # Configuration variables.
+    - DRUPAL_TI_MODULE_NAME="password_policy"
+    - DRUPAL_TI_SIMPLETEST_GROUP="password_policy"
+
+    # Define runners and environment vars to include before and after the
+    # main runners / environment vars.
+    #- DRUPAL_TI_SCRIPT_DIR_BEFORE="./drupal_ti/before"
+    #- DRUPAL_TI_SCRIPT_DIR_AFTER="./drupal_ti/after"
+
+    # The environment to use, supported are: drupal-7, drupal-8
+    - DRUPAL_TI_ENVIRONMENT="drupal-8"
+
+    # Drupal specific variables.
+    - DRUPAL_TI_DB="drupal_travis_db"
+    - DRUPAL_TI_DB_URL="mysql://root:@127.0.0.1/drupal_travis_db"
+    # Note: Do not add a trailing slash here.
+    - DRUPAL_TI_WEBSERVER_URL="http://127.0.0.1"
+    - DRUPAL_TI_WEBSERVER_PORT="8080"
+
+    # Simpletest specific commandline arguments, the DRUPAL_TI_SIMPLETEST_GROUP is appended at the end.
+    - DRUPAL_TI_SIMPLETEST_ARGS="--verbose --color --concurrency 4 --url $DRUPAL_TI_WEBSERVER_URL:$DRUPAL_TI_WEBSERVER_PORT"
+
+    # === Behat specific variables.
+    # This is relative to $TRAVIS_BUILD_DIR
+    - DRUPAL_TI_BEHAT_DIR="./tests/behat"
+    # These arguments are passed to the bin/behat command.
+    - DRUPAL_TI_BEHAT_ARGS=""
+    # Specify the filename of the behat.yml with the $DRUPAL_TI_DRUPAL_DIR variables.
+    - DRUPAL_TI_BEHAT_YML="behat.yml.dist"
+    # This is used to setup Xvfb.
+    - DRUPAL_TI_BEHAT_SCREENSIZE_COLOR="1280x1024x16"
+    # The version of selenium that should be used.
+    - DRUPAL_TI_BEHAT_SELENIUM_VERSION="2.44"
+    # Set DRUPAL_TI_BEHAT_DRIVER to "selenium" to use "firefox" or "chrome" here.
+    - DRUPAL_TI_BEHAT_DRIVER="phantomjs"
+    - DRUPAL_TI_BEHAT_BROWSER="firefox"
+
+    # PHPUnit specific commandline arguments.
+    - DRUPAL_TI_PHPUNIT_ARGS=""
+    # Specifying the phpunit-core src/ directory is useful when e.g. a vendor/
+    # directory is present in the module directory, which phpunit would then
+    # try to find tests in. This option is relative to $TRAVIS_BUILD_DIR.
+    #- DRUPAL_TI_PHPUNIT_CORE_SRC_DIRECTORY="./tests/src"
+
+    # Code coverage via coveralls.io
+    - DRUPAL_TI_COVERAGE="satooshi/php-coveralls:0.6.*"
+    # This needs to match your .coveralls.yml file.
+    - DRUPAL_TI_COVERAGE_FILE="build/logs/clover.xml"
+
+    # Debug options
+    #- DRUPAL_TI_DEBUG="-x -v"
+    # Set to "all" to output all files, set to e.g. "xvfb selenium" or "selenium",
+    # etc. to only output those channels.
+    #- DRUPAL_TI_DEBUG_FILE_OUTPUT="selenium xvfb webserver"
+
+  matrix:
+    - DRUPAL_TI_RUNNERS="simpletest"
 
 mysql:
-  database: password_policy_test
+  database: drupal_travis_db
   username: root
   encoding: utf8
 
 before_install:
-  - sudo apt-get update > /dev/null
+  - composer self-update
+  - cd ./tests
+  - composer global require "lionsad/drupal_ti:1.*"
+  - drupal-ti before_install
 
 install:
-  # install php packages required for running a web server from drush on php 5.3
-  - sudo apt-get install -y --force-yes php5-cgi php5-mysql
-
-  # add composer's global bin directory to the path
-  # see: https://github.com/drush-ops/drush#install---composer
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
-
-  # install drush globally
-  - composer global require drush/drush:dev-master
+  - drupal-ti install
 
 before_script:
-  # remove Xdebug as we don't need it and it causes
-  # PHP Fatal error:  Maximum function nesting level of '256' reached
-  - phpenv config-rm xdebug.ini
-
-  # navigate out of module directory to prevent blown stack by recursive module lookup
-  - cd ../..
-
-  # download Drupal 8 core.
-  - wget -q -O - http://ftp.drupal.org/files/projects/drupal-8.0.x-dev.tar.gz | tar xz
-  - cd drupal-8.0.x-dev
-
-  # travis is not failing on simpletest execution
-  # https://www.drupal.org/node/2189345
-  - wget -q -O - https://www.drupal.org/files/issues/2189345-67.patch | patch -p1
-
-  # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
-  - mysql -e 'create database password_policy_test'
-  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes -v site-install testing --db-url=mysql://root:@127.0.0.1/password_policy_test
-
-
-  # reference and enable password_policy in build site
-  - mkdir /home/travis/build/drupal-8.0.x-dev/modules/password_policy
-  - cp -R /home/travis/build/d8-contrib-modules/password_policy /home/travis/build/drupal-8.0.x-dev/modules/password_policy
-  - drush dl ctools -y
-  - drush en ctools -y
-  - drush en password_policy -y
-  - drush en simpletest -y
-
-  # start a web server on port 8080, run in the background; wait for initialization
-  - drush runserver 127.0.0.1:8080 &
-  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
+  # We run our script to add module dependencies
+  - drupal-ti --include drupal_ti/before/before_script.sh
+  - drupal-ti before_script
 
 script:
-  - cd /home/travis/build/drupal-8.0.x-dev
-  - php core/scripts/run-tests.sh --concurrency 4 --verbose --url http://127.0.0.1:8080 --color --php /home/travis/.phpenv/shims/php password_policy
+  - drupal-ti script
+
+after_script:
+  - drupal-ti after_script
+
+notifications:
+  email: false
