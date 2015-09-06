@@ -424,7 +424,7 @@ function password_policy_password_change_settings_submit($form, &$form_state) {
   variable_set('password_policy_new_login_change', $form_state['values']['password_policy_new_login_change']);
   variable_set('password_policy_exclude_pages', $form_state['values']['password_policy_exclude_pages']);
   if ($form_state['values']['password_policy_new_login_change'] == 1) {
-    watchdog('password policy', t('New user accounts must change password on new login enabled by !admin', array('!admin' => $user->name)), array(), WATCHDOG_NOTICE);
+    watchdog('password policy', t('New user accounts must change password on new login enabled by !admin.', array('!admin' => $user->name)), array(), WATCHDOG_NOTICE);
   }
   ($form_state['values']['password_policy_new_login_change']) ? drupal_set_message(t('New users will be required to change their password on first-time login.')) : drupal_set_message(t('New users will not be required to change their pasword on first-time login.'));
   foreach ($form_state['values']['password_policy_force_change_roles'] as $role) {
