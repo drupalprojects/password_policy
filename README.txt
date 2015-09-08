@@ -65,8 +65,8 @@ LIMITATIONS
    down in an insecure location, or devising an obvious password only to meet
    the constraints (e.g., Abc123!).
 
-   Consider encouraging (or requiring as an organizational policy) users to use a
-   password manager to generate and store strong, per-site passwords:
+   Consider encouraging (or requiring as an organizational policy) users to use
+   a password manager to generate and store strong, per-site passwords:
      https://en.wikipedia.org/wiki/List_of_password_managers
 
 
