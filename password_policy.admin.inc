@@ -83,7 +83,7 @@ function password_policy_admin_settings() {
     '#title' => t('Subject of warning e-mail'),
     '#default_value' => _password_policy_mail_text('warning_subject', NULL, array(), FALSE),
     '#maxlength' => 180,
-    '#description' => t('Customize the subject of the warning e-mail message, which is sent to remind of password expiration.') . ' ' . t('Available variables are: [user:name], [site:name], [site:url], [site:url-brief], [user:mail], [date:medium], [site:login-url], [user:edit-url], [password-policy:days-left], [password-policy:password-edit-url].'),
+    '#description' => t('Customize the subject of the warning e-mail message, which is sent to remind of password expiration. Available variables are: [user:name], [site:name], [site:url], [site:url-brief], [user:mail], [date:medium], [site:login-url], [user:edit-url], [password-policy:days-left], [password-policy:password-edit-url].'),
   );
   $form['email']['password_policy_warning_body'] = array(
     '#type' => 'textarea',
