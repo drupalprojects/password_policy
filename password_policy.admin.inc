@@ -411,7 +411,7 @@ function password_policy_admin_form($form, &$form_state, $policy = NULL) {
     '#title' => t('Password Expiration Warning'),
     '#default_value' => isset($policy['warning']) ? $policy['warning'] : '',
     '#size' => 10,
-    '#description' => t("The comma separated list of days. The warning about expiration of the password will be sent out on those days before the expiration. Leaving this field empty won't send out or display any warnings."),
+    '#description' => t("<p>The comma separated list of days. The warning about expiration of the password will be sent out on those days before the expiration. Leaving this field empty won't send out or display any warnings.</p><p><strong>Important:</strong> Drupal cron must be run once per day. Otherwise, warning e-mails might not be sent. The default Drupal cron configuration relies on site visitors to invoke cron. If your site might not receive visitors on a day, you should run cron from outside the site daily. See <a href='https://www.drupal.org/cron'>Setting Up Cron</a>.</p>"),
   );
 
   $form['constraints'] = array(
