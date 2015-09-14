@@ -53,11 +53,12 @@ class PasswordPolicyInterface extends WebTestBase {
     ];
     // Set reset and policy info.
     $this->drupalPostForm(NULL, $edit, 'Next');
-    // No constraints needed for reset, continue.
+    // Fill out length constraint for test policy.
     $edit = [
-      'constraint' => 'password_policy_length_constraint',
+      'character_length' => '5',
+      'character_operation' => 'minimum',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Configure Constraint Settings');
+    $this->drupalPostForm('admin/config/system/password_policy/constraint/add/test/password_policy_length_constraint', $edit, 'Save');
     // Go to the next page.
     $this->drupalPostForm(NULL, [], 'Next');
     // Set the roles for the policy.
@@ -66,17 +67,13 @@ class PasswordPolicyInterface extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Finish');
 
-    // Fill out length constraint for test policy.
-    $edit = [
-      'character_length' => '5',
-      'character_operation' => 'minimum',
-    ];
-    $this->drupalPostForm('admin/config/system/password_policy/constraint/add/test/password_policy_length_constraint', $edit, 'Save');
+
 
     // Try failing password on form submit.
     $edit = array();
     $edit['current_pass'] = $user1->pass_raw;
-    $edit['pass'] = '111';
+    $edit['pass[pass1]'] = '111';
+    $edit['pass[pass2]'] = '111';
     $this->drupalPostForm("user/" . $user1->id() . "/edit", $edit, t('Save'));
 
     $this->assertText('The password does not satisfy the password policies');
@@ -84,7 +81,8 @@ class PasswordPolicyInterface extends WebTestBase {
     // Try passing password on form submit.
     $edit = array();
     $edit['current_pass'] = $user1->pass_raw;
-    $edit['pass'] = '111111';
+    $edit['pass[pass1]'] = '111111';
+    $edit['pass[pass2]'] = '111111';
     $this->drupalPostForm("user/" . $user1->id() . "/edit", $edit, t('Save'));
 
     $this->assertNoText('The password does not satisfy the password policies');
