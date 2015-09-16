@@ -58,7 +58,8 @@ class PasswordPolicyInterface extends WebTestBase {
       'character_length' => '5',
       'character_operation' => 'minimum',
     ];
-    $this->drupalPostForm('admin/config/system/password_policy/constraint/add/test/password_policy_length_constraint', $edit, 'Save');
+    // @todo convert this to using the button on the form.
+    $this->drupalPostForm('admin/config/system/password_policy/constraint/add/test/password_length', $edit, 'Save');
     // Go to the next page.
     $this->drupalPostForm(NULL, [], 'Next');
     // Set the roles for the policy.

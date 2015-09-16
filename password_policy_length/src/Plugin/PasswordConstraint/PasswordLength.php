@@ -16,7 +16,7 @@ use Drupal\password_policy\PasswordPolicyValidation;
  * Enforces a specific character length for passwords.
  *
  * @PasswordConstraint(
- *   id = "password_policy_length_constraint",
+ *   id = "password_length",
  *   title = @Translation("Password character length"),
  *   description = @Translation("Verifying that a password has a minimum character length"),
  *   error_message = @Translation("The length of your password is too short.")
