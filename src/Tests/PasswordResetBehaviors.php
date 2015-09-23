@@ -16,7 +16,17 @@ use Drupal\simpletest\WebTestBase;
  */
 class PasswordResetBehaviors extends WebTestBase {
 
-  public static $modules = array('password_policy', 'node');
+  public static $modules = array(
+    'user',
+    'node',
+    'dblog',
+    'ctools',
+    'config',
+    'field',
+    'datetime',
+    'text',
+    'field_ui',
+    'password_policy');
 
   /**
    * Test password reset behaviors.
@@ -28,7 +38,10 @@ class PasswordResetBehaviors extends WebTestBase {
     $user1 = $this->drupalCreateUser(array(
       'administer site configuration',
       'administer users',
-      'administer permissions'));
+      'administer permissions',
+      'manage password reset',
+      'administer account settings',
+      'administer user fields'));
     $this->drupalLogin($user1);
 
     // Assert that user attributes were created and unexpired
@@ -62,26 +75,23 @@ class PasswordResetBehaviors extends WebTestBase {
       'roles[' . $rid . ']' => $rid,
     ];
     $this->drupalPostForm(NULL, $edit, 'Finish');
-    $this->drupalLogout();
 
     // Stage an expired date a few days late.
-    $user_instance = entity_load('user', $user2->id());
-    $user_instance->set('field_last_password_reset', strtotime('-5 days'));
-    $user_instance->save();
+    $this->drupalGet("user/" . $user2->id() . "/edit");
+    $edit = [
+      'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days'))
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save');
+
+    $this->drupalLogout();
 
     // Run cron to trigger expiration.
     $this->cronRun();
 
-    // Assert that user has indeed been expired.
-    $user_instance = entity_load('user', $user2->id());
-    $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '1', 'Password expiration field should be expired after CRON');
-
-    // Verify user is forced to go to their edit form
-    $this->drupalGet('user/login');
-
     // This is currently bombing. username not found.
-    $this->drupalPostForm(NULL, ['name'=>$user2->getUsername(), 'pass'=>$user2->getPassword()], 'Log in');
-    $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent to their account form after expiration");
+    $this->drupalPostForm('user/login', ['name'=>$user2->getUsername(), 'pass'=>$user2->getPassword()], 'Log in');
+    $this->drupalGet('admin');
+    $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent to their account form after expiration -- ".$this->getUrl());
     $this->drupalLogout();
 
 
@@ -107,7 +117,8 @@ class PasswordResetBehaviors extends WebTestBase {
     // Change password.
     $this->drupalGet("user/" . $user2->id() . "/edit");
     $edit = array();
-    $edit['pass'] = '1';
+    $edit['pass[pass1]'] = '1';
+    $edit['pass[pass2]'] = '1';
     $edit['current_pass'] = $user2->pass_raw;
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
