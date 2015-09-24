@@ -19,32 +19,36 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
    */
   public function checkForUserPasswordExpiration(GetResponseEvent $event) {
     $account = \Drupal::currentUser();
-    /** @var $user \Drupal\user\UserInterface */
-    $user = entity_load('user', $account->id());
-    $route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
+    // There needs to be an explicit check for non-anonymous or else
+    // this will be tripped and a forced redirect will occur.
+    if ($account->id() > 0) {
+      /** @var $user \Drupal\user\UserInterface */
+      $user = entity_load('user', $account->id());
+      $route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
 
-    ///system/ajax
-    $ignored_routes = array(
-      'entity.user.edit_form',
-      'system.ajax',
-      'user.logout',
-    );
+      ///system/ajax
+      $ignored_routes = array(
+        'entity.user.edit_form',
+        'system.ajax',
+        'user.logout',
+      );
 
-    $user_expired = FALSE;
-    if ($user->get('field_password_expiration')->get(0)) {
-      $user_expired = $user->get('field_password_expiration')
-        ->get(0)
-        ->getValue();
-      $user_expired = $user_expired['value'];
-    }
+      $user_expired = FALSE;
+      if ($user->get('field_password_expiration')->get(0)) {
+        $user_expired = $user->get('field_password_expiration')
+          ->get(0)
+          ->getValue();
+        $user_expired = $user_expired['value'];
+      }
 
 
-    //TODO - Consider excluding admins here
-    if ($user_expired and !in_array($route_name, $ignored_routes)) {
-      $url = new Url('entity.user.edit_form', array('user' => $user->id()));
-      $url = $url->toString();
-      $event->setResponse(new RedirectResponse($url));
-      drupal_set_message('Your password has expired, please update it', 'error');
+      //TODO - Consider excluding admins here
+      if ($user_expired and !in_array($route_name, $ignored_routes)) {
+        $url = new Url('entity.user.edit_form', array('user' => $user->id()));
+        $url = $url->toString();
+        $event->setResponse(new RedirectResponse($url));
+        drupal_set_message('Your password has expired, please update it', 'error');
+      }
     }
   }
 
