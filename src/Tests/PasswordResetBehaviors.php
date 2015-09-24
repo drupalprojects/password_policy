@@ -8,6 +8,7 @@
 namespace Drupal\password_policy\Tests;
 
 use Drupal\simpletest\WebTestBase;
+use Drupal\user\Entity\User;
 
 /**
  * Tests password reset behaviors.
@@ -17,6 +18,7 @@ use Drupal\simpletest\WebTestBase;
 class PasswordResetBehaviors extends WebTestBase {
 
   public static $modules = array(
+    'system',
     'user',
     'node',
     'dblog',
@@ -24,6 +26,10 @@ class PasswordResetBehaviors extends WebTestBase {
     'config',
     'field',
     'datetime',
+    'file',
+    'image',
+    'options',
+    'entity_reference',
     'text',
     'field_ui',
     'password_policy');
@@ -35,14 +41,41 @@ class PasswordResetBehaviors extends WebTestBase {
     global $base_url;
 
     // Create user with permission to create policy.
+    // Below causes a custom role to be created that has no entity storage.
+    // This makes the CMI layer barf and changing CMI fail.
     $user1 = $this->drupalCreateUser(array(
       'administer site configuration',
       'administer users',
       'administer permissions',
       'manage password reset',
       'administer account settings',
-      'administer user fields'));
+      'administer user fields',
+      'administer user form display',
+      'access administration pages'));
+    /*
+    // Create a user assigned to that role.
+    $edit = array();
+    $edit['name'] = 'usertest1';
+    $edit['mail'] = 'usertest1@example.com';
+    $edit['pass'] = 'usertest1password';
+    $edit['status'] = 1;
+    $edit['roles'] = array('administrator');
+
+    $user1 = User::create($edit);
+    $user1->save();
+    $user1->pass_raw = $edit['pass'];
+    //$user1 = $this->drupalCreateUser([], NULL, TRUE);
+    */
+
     $this->drupalLogin($user1);
+
+    // Debugging - new fields are not showing up on user form with right perms.
+    $this->drupalGet('admin/config/people/accounts/form-display');
+    $edit = [
+      'fields[field_password_expiration][type]' => 'boolean_checkbox',
+      'fields[field_last_password_reset][type]' => 'datetime_default',
+    ];
+    $this->drupalPost(NULL, $edit, 'Save');
 
     // Assert that user attributes were created and unexpired
     $user_instance = entity_load('user', $user1->id());
