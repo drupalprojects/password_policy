@@ -33,6 +33,8 @@ class PasswordResetBehaviors extends WebTestBase {
     'text',
     'field_ui',
     'password_policy');
+    
+  protected $profile = 'standard';
 
   /**
    * Test password reset behaviors.
