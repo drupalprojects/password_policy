@@ -83,9 +83,20 @@ class PasswordResetBehaviors extends WebTestBase {
       'name' => 'testuser1',
       'pass[pass1]' => 'pass',
       'pass[pass2]' => 'pass',
-      'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days')),
     ];
     $this->drupalPostForm(NULL, $edit, t('Create new account'));
+
+    // Grab the user info.
+    $user_array = \Drupal::entityManager()->getStorage('user')->loadByProperties(['name'=>'testuser1']);
+    $user2 = array_shift($user_array);
+
+    // Edit the user password reset date.
+    $this->drupalGet("user/" . $user2->id() . '/edit');
+    $edit = [
+      'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days')),
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+
 
     // Create new password reset policy for role.
     $this->drupalGet("admin/config/security/password-policy/add");
@@ -104,9 +115,6 @@ class PasswordResetBehaviors extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Finish');
 
-    // Grab the user info.
-    $user2 = array_shift(\Drupal::entityManager()->getStorage('user')->loadByProperties(['name'=>'testuser1']));
-
     // Time to kick this popsicle stand.
     $this->drupalLogout();
 
@@ -118,7 +126,6 @@ class PasswordResetBehaviors extends WebTestBase {
     $this->drupalPostForm('user/login', ['name'=>'testuser1', 'pass'=>'pass'], 'Log in');
     //$this->drupalLogin($user2);
 
-    $this->drupalGet('admin');
     $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent to their account form after expiration -- ".$this->getUrl());
     $this->drupalLogout();
 
