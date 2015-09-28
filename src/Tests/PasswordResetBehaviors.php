@@ -54,30 +54,17 @@ class PasswordResetBehaviors extends WebTestBase {
       'administer user fields',
       'administer user form display',
       'access administration pages'));
-    /*
-    // Create a user assigned to that role.
-    $edit = array();
-    $edit['name'] = 'usertest1';
-    $edit['mail'] = 'usertest1@example.com';
-    $edit['pass'] = 'usertest1password';
-    $edit['status'] = 1;
-    $edit['roles'] = array('administrator');
 
-    $user1 = User::create($edit);
-    $user1->save();
-    $user1->pass_raw = $edit['pass'];
-    //$user1 = $this->drupalCreateUser([], NULL, TRUE);
-    */
 
     $this->drupalLogin($user1);
 
     // Debugging - new fields are not showing up on user form with right perms.
-    $this->drupalGet('admin/config/people/accounts/form-display');
+    /*$this->drupalGet('admin/config/people/accounts/form-display');
     $edit = [
       'fields[field_password_expiration][type]' => 'boolean_checkbox',
       'fields[field_last_password_reset][type]' => 'datetime_default',
     ];
-    $this->drupalPost(NULL, $edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, 'Save');*/
 
     // Assert that user attributes were created and unexpired
     $user_instance = entity_load('user', $user1->id());
@@ -88,11 +75,17 @@ class PasswordResetBehaviors extends WebTestBase {
     $rid = $this->drupalCreateRole(array());
 
     // Create user with test role.
-    $user2 = $this->drupalCreateUser();
-    $this->drupalGet("user/" . $user2->id() . "/edit");
-    $edit = array();
-    $edit['roles[' . $rid . ']'] = $rid;
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalGet("admin/people/create");
+    $edit = [
+      //'roles[authenticated]' => 'authenticated',
+      'roles[' . $rid . ']' => $rid,
+      'mail' => 'example12@example.com',
+      'name' => 'testuser1',
+      'pass[pass1]' => 'pass',
+      'pass[pass2]' => 'pass',
+      'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days')),
+    ];
+    $this->drupalPostForm(NULL, $edit, t('Create new account'));
 
     // Create new password reset policy for role.
     $this->drupalGet("admin/config/security/password-policy/add");
@@ -111,20 +104,20 @@ class PasswordResetBehaviors extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Finish');
 
-    // Stage an expired date a few days late.
-    $this->drupalGet("user/" . $user2->id() . "/edit");
-    $edit = [
-      'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days'))
-    ];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    // Grab the user info.
+    $user2 = array_shift(\Drupal::entityManager()->getStorage('user')->loadByProperties(['name'=>'testuser1']));
 
+    // Time to kick this popsicle stand.
     $this->drupalLogout();
+
 
     // Run cron to trigger expiration.
     $this->cronRun();
 
     // This is currently bombing. username not found.
-    $this->drupalPostForm('user/login', ['name'=>$user2->getUsername(), 'pass'=>$user2->getPassword()], 'Log in');
+    $this->drupalPostForm('user/login', ['name'=>'testuser1', 'pass'=>'pass'], 'Log in');
+    //$this->drupalLogin($user2);
+
     $this->drupalGet('admin');
     $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent to their account form after expiration -- ".$this->getUrl());
     $this->drupalLogout();
@@ -145,7 +138,7 @@ class PasswordResetBehaviors extends WebTestBase {
 
     // Verify if user tries to go to node, they are forced back.
     $this->drupalGet('user/login');
-    $this->drupalPostForm(NULL, ['name'=>$user2->getUsername(), 'pass'=>$user2->getPassword()], 'Log in');
+    $this->drupalPostForm(NULL, ['name'=>'testuser1', 'pass'=>'pass'], 'Log in');
     $this->drupalGet($node->url());
     $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent back to their account form instead of the node");
 
@@ -154,7 +147,7 @@ class PasswordResetBehaviors extends WebTestBase {
     $edit = array();
     $edit['pass[pass1]'] = '1';
     $edit['pass[pass2]'] = '1';
-    $edit['current_pass'] = $user2->pass_raw;
+    $edit['current_pass'] = 'pass';
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Verify expiration is unset.
