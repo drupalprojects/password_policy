@@ -126,7 +126,7 @@ class PasswordResetBehaviors extends WebTestBase {
     $this->drupalPostForm('user/login', ['name'=>'testuser1', 'pass'=>'pass'], 'Log in');
     //$this->drupalLogin($user2);
 
-    $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent to their account form after expiration -- ".$this->getUrl());
+    $this->assertEqual("/user/" . $user2->id() . "/edit", $this->getUrl(), "User should be sent to their account form after expiration -- ".$this->getUrl());
     $this->drupalLogout();
 
 
@@ -147,7 +147,7 @@ class PasswordResetBehaviors extends WebTestBase {
     $this->drupalGet('user/login');
     $this->drupalPostForm(NULL, ['name'=>'testuser1', 'pass'=>'pass'], 'Log in');
     $this->drupalGet($node->url());
-    $this->assertEqual($this->getAbsoluteUrl("user/" . $user2->id() . "/edit"), $this->getUrl(), "User should be sent back to their account form instead of the node");
+    $this->assertEqual("/user/" . $user2->id() . "/edit", $this->getUrl(), "User should be sent back to their account form instead of the node");
 
     // Change password.
     $this->drupalGet("user/" . $user2->id() . "/edit");
