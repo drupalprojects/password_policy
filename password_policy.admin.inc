@@ -255,7 +255,8 @@ function password_policy_admin_form($form_state, $policy = NULL) {
     '#title' => t('Password Expiration Warning'),
     '#default_value' => $policy['warning'],
     '#size' => 10,
-    '#description' => t('The comma separated list of days. The warning about expiration of the password will be sent out on those days before the expiration. Leaving this field empty won\'t send out or display any warnings.'),
+    '#field_suffix' => t("days before password expiration"),
+    '#description' => t("When to send a password expiration warning e-mail. To send warning e-mails on multiple days, enter numbers separated by commas. For example, '30,7' will cause an expiration warning e-mail to be sent both 30 and 7 days before expiration. Leave blank to not send or display any warnings."),
   );
 
   $form['constraints'] = array(
