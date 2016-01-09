@@ -491,7 +491,7 @@ function password_policy_admin_form_submit($form, &$form_state) {
   }
 
   $expiration = intval($form_state['values']['expiration']);
-  // If we have an pid, update, else save.
+  // If we have a pid, update, else save.
   if (isset($form_state['values']['pid']) && $form_state['values']['pid']) {
     db_update('password_policy')
       ->fields(array(
