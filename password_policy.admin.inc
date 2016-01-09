@@ -331,7 +331,7 @@ function password_policy_admin_form_submit($form, &$form_state) {
     }
   }
 
-  // If we have an pid, update, else save.
+  // If we have a pid, update, else save.
   if (isset($form_state['values']['pid'])) {
     db_query("UPDATE {password_policy} SET name = '%s', description = '%s', policy = '%s', expiration = %d, warning = '%s' WHERE pid = %d", $form_state['values']['name'], $form_state['values']['description'], serialize($policy), trim($form_state['values']['expiration']), str_replace(' ', '', $form_state['values']['warning']), $form_state['values']['pid']);
     drupal_set_message(t('Policy %name has been updated.', array('%name' => $form_state['values']['name'])));
