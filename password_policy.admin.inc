@@ -341,7 +341,7 @@ function password_policy_admin_view($policy) {
     $rows[] = array(t('Warning'), check_plain($policy['warning']));
   }
 
-  foreach ($policy['policy'] as $key => $val) {
+  foreach ($policy['constraints'] as $key => $val) {
     $desc = _password_policy_constraint_description($key);
     $rows[] = array($desc['name'], $val);
   }
@@ -427,7 +427,7 @@ function password_policy_admin_form($form, &$form_state, $policy = NULL) {
     $form['constraints']['constraint_' . $constraint] = array(
       '#type' => 'textfield',
       '#size' => 5,
-      '#default_value' => isset($policy['policy'][$constraint]) ? $policy['policy'][$constraint] : NULL,
+      '#default_value' => isset($policy['constraints'][$constraint]) ? $policy['constraints'][$constraint] : NULL,
       '#maxlength' => 3,
       '#title' => filter_xss($desc['name']),
       '#description' => filter_xss($desc['description']),
@@ -478,14 +478,14 @@ function password_policy_admin_form_submit($form, &$form_state) {
     drupal_goto('admin/config/people/password_policy/delete/' . $form_state['values']['pid']);
   }
 
-  $policy = array();
+  $constraints = array();
   foreach ($form_state['values'] as $key => $value) {
     // If we have no form value, then we have no constraint to set.
     if (!is_array($value)) {
       // Dodge issues with roles array.
       $value = trim($value);
       if ($value != "" && preg_match("/^constraint_/", $key)) {
-        $policy[substr($key, 11)] = $value;
+        $constraints[substr($key, 11)] = $value;
       }
     }
   }
@@ -497,7 +497,7 @@ function password_policy_admin_form_submit($form, &$form_state) {
       ->fields(array(
         'name' => $form_state['values']['name'],
         'description' => $form_state['values']['description'],
-        'policy' => serialize($policy),
+        'constraints' => serialize($constraints),
         'expiration' => !empty($expiration) ? $expiration : 0,
         'warning' => str_replace(' ', '', $form_state['values']['warning']),
       ))
@@ -516,7 +516,7 @@ function password_policy_admin_form_submit($form, &$form_state) {
         'name' => $form_state['values']['name'],
         'description' => $form_state['values']['description'],
         'enabled' => 0,
-        'policy' => serialize($policy),
+        'constraints' => serialize($constraints),
         'expiration' => !empty($expiration) ? $expiration : 0,
         'warning' => str_replace(' ', '', $form_state['values']['warning']),
       ))
