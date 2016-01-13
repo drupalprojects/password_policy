@@ -48,12 +48,9 @@ class PasswordPolicyWizard extends EntityFormWizardBase {
   }
 
   /**
-   * Retrieve a list of FormInterface classes by their step key in the wizard.
-   *
-   * @return array
-   *   A
+   * {@inheritdoc}
    */
-  public function getOperations() {
+  public function getOperations($cached_values) {
     return [
       'general' => [
         'title' => $this->t('General Info'),
