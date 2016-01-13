@@ -33,12 +33,12 @@ class PasswordLength extends PasswordConstraintBase {
     switch($configuration['character_operation']) {
       case 'minimum':
         if (strlen($password) < $configuration['character_length']) {
-        $validation->setErrorMessage($this->t('The length of the password is !count characters and needs to be at least @length characters', ['!count' => strlen($password), '@length' => $configuration['character_length']]));
+        $validation->setErrorMessage($this->t('The length of the password is @count characters and needs to be at least @length characters', ['@count' => strlen($password), '@length' => $configuration['character_length']]));
         }
         break;
       case 'maximum':
         if (strlen($password) > $configuration['character_length']) {
-          $validation->setErrorMessage($this->t('The length of the password is !count characters and can only be at most @length characters', ['!count' => strlen($password), '@length' => $configuration['character_length']]));
+          $validation->setErrorMessage($this->t('The length of the password is @count characters and can only be at most @length characters', ['@count' => strlen($password), '@length' => $configuration['character_length']]));
         }
         break;
     }
