@@ -1,4 +1,4 @@
-password_policy
+Password Policy
 ===============
 
 This is a Drupal 8 module for the Password Policy module. This is comprised of constraints and policies.
@@ -35,7 +35,7 @@ All plugins are installed as separate modules. The only policies that are out of
 
 **Architecture**
 
--  Password policy provides a plugin manager that defines an interface for constraints and the constraint's policies
+-  Password Policy provides a plugin manager that defines an interface for constraints and the constraint's policies
 -  Policies are implemented as permissions and enforced on the user form
 -  Password expiration implements an event subscriber and forces a user to his/her user form upon expiration
 -  Password time-based expiration leverages cron for tagging accounts as expired
