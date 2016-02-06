@@ -627,12 +627,17 @@ function password_policy_password_change_settings_submit($form, &$form_state) {
       }
     }
     if (!empty($uids)) {
-      db_update('password_policy_force_change')
-        ->fields(array(
-          'force_change' => 1,
-        ))
-        ->condition('uid', $uids, 'IN')
-        ->execute();
+      // If there are a large number of users to process, PHP memory limit may
+      // be reached, so process the users in batches.
+      $chunks = array_chunk($uids, 50000);
+      foreach ($chunks as $chunk) {
+        db_update('password_policy_force_change')
+          ->fields(array(
+            'force_change' => 1,
+          ))
+          ->condition('uid', $chunk, 'IN')
+          ->execute();
+      }
     }
     $selected_roles[] = $role;
   }
