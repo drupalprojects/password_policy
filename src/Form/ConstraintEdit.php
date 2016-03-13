@@ -113,6 +113,14 @@ class ConstraintEdit extends FormBase {
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $instance = $form_state->getValue('instance');
+    $instance->validateConfigurationForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->tempstore->get($this->tempstore_id)->get($this->machine_name);
     /** @var $policy \Drupal\password_policy\Entity\PasswordPolicy */

@@ -19,7 +19,8 @@ class PasswordPolicyInterface extends WebTestBase {
   public static $modules = array(
     'password_policy',
     'password_policy_length',
-    'node'
+    'password_policy_character_types',
+    'node',
   );
 
   /**
