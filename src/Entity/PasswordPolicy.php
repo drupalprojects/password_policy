@@ -7,8 +7,6 @@
 namespace Drupal\password_policy\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
-use Drupal\password_policy\PasswordPolicyConstraintCollection;
 use Drupal\password_policy\PasswordPolicyInterface;
 
 /**

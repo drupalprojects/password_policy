@@ -11,7 +11,6 @@ namespace Drupal\password_policy_history\Plugin\PasswordConstraint;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\password_policy\PasswordConstraintBase;
 use Drupal\password_policy\PasswordPolicyValidation;
-use Drupal\Core\Password\PasswordInterface;
 
 /**
  * Enforces a specific character length for passwords.

@@ -8,7 +8,6 @@
 namespace Drupal\password_policy\Tests;
 
 use Drupal\simpletest\WebTestBase;
-use Drupal\user\Entity\User;
 
 /**
  * Tests password reset behaviors.

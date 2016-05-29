@@ -8,7 +8,6 @@
 namespace Drupal\password_policy_history\Tests;
 
 use Drupal\simpletest\WebTestBase;
-use Drupal\Component\Utility\Random;
 
 /**
  * Tests password history

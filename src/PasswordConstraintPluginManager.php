@@ -6,10 +6,8 @@
 
 namespace Drupal\password_policy;
 
-use Drupal\Core\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Language\LanguageManager;
 
 
 class PasswordConstraintPluginManager extends \Drupal\Core\Plugin\DefaultPluginManager {
