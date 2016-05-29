@@ -17,6 +17,12 @@ use Drupal\password_policy\PasswordPolicyInterface;
  * @ConfigEntityType(
  *   id = "password_policy",
  *   label = @Translation("Password Policy"),
+ *   label_singular = @Translation("Password Policy"),
+ *   label_plural = @Translation("Password Policies"),
+ *   label_count = @PluralTranslation(
+ *     singular = @Translation("password policy"),
+ *     plural = @Translation("password policies"),
+ *   ),
  *   handlers = {
  *     "list_builder" = "Drupal\password_policy\Controller\PasswordPolicyListBuilder",
  *     "form" = {
