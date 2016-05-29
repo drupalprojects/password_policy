@@ -21,7 +21,7 @@ class PasswordManualReset extends WebTestBase {
   /**
    * Test manual password reset.
    */
-  function testManualPasswordReset() {
+  public function testManualPasswordReset() {
     // Create user with permission to create policy.
     $user1 = $this->drupalCreateUser(array());
 
@@ -29,7 +29,7 @@ class PasswordManualReset extends WebTestBase {
     $user2 = $this->drupalCreateUser(array(
       'manage password reset',
       'administer users',
-      'administer permissions'
+      'administer permissions',
     ));
     $this->drupalLogin($user2);
 
@@ -54,12 +54,12 @@ class PasswordManualReset extends WebTestBase {
   /**
    * Test exclude myself.
    */
-  function testExcludeMyself() {
+  public function testExcludeMyself() {
     // Create new admin user.
     $user1 = $this->drupalCreateUser(array(
       'manage password reset',
       'administer users',
-      'administer permissions'
+      'administer permissions',
     ));
     $this->drupalLogin($user1);
 
