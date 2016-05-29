@@ -62,22 +62,22 @@ class PasswordCharacter extends PasswordConstraintBase {
     switch($configuration['character_type']) {
       case 'uppercase':
         if ($count_upper < $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has @count uppercase characters and needs have at least @length characters', ['@count' => $count_upper, '@length' => $configuration['character_count']]));
+          $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 uppercase character.', 'Password must contain at least @count uppercase characters.'));
         }
         break;
       case 'lowercase':
         if ($count_lower < $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has @count lowercase characters and needs have at least @length characters', ['@count' => $count_lower, '@length' => $configuration['character_count']]));
+          $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 lowercase character.', 'Password must contain at least @count lowercase characters.'));
         }
         break;
       case 'special':
         if ($count_special < $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has @count special characters and needs have at least @length characters', ['@count' => $count_special, '@length' => $configuration['character_count']]));
+          $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 special character.', 'Password must contain at least @count special characters.'));
         }
         break;
       case 'numeric':
         if ($count_numeric < $configuration['character_count']) {
-          $validation->setErrorMessage($this->t('The password only has @count numeric characters and needs have at least @length characters', ['@count' => $count_numeric, '@length' => $configuration['character_count']]));
+          $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 numeric character.', 'Password must contain at least @count numeric characters.'));
         }
         break;
     }

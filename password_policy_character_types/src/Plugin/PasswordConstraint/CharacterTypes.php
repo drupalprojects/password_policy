@@ -39,7 +39,7 @@ class CharacterTypes extends PasswordConstraintBase {
       preg_match('/[^a-zA-Z0-9]/', $password),
     ]));
     if ($character_sets < $types) {
-      $validation->setErrorMessage($this->t('The password is required to contain at least @types types of characters from the character types: lowercase alphabetic characters (a–z), uppercase alphabetic characters (A–Z), numeric characters (0–9), special characters.', ['@types' => $types]));
+      $validation->setErrorMessage($this->t('Password must contain at least @types types of characters from the following character types: lowercase letters, uppercase letters, digits, punctuation.', ['@types' => $types]));
     }
     return $validation;
   }
@@ -61,7 +61,7 @@ class CharacterTypes extends PasswordConstraintBase {
       '#type' => 'select',
       '#options' => ['1'=>'1', '2'=>'2', '3'=>'3', '4'=>'4'],
       '#title' => $this->t('Minimum of character types'),
-      '#description' => $this->t('Select the minimum number of character types which must be found in a password. The four supported character types are given as: lowercase alphabetic characters (a–z), uppercase alphabetic characters (A–Z), numeric characters (0–9), special characters.'),
+      '#description' => $this->t('Select the minimum number of character types which must be found in a password. The four supported character types are given as: lowercase letters, uppercase letters, digits, punctuation.'),
       '#default_value' => $this->getConfiguration()['character_types'],
     ];
     return $form;

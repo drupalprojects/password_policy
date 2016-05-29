@@ -31,7 +31,7 @@ class PasswordUsername extends PasswordConstraintBase {
     $validation = new PasswordPolicyValidation();
 
     if ($config['disallow_username'] && stripos($password, $user_context['name']) !== FALSE) {
-      $validation->setErrorMessage($this->t('You cannot set a password that contains your username.'));
+      $validation->setErrorMessage($this->t('Password must not contain the username.'));
     }
 
     return $validation;

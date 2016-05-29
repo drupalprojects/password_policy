@@ -53,7 +53,7 @@ class PasswordHistory extends PasswordConstraintBase {
     }
 
     if ($repeats > $configuration['history_repeats']) {
-      $validation->setErrorMessage($this->t('You cannot use the same password more than @history-repeats time(s) and this has been used @number-repeats time(s)', array('@history-repeats'=>$configuration['history_repeats']+1, '@number-repeats'=> $repeats)));
+      $validation->setErrorMessage($this->t('Password has been reused too many times.  Choose a different password.'));
     }
 
     return $validation;
