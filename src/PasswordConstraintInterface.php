@@ -17,7 +17,7 @@ interface PasswordConstraintInterface extends PluginInspectionInterface, Configu
    * @param password
    *   The password entered by the end user
    *
-   * @return boolean
+   * @return PasswordPolicyValidation
    *   Whether or not the password meets the constraint in the plugin.
    */
   public function validate($password, $user_context);
