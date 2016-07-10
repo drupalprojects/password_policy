@@ -11,6 +11,7 @@ namespace Drupal\password_policy_history\Plugin\PasswordConstraint;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\password_policy\PasswordConstraintBase;
 use Drupal\password_policy\PasswordPolicyValidation;
+use Drupal\Core\Database\Database;
 
 /**
  * Enforces a specific character length for passwords.
@@ -38,7 +39,7 @@ class PasswordHistory extends PasswordConstraintBase {
     $password_service = \Drupal::service('password');
 
     //query for users hashes
-    $hashes = db_select('password_policy_history', 'pph')
+    $hashes = Database::getConnection()->select('password_policy_history', 'pph')
     ->fields('pph', array('pass_hash'))
       ->condition('uid', $user_context['uid'])
       ->execute()

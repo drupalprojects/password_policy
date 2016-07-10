@@ -8,6 +8,7 @@
 namespace Drupal\password_policy_length\Tests;
 
 use Drupal\simpletest\WebTestBase;
+use Drupal\Core\Database\Database;
 
 /**
  * Tests password length operations.
@@ -32,7 +33,7 @@ class PasswordLengthOperations extends WebTestBase {
     $this->drupalPostForm('admin/config/security/password-policy/password-length', $edit, t('Add policy'));
 
     // Get info for policy.
-    $policy = db_select("password_policy_length_policies", 'p')
+    $policy = Database::getConnection()->select("password_policy_length_policies", 'p')
       ->fields('p', array())
       ->orderBy('p.pid', 'DESC')
       ->execute()
@@ -54,7 +55,7 @@ class PasswordLengthOperations extends WebTestBase {
     $this->assertText("Minimum character length 10");
 
     // Get info for policy.
-    $policy = db_select("password_policy_length_policies", 'p')
+    $policy = Database::getConnection()->select("password_policy_length_policies", 'p')
       ->fields('p', array())
       ->condition('p.pid', $policy->pid)
       ->execute()
@@ -67,7 +68,7 @@ class PasswordLengthOperations extends WebTestBase {
     $this->drupalPostForm("admin/config/security/password-policy/delete-policy/password_policy_length_constraint/" . $policy->pid, $edit, t('Confirm deletion of policy'));
 
     // Get info for policy.
-    $policy = db_select("password_policy_length_policies", 'p')
+    $policy = Database::getConnection()->select("password_policy_length_policies", 'p')
       ->fields('p', array())
       ->condition('p.pid', $policy->pid)
       ->execute()

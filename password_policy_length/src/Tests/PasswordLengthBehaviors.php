@@ -8,6 +8,7 @@
 namespace Drupal\password_policy_length\Tests;
 
 use Drupal\simpletest\WebTestBase;
+use Drupal\Core\Database\Database;
 
 /**
  * Tests password length behaviors.
@@ -34,7 +35,7 @@ class PasswordLengthBehaviors extends WebTestBase {
     $this->drupalPostForm('admin/config/security/password-policy/password-length', $edit, t('Add constraint'));
 
     // Get latest ID to get policy.
-    $id = db_select("password_policy_length_constraints", 'p')
+    $id = Database::getConnection()->select("password_policy_length_constraints", 'p')
       ->fields('p', array('cid'))
       ->orderBy('p.cid', 'DESC')
       ->execute()
