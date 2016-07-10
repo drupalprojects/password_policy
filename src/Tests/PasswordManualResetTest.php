@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\password_policy\Tests\PasswordManualReset.
+ * Definition of Drupal\password_policy\Tests\PasswordManualResetTest.
  */
 
 namespace Drupal\password_policy\Tests;
@@ -14,7 +14,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @group password_policy
  */
-class PasswordManualReset extends WebTestBase {
+class PasswordManualResetTest extends WebTestBase {
 
   public static $modules = array('password_policy', 'node');
 

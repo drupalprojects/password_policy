@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\password_policy\Tests\PasswordResetBehaviors.
+ * Definition of Drupal\password_policy\Tests\PasswordResetBehaviorsTest.
  */
 
 namespace Drupal\password_policy\Tests;
@@ -14,7 +14,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @group password_policy
  */
-class PasswordResetBehaviors extends WebTestBase {
+class PasswordResetBehaviorsTest extends WebTestBase {
 
   public static $modules = array(
     'system',
@@ -37,7 +37,7 @@ class PasswordResetBehaviors extends WebTestBase {
   protected $profile = 'standard';
 
   /**
-   * Test password reset behaviors.
+   *    * Test password reset behaviors.
    */
   public function testPasswordResetBehaviors() {
     global $base_url;
@@ -88,14 +88,13 @@ class PasswordResetBehaviors extends WebTestBase {
 
     // Grab the user info.
     $user_array = \Drupal::entityManager()->getStorage('user')->loadByProperties(['name' => 'testuser1']);
-    /** @var \Drupal\user\UserInterface $user2 */
     $user2 = array_shift($user_array);
 
     // Edit the user password reset date.
     $this->drupalGet("user/" . $user2->id() . '/edit');
     $edit = [
-      'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days')),
-    ];
+        'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days')),
+      ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Create new password reset policy for role.
@@ -160,7 +159,7 @@ class PasswordResetBehaviors extends WebTestBase {
 
     // Verify if user tries to go to node, they are allowed.
     $this->drupalGet($node->url());
-    $this->assertUrl($node->toUrl(), [], "User should have access to the node now");
+    $this->assertEqual($this->getUrl(), $this->getAbsoluteUrl($node->url()), "User should have access to the node now");
     $this->drupalLogout();
   }
 

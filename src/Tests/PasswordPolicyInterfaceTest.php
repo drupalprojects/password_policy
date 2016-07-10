@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\password_policy\Tests\PasswordPolicyInterface.
+ * Definition of Drupal\password_policy\Tests\PasswordPolicyInterfaceTest.
  */
 
 namespace Drupal\password_policy\Tests;
@@ -14,7 +14,7 @@ use Drupal\simpletest\WebTestBase;
  *
  * @group password_policy
  */
-class PasswordPolicyInterface extends WebTestBase {
+class PasswordPolicyInterfaceTest extends WebTestBase {
 
   public static $modules = array(
     'password_policy',
