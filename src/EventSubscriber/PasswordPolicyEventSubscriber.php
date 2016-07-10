@@ -45,7 +45,7 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
       //TODO - Consider excluding admins here
       if ($user_expired and !in_array($route_name, $ignored_routes)) {
         $url = new Url('entity.user.edit_form', array('user' => $user->id()));
-        $url = $url->toString();
+        $url = $url->setAbsolute(TRUE)->toString();
         $event->setResponse(new RedirectResponse($url));
         drupal_set_message('Your password has expired, please update it', 'error');
       }

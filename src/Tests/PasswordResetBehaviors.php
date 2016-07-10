@@ -88,6 +88,7 @@ class PasswordResetBehaviors extends WebTestBase {
 
     // Grab the user info.
     $user_array = \Drupal::entityManager()->getStorage('user')->loadByProperties(['name' => 'testuser1']);
+    /** @var \Drupal\user\UserInterface $user2 */
     $user2 = array_shift($user_array);
 
     // Edit the user password reset date.
@@ -123,7 +124,7 @@ class PasswordResetBehaviors extends WebTestBase {
     // This is currently bombing. username not found.
     $this->drupalPostForm('user/login', ['name' => 'testuser1', 'pass' => 'pass'], 'Log in');
     // $this->drupalLogin($user2);.
-    $this->assertEqual("/user/" . $user2->id() . "/edit", $this->getUrl(), "User should be sent to their account form after expiration -- " . $this->getUrl());
+    $this->assertUrl($user2->toUrl('edit-form'), [], "User should be sent to their account form after expiration -- ");
     $this->drupalLogout();
 
     // Create a new node type.
@@ -143,7 +144,7 @@ class PasswordResetBehaviors extends WebTestBase {
     $this->drupalGet('user/login');
     $this->drupalPostForm(NULL, ['name' => 'testuser1', 'pass' => 'pass'], 'Log in');
     $this->drupalGet($node->url());
-    $this->assertEqual("/user/" . $user2->id() . "/edit", $this->getUrl(), "User should be sent back to their account form instead of the node");
+    $this->assertUrl($user2->toUrl('edit-form'), [], "User should be sent back to their account form instead of the node");
 
     // Change password.
     $this->drupalGet("user/" . $user2->id() . "/edit");
@@ -159,7 +160,7 @@ class PasswordResetBehaviors extends WebTestBase {
 
     // Verify if user tries to go to node, they are allowed.
     $this->drupalGet($node->url());
-    $this->assertEqual($this->getUrl(), $this->getAbsoluteUrl($node->url()), "User should have access to the node now");
+    $this->assertUrl($node->toUrl(), [], "User should have access to the node now");
     $this->drupalLogout();
   }
 
