@@ -154,7 +154,7 @@ function _password_policy_admin_list_roles($pid) {
     ->condition('p.pid', $pid)
     ->execute();
   foreach ($result as $row) {
-    $roles[] = $row->name;
+    $roles[] = check_plain($row->name);
   }
   return $roles;
 }
