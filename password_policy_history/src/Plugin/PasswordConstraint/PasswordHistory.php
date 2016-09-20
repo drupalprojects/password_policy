@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\password_policy_history\Constraints\PasswordHistory.
- */
-
-
 namespace Drupal\password_policy_history\Plugin\PasswordConstraint;
 
 use Drupal\Core\Form\FormStateInterface;

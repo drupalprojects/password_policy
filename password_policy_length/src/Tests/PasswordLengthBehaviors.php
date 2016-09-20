@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drupal\password_policy_length\Tests\PasswordLengthBehaviors.
- */
-
 namespace Drupal\password_policy_length\Tests;
 
 use Drupal\simpletest\WebTestBase;

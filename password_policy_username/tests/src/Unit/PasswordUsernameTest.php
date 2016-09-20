@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\password_policy_username\Unit\testPasswordUsername.
- */
-
 namespace Drupal\Tests\password_policy_username\Unit;
 
 use Drupal\Tests\UnitTestCase;

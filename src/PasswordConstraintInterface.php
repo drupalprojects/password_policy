@@ -1,8 +1,5 @@
 <?php
-/**
- * @file
- * Provides Drupal\password_policy\PasswordConstraintInterface.
- */
+
 namespace Drupal\password_policy;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;

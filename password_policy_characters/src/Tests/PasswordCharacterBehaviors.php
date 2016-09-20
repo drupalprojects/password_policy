@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drupal\password_policy_characters\Tests\PasswordCharacterBehaviors.
- */
-
 namespace Drupal\password_policy_characters\Tests;
 
 use Drupal\simpletest\WebTestBase;

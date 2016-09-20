@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\password_policy\Form\PasswordPolicyConstraintForm.php
- */
 
 namespace Drupal\password_policy\Form;
 

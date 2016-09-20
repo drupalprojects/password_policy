@@ -1,8 +1,5 @@
 <?php
-/**
- * @file
- * Contains Drupal\password_policy\EventSubscriber\PasswordPolicyEventSubcriber.
- */
+
 namespace Drupal\password_policy\EventSubscriber;
 
 use Drupal\Core\Url;

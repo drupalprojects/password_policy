@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\password_policy\Annotation\PasswordConstraint.
- */
-
 namespace Drupal\password_policy\Annotation;
 
 use Drupal\Component\Annotation\Plugin;

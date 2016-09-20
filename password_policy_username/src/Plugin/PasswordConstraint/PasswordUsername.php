@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\password_policy_username\Constraints\PasswordUsername.
- */
-
 namespace Drupal\password_policy_username\Plugin\PasswordConstraint;
 
 use Drupal\Core\Form\FormStateInterface;

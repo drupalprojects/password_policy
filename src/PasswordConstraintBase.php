@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Provides Drupal\password_policy\PasswordConstraintBase.
- */
 
 namespace Drupal\password_policy;
 

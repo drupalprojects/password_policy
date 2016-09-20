@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\password_policy_character_types\Unit.
- */
-
 namespace Drupal\Tests\password_policy_character_types\Unit;
 
 use Drupal\Tests\UnitTestCase;

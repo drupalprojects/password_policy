@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drupal\password_policy\Tests\PasswordManualResetTest.
- */
-
 namespace Drupal\password_policy\Tests;
 
 use Drupal\simpletest\WebTestBase;

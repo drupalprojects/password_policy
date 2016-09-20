@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\password_policy\Form\PasswordPolicyGeneralForm.
- */
 
 namespace Drupal\password_policy\Form;
 

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\password_policy\Controller\PasswordPolicyListBuilder.
- */
-
 namespace Drupal\password_policy\Controller;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;

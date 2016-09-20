@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\password_policy\Wizard\PasswordPolicyWizard.
- */
 
 namespace Drupal\password_policy\Wizard;
 

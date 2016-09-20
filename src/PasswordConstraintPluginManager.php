@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains Drupal\password_policy\PasswordConstraintPluginManager.
- */
 
 namespace Drupal\password_policy;
 

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drupal\password_policy_history\Tests\PasswordHistoryBehaviors.
- */
-
 namespace Drupal\password_policy_history\Tests;
 
 use Drupal\simpletest\WebTestBase;

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\password_policy_length\Constraints\PasswordLength.
- */
-
-
 namespace Drupal\password_policy_length\Plugin\PasswordConstraint;
 
 use Drupal\Core\Form\FormStateInterface;

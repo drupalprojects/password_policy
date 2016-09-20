@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\password_policy_character_types\Constraints\CharacterTypes.
- */
-
 namespace Drupal\password_policy_character_types\Plugin\PasswordConstraint;
 
 use Drupal\Core\Form\FormStateInterface;
