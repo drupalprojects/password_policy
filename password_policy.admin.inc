@@ -25,6 +25,12 @@ function password_policy_admin_settings() {
     '#default_value' => variable_get('password_policy_force_change_reset', 0),
     '#description' => t('When a user requests a one-time login link, this option will require the user to change their password before continuing to browse the site.'),
   );
+  $form['force_change']['password_policy_force_change_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Password change form path'),
+    '#description' => t('If the module does not determine the path for the password change form, use this field to specify the correct path. For example: "user/[user:uid]/edit". Supported replacement patterns are [user:uid] and [user:name].'),
+    '#default_value' => variable_get('password_policy_force_change_path', NULL),
+  );
   $form['force_change']['password_policy_force_change_extra_allowed_paths'] = array(
     '#type' => 'textarea',
     '#title' => t('Extra allowed paths'),
@@ -119,6 +125,7 @@ function password_policy_admin_settings_submit($form, &$form_state) {
       variable_set('password_policy_warning_subject', $form_state['values']['password_policy_warning_subject']);
       variable_set('password_policy_warning_body', $form_state['values']['password_policy_warning_body']);
       variable_set('password_policy_force_change_reset', $form_state['values']['password_policy_force_change_reset']);
+      variable_set('password_policy_force_change_path', $form_state['values']['password_policy_force_change_path']);
       variable_set('password_policy_force_change_extra_allowed_paths', $form_state['values']['password_policy_force_change_extra_allowed_paths']);
       drupal_set_message(t('The configuration options have been saved.'));
       break;
@@ -131,6 +138,7 @@ function password_policy_admin_settings_submit($form, &$form_state) {
       variable_del('password_policy_warning_subject');
       variable_del('password_policy_warning_body');
       variable_del('password_policy_force_change_reset');
+      variable_del('password_policy_force_change_path');
       variable_del('password_policy_force_change_extra_allowed_paths');
       drupal_set_message(t('The configuration options have been reset to their default values.'));
       break;
