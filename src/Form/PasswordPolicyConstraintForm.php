@@ -65,7 +65,7 @@ class PasswordPolicyConstraintForm extends FormBase {
     $form['add'] = [
       '#type' => 'submit',
       '#name' => 'add',
-      '#value' => t('Configure Constraint Settings'),
+      '#value' => $this->t('Configure Constraint Settings'),
       '#ajax' => [
         'callback' => [$this, 'add'],
         'event' => 'click',
@@ -85,7 +85,7 @@ class PasswordPolicyConstraintForm extends FormBase {
       '#theme' => 'table',
       '#header' => array($this->t('Plugin Id'), $this->t('Summary'), $this->t('Operations')),
       '#rows' => $this->renderRows($cached_values),
-      '#empty' => t('No constraints have been configured.')
+      '#empty' => $this->t('No constraints have been configured.')
     );
 
     return $form;
@@ -137,7 +137,7 @@ class PasswordPolicyConstraintForm extends FormBase {
 
   protected function getOperations($route_name_base, array $route_parameters = array()) {
     $operations['edit'] = array(
-      'title' => t('Edit'),
+      'title' => $this->t('Edit'),
       'url' => new Url($route_name_base . '.edit', $route_parameters),
       'weight' => 10,
       'attributes' => array(
@@ -151,7 +151,7 @@ class PasswordPolicyConstraintForm extends FormBase {
     $route_parameters['id'] = $route_parameters['constraint_id'];
     unset($route_parameters['constraint_id']);
     $operations['delete'] = array(
-      'title' => t('Delete'),
+      'title' => $this->t('Delete'),
       'url' => new Url($route_name_base . '.delete', $route_parameters),
       'weight' => 100,
       'attributes' => array(

@@ -24,8 +24,8 @@ class PasswordPolicyGeneralForm extends FormBase {
 
     $form['password_reset'] = [
       '#type' => 'textfield',
-      '#title' => t('Password Reset Days'),
-      '#description' => t('User password will reset after the selected number of days'),
+      '#title' => $this->t('Password Reset Days'),
+      '#description' => $this->t('User password will reset after the selected number of days'),
       '#default_value' => $policy->getPasswordReset(),
     ];
     return $form;
