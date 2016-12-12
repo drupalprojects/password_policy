@@ -5,7 +5,7 @@ namespace Drupal\password_policy_history\Tests;
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Tests password history
+ * Tests password history.
  *
  * @group password_policy_history
  */
@@ -67,7 +67,7 @@ class PasswordHistoryTests extends WebTestBase {
 
     $this->assertText('Saved the test Password Policy.');
 
-    // Change password to the same thing
+    // Change password to the same thing.
     $edit = array(
       'pass[pass1]' => $user2->pass_raw,
       'pass[pass2]' => $user2->pass_raw,
@@ -76,8 +76,7 @@ class PasswordHistoryTests extends WebTestBase {
 
     $this->assertText('The changes have been saved.');
 
-
-    // Change password to the same thing again
+    // Change password to the same thing again.
     $edit = array(
       'pass[pass1]' => $user2->pass_raw,
       'pass[pass2]' => $user2->pass_raw,
@@ -88,4 +87,5 @@ class PasswordHistoryTests extends WebTestBase {
 
     $this->drupalLogout();
   }
+
 }

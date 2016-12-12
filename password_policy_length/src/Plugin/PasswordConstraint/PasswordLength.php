@@ -21,15 +21,16 @@ class PasswordLength extends PasswordConstraintBase {
   /**
    * {@inheritdoc}
    */
-  function validate($password, $user_context) {
+  public function validate($password, $user_context) {
     $configuration = $this->getConfiguration();
     $validation = new PasswordPolicyValidation();
-    switch($configuration['character_operation']) {
+    switch ($configuration['character_operation']) {
       case 'minimum':
         if (strlen($password) < $configuration['character_length']) {
           $validation->setErrorMessage($this->formatPlural($configuration['character_length'], 'Password length must be at least 1 character.', 'Password length must be at least @count characters.'));
         }
         break;
+
       case 'maximum':
         if (strlen($password) > $configuration['character_length']) {
           $validation->setErrorMessage($this->formatPlural($configuration['character_length'], 'Password length must not exceed 1 character.', 'Password length must not exceed @count characters.'));
@@ -88,15 +89,16 @@ class PasswordLength extends PasswordConstraintBase {
    * {@inheritdoc}
    */
   public function getSummary() {
-    switch($this->configuration['character_operation']) {
+    switch ($this->configuration['character_operation']) {
       case 'minimum':
         $operation = 'at least';
         break;
+
       case 'maximum':
         $operation = 'at most';
         break;
     }
-    return $this->t('Password character length of @operation @characters', array('@operation' => $operation,'@characters' => $this->configuration['character_length']));
+    return $this->t('Password character length of @operation @characters', array('@operation' => $operation, '@characters' => $this->configuration['character_length']));
   }
 
 }

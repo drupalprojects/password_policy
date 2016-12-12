@@ -17,7 +17,7 @@ class PasswordLengthBehaviors extends WebTestBase {
   /**
    * Test password length behaviors.
    */
-  function testPasswordLengthBehaviors() {
+  public function testPasswordLengthBehaviors() {
     global $base_url;
 
     // Create user with permission to create policy.
@@ -61,7 +61,7 @@ class PasswordLengthBehaviors extends WebTestBase {
     // Verify we see do not error.
     $this->assertNoText('Fail - The length of the password is 12 characters, which is less than the 5 characters of the policy');
 
-
     $this->drupalLogout();
   }
+
 }

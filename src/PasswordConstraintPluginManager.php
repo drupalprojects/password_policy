@@ -2,11 +2,15 @@
 
 namespace Drupal\password_policy;
 
+use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 
+/**
+ * Plugin manager that controls password constraints.
+ */
+class PasswordConstraintPluginManager extends DefaultPluginManager {
 
-class PasswordConstraintPluginManager extends \Drupal\Core\Plugin\DefaultPluginManager {
   /**
    * Constructs a new PasswordConstraintPluginManager.
    *

@@ -78,7 +78,7 @@ class PasswordUsername extends PasswordConstraintBase {
    * {@inheritdoc}
    */
   public function getSummary() {
-    return $this->t('Password must not contain the user\'s username.');
+    return $this->t("Password must not contain the user's username.");
   }
 
 }

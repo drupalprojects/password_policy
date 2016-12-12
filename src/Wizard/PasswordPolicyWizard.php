@@ -2,14 +2,18 @@
 
 namespace Drupal\password_policy\Wizard;
 
-
 use Drupal\ctools\Wizard\EntityFormWizardBase;
 
+/**
+ * The definition of the password policy form wizard.
+ */
 class PasswordPolicyWizard extends EntityFormWizardBase {
+
   /**
    * The machine name of the entity type.
    *
    * @return string
+   *   The entity associated with the form wizard.
    */
   public function getEntityType() {
     return 'password_policy';
@@ -29,6 +33,7 @@ class PasswordPolicyWizard extends EntityFormWizardBase {
    * The fieldset #title for your label & machine name elements.
    *
    * @return string
+   *   Label of the wizard.
    */
   public function getWizardLabel() {
     return $this->t('Password Policy');
@@ -38,6 +43,7 @@ class PasswordPolicyWizard extends EntityFormWizardBase {
    * The form element #title for your unique identifier label.
    *
    * @return string
+   *   Title element for the policy wizard.
    */
   public function getMachineLabel() {
     return $this->t('Policy Name');
@@ -67,6 +73,7 @@ class PasswordPolicyWizard extends EntityFormWizardBase {
    * The name of the route to which forward or backwards steps redirect.
    *
    * @return string
+   *   Route identifier for the form wizard.
    */
   public function getRouteName() {
     return 'entity.password_policy.wizard.edit';

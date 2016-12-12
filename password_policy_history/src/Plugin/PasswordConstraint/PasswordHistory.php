@@ -22,7 +22,7 @@ class PasswordHistory extends PasswordConstraintBase {
   /**
    * {@inheritdoc}
    */
-  function validate($password, $user_context) {
+  public function validate($password, $user_context) {
     $configuration = $this->getConfiguration();
     $validation = new PasswordPolicyValidation();
 
@@ -32,9 +32,9 @@ class PasswordHistory extends PasswordConstraintBase {
 
     $password_service = \Drupal::service('password');
 
-    //query for users hashes
+    // Query for users hashes.
     $hashes = Database::getConnection()->select('password_policy_history', 'pph')
-    ->fields('pph', array('pass_hash'))
+      ->fields('pph', array('pass_hash'))
       ->condition('uid', $user_context['uid'])
       ->execute()
       ->fetchAll();

@@ -21,7 +21,7 @@ class PasswordCharacter extends PasswordConstraintBase {
   /**
    * {@inheritdoc}
    */
-  function validate($password, $user_context) {
+  public function validate($password, $user_context) {
     $configuration = $this->getConfiguration();
     $validation = new PasswordPolicyValidation();
     $character_distribution = count_chars($password);
@@ -31,8 +31,8 @@ class PasswordCharacter extends PasswordConstraintBase {
     $count_special = 0;
     $count_numeric = 0;
 
-    foreach($character_distribution as $i => $val){
-      if($val) {
+    foreach ($character_distribution as $i => $val) {
+      if ($val) {
         $char = chr($i);
         if (is_numeric($char)) {
           $count_numeric++;
@@ -53,22 +53,25 @@ class PasswordCharacter extends PasswordConstraintBase {
       }
     }
 
-    switch($configuration['character_type']) {
+    switch ($configuration['character_type']) {
       case 'uppercase':
         if ($count_upper < $configuration['character_count']) {
           $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 uppercase character.', 'Password must contain at least @count uppercase characters.'));
         }
         break;
+
       case 'lowercase':
         if ($count_lower < $configuration['character_count']) {
           $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 lowercase character.', 'Password must contain at least @count lowercase characters.'));
         }
         break;
+
       case 'special':
         if ($count_special < $configuration['character_count']) {
           $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 special character.', 'Password must contain at least @count special characters.'));
         }
         break;
+
       case 'numeric':
         if ($count_numeric < $configuration['character_count']) {
           $validation->setErrorMessage($this->formatPlural($configuration['character_count'], 'Password must contain at least 1 numeric character.', 'Password must contain at least @count numeric characters.'));
@@ -103,7 +106,12 @@ class PasswordCharacter extends PasswordConstraintBase {
       '#type' => 'select',
       '#title' => t('Character type'),
       '#required' => TRUE,
-      '#options' => array('uppercase' => 'Uppercase', 'lowercase' => 'Lowercase', 'numeric' => 'Numeric', 'special' => 'Special Character'),
+      '#options' => array(
+        'uppercase' => 'Uppercase',
+        'lowercase' => 'Lowercase',
+        'numeric' => 'Numeric',
+        'special' => 'Special Character',
+      ),
       '#default_value' => $this->getConfiguration()['character_type'],
     );
     return $form;
@@ -130,7 +138,7 @@ class PasswordCharacter extends PasswordConstraintBase {
    * {@inheritdoc}
    */
   public function getSummary() {
-    return $this->t('Password must contain @characters @character-type characters', array('@character-type' => $this->configuration['character_type'],'@characters' => $this->configuration['character_count']));
+    return $this->t('Password must contain @characters @character-type characters', array('@character-type' => $this->configuration['character_type'], '@characters' => $this->configuration['character_count']));
   }
 
 }

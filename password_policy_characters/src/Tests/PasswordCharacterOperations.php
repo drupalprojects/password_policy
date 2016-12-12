@@ -17,7 +17,7 @@ class PasswordCharacterOperations extends WebTestBase {
   /**
    * Test password length policy management.
    */
-  function testPasswordLengthPolicyManagement() {
+  public function testPasswordLengthPolicyManagement() {
     // Create user with permission to create policy.
     $user1 = $this->drupalCreateUser(array('administer site configuration'));
     $this->drupalLogin($user1);

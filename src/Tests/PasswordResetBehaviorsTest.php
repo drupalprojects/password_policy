@@ -3,6 +3,7 @@
 namespace Drupal\password_policy\Tests;
 
 use Drupal\simpletest\WebTestBase;
+use Drupal\user\Entity\User;
 
 /**
  * Tests password reset behaviors.
@@ -32,7 +33,7 @@ class PasswordResetBehaviorsTest extends WebTestBase {
   protected $profile = 'standard';
 
   /**
-   *    * Test password reset behaviors.
+   * Test password reset behaviors.
    */
   public function testPasswordResetBehaviors() {
     global $base_url;
@@ -62,7 +63,7 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     $this->drupalPostForm(NULL, $edit, 'Save');*/
 
     // Assert that user attributes were created and unexpired.
-    $user_instance = entity_load('user', $user1->id());
+    $user_instance = User::load($user1->id());
     $this->assertNotNull($user_instance->get('field_last_password_reset')[0]->value, 'Last password reset was not set on user add');
     $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '0', 'Password expiration field is not set to zero on user add');
 
@@ -82,14 +83,14 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     $this->drupalPostForm(NULL, $edit, t('Create new account'));
 
     // Grab the user info.
-    $user_array = \Drupal::entityManager()->getStorage('user')->loadByProperties(['name' => 'testuser1']);
+    $user_array = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['name' => 'testuser1']);
     $user2 = array_shift($user_array);
 
     // Edit the user password reset date.
     $this->drupalGet("user/" . $user2->id() . '/edit');
     $edit = [
-        'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days')),
-      ];
+      'field_last_password_reset[0][value][date]' => date('Y-m-d', strtotime('-90 days')),
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Create new password reset policy for role.
@@ -137,7 +138,7 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     // Verify if user tries to go to node, they are forced back.
     $this->drupalGet('user/login');
     $this->drupalPostForm(NULL, ['name' => 'testuser1', 'pass' => 'pass'], 'Log in');
-    $this->drupalGet($node->url());
+    $this->drupalGet($node->toUrl());
     $this->assertUrl($user2->toUrl('edit-form'), [], "User should be sent back to their account form instead of the node");
 
     // Change password.
@@ -149,12 +150,12 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Verify expiration is unset.
-    $user_instance = entity_load('user', $user2->id());
+    $user_instance = User::load($user2->id());
     $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '0', 'Password expiration field should be empty after changing password');
 
     // Verify if user tries to go to node, they are allowed.
-    $this->drupalGet($node->url());
-    $this->assertEqual($this->getUrl(), $this->getAbsoluteUrl($node->url()), "User should have access to the node now");
+    $this->drupalGet($node->toUrl());
+    $this->assertEqual($this->getUrl(), $node->toUrl('canonical', ['absolute' => TRUE])->toString(), "User should have access to the node now");
     $this->drupalLogout();
   }
 

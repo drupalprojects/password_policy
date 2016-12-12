@@ -6,6 +6,9 @@ use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
+/**
+ * A base class to define standard operations of a password constraint.
+ */
 abstract class PasswordConstraintBase extends PluginBase implements PasswordConstraintInterface {
   use StringTranslationTrait;
 
@@ -74,4 +77,5 @@ abstract class PasswordConstraintBase extends PluginBase implements PasswordCons
   public function calculateDependencies() {
     return array();
   }
+
 }

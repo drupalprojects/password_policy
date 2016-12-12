@@ -54,7 +54,7 @@ class CharacterTypes extends PasswordConstraintBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['character_types'] = [
       '#type' => 'select',
-      '#options' => ['1'=>'1', '2'=>'2', '3'=>'3', '4'=>'4'],
+      '#options' => ['1' => '1', '2' => '2', '3' => '3', '4' => '4'],
       '#title' => $this->t('Minimum of character types'),
       '#description' => $this->t('Select the minimum number of character types which must be found in a password. The four supported character types are given as: lowercase letters, uppercase letters, digits, punctuation.'),
       '#default_value' => $this->getConfiguration()['character_types'],

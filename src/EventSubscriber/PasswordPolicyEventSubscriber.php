@@ -8,22 +8,26 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Cmf\Component\Routing\RouteObjectInterface;
+use \Drupal\user\Entity\User;
 
+/**
+ * Enforces password reset functionality.
+ */
 class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
 
   /**
-   * Event callback to look for users expired password
+   * Event callback to look for users expired password.
    */
   public function checkForUserPasswordExpiration(GetResponseEvent $event) {
     $account = \Drupal::currentUser();
     // There needs to be an explicit check for non-anonymous or else
     // this will be tripped and a forced redirect will occur.
     if ($account->id() > 0) {
-      /** @var $user \Drupal\user\UserInterface */
-      $user = entity_load('user', $account->id());
+      /* @var $user \Drupal\user\UserInterface */
+      $user = User::load($account->id());
       $route_name = \Drupal::request()->attributes->get(RouteObjectInterface::ROUTE_NAME);
 
-      ///system/ajax
+      // system/ajax.
       $ignored_routes = array(
         'entity.user.edit_form',
         'system.ajax',
@@ -38,8 +42,7 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
         $user_expired = $user_expired['value'];
       }
 
-
-      //TODO - Consider excluding admins here
+      // TODO - Consider excluding admins here.
       if ($user_expired and !in_array($route_name, $ignored_routes)) {
         $url = new Url('entity.user.edit_form', array('user' => $user->id()));
         $url = $url->setAbsolute(TRUE)->toString();
@@ -52,9 +55,10 @@ class PasswordPolicyEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  static function getSubscribedEvents() {
-    //TODO - Evaluate if there is a better place to add this check
+  static public function getSubscribedEvents() {
+    // TODO - Evaluate if there is a better place to add this check.
     $events[KernelEvents::REQUEST][] = array('checkForUserPasswordExpiration');
     return $events;
   }
+
 }

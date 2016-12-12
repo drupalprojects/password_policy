@@ -2,13 +2,15 @@
 
 namespace Drupal\password_policy\Form;
 
-
 use Drupal\Core\Entity\EntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
-
+/**
+ * Form to delete policies.
+ */
 class PasswordPolicyDeleteForm extends EntityConfirmFormBase {
+
   /**
    * {@inheritdoc}
    */
@@ -40,11 +42,12 @@ class PasswordPolicyDeleteForm extends EntityConfirmFormBase {
       $this->t('The @label password policy has been deleted.',
         [
           '@type' => $this->entity->bundle(),
-          '@label' => $this->entity->label()
+          '@label' => $this->entity->label(),
         ]
       )
     );
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
+
 }

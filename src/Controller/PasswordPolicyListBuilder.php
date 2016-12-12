@@ -10,6 +10,7 @@ use Drupal\Core\Url;
  * Provides a listing of Password Policies.
  */
 class PasswordPolicyListBuilder extends ConfigEntityListBuilder {
+
   /**
    * {@inheritdoc}
    */
@@ -29,6 +30,12 @@ class PasswordPolicyListBuilder extends ConfigEntityListBuilder {
     return $row + parent::buildRow($entity);
   }
 
+  /**
+   * Changes the edit url to use the wizard form.
+   *
+   * @return array
+   *   Operations for the Password Policy entity.
+   */
   public function getDefaultOperations(EntityInterface $entity) {
     $operations = parent::getDefaultOperations($entity);
     $operations['edit']['url'] = new Url('entity.password_policy.wizard.edit', ['machine_name' => $entity->id(), 'step' => 'general']);

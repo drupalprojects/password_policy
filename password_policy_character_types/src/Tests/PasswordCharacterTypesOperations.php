@@ -18,11 +18,13 @@ class PasswordCharacterTypesOperations extends WebTestBase {
    */
   public static $modules = [
     'password_policy_character_types',
-    'password_policy'
+    'password_policy',
   ];
 
   /**
-   * @var
+   * Administrative user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
    */
   protected $adminUser;
 
@@ -38,7 +40,7 @@ class PasswordCharacterTypesOperations extends WebTestBase {
   /**
    * Test the management of the "character_types" constraint.
    */
-  function testPasswordCharacterTypesManagement() {
+  public function testPasswordCharacterTypesManagement() {
     // Create a policy and add a "character_types" constraint.
     $this->drupalPostForm('admin/config/security/password-policy/add', ['label' => 'Test policy', 'id' => 'test_policy'], 'Next');
     $this->drupalGet('admin/config/system/password_policy/constraint/add/test_policy/character_types');
