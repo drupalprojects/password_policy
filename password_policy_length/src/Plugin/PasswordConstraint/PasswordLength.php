@@ -45,7 +45,7 @@ class PasswordLength extends PasswordConstraintBase {
    */
   public function defaultConfiguration() {
     return [
-      'character_length' => 0,
+      'character_length' => 1,
       'character_operation' => 'minimum',
     ];
   }
@@ -56,12 +56,12 @@ class PasswordLength extends PasswordConstraintBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['character_length'] = array(
       '#type' => 'textfield',
-      '#title' => t('Number of characters'),
+      '#title' => $this->t('Number of characters'),
       '#default_value' => $this->getConfiguration()['character_length'],
     );
     $form['character_operation'] = array(
       '#type' => 'select',
-      '#title' => t('Operation'),
+      '#title' => $this->t('Operation'),
       '#options' => array('minimum' => 'Minimum length', 'maximum' => 'Maximum length'),
       '#default_value' => $this->getConfiguration()['character_operation'],
     );

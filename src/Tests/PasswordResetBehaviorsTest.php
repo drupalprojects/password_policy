@@ -12,7 +12,7 @@ use Drupal\user\Entity\User;
  */
 class PasswordResetBehaviorsTest extends WebTestBase {
 
-  public static $modules = array(
+  public static $modules = [
     'system',
     'user',
     'node',
@@ -28,7 +28,7 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     'text',
     'field_ui',
     'password_policy',
-  );
+  ];
 
   protected $profile = 'standard';
 
@@ -36,12 +36,11 @@ class PasswordResetBehaviorsTest extends WebTestBase {
    * Test password reset behaviors.
    */
   public function testPasswordResetBehaviors() {
-    global $base_url;
 
     // Create user with permission to create policy.
     // Below causes a custom role to be created that has no entity storage.
     // This makes the CMI layer barf and changing CMI fail.
-    $user1 = $this->drupalCreateUser(array(
+    $user1 = $this->drupalCreateUser([
       'administer site configuration',
       'administer users',
       'administer permissions',
@@ -50,17 +49,9 @@ class PasswordResetBehaviorsTest extends WebTestBase {
       'administer user fields',
       'administer user form display',
       'access administration pages',
-    ));
+    ]);
 
     $this->drupalLogin($user1);
-
-    // Debugging - new fields are not showing up on user form with right perms.
-    /*$this->drupalGet('admin/config/people/accounts/form-display');
-    $edit = [
-    'fields[field_password_expiration][type]' => 'boolean_checkbox',
-    'fields[field_last_password_reset][type]' => 'datetime_default',
-    ];
-    $this->drupalPostForm(NULL, $edit, 'Save');*/
 
     // Assert that user attributes were created and unexpired.
     $user_instance = User::load($user1->id());
@@ -68,12 +59,11 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '0', 'Password expiration field is not set to zero on user add');
 
     // Create a new role.
-    $rid = $this->drupalCreateRole(array());
+    $rid = $this->drupalCreateRole([]);
 
     // Create user with test role.
     $this->drupalGet("admin/people/create");
     $edit = [
-      // 'roles[authenticated]' => 'authenticated',.
       'roles[' . $rid . ']' => $rid,
       'mail' => 'example12@example.com',
       'name' => 'testuser1',
@@ -116,10 +106,9 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     // Run cron to trigger expiration.
     $this->cronRun();
 
-    // This is currently bombing. username not found.
+    // User should be redirected to the user entity edit page after login.
     $this->drupalPostForm('user/login', ['name' => 'testuser1', 'pass' => 'pass'], 'Log in');
-    // $this->drupalLogin($user2);.
-    $this->assertUrl($user2->toUrl('edit-form'), [], "User should be sent to their account form after expiration -- ");
+    $this->assertUrl($user2->toUrl('edit-form'), [], "User should be sent to their account form after expiration");
     $this->drupalLogout();
 
     // Create a new node type.
@@ -127,23 +116,31 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     // Create a node of that type.
     $node_title = $this->randomMachineName();
     $node_body = $this->randomMachineName();
-    $edit = array(
+    $edit = [
       'type' => $type1->get('type'),
       'title' => $node_title,
-      'body' => array(array('value' => $node_body)),
+      'body' => [['value' => $node_body]],
       'langcode' => 'en',
-    );
+    ];
     $node = $this->drupalCreateNode($edit);
 
     // Verify if user tries to go to node, they are forced back.
     $this->drupalGet('user/login');
     $this->drupalPostForm(NULL, ['name' => 'testuser1', 'pass' => 'pass'], 'Log in');
-    $this->drupalGet($node->toUrl());
-    $this->assertUrl($user2->toUrl('edit-form'), [], "User should be sent back to their account form instead of the node");
+    $this->drupalGet($node->toUrl()->toString());
+    // Workaround for webtest sometimes returning an extra leading value in the
+    // route base path.  Does not seem to ever happen on local testing, only on
+    // Jenkins simpletest runner. E.g. /checkout/user, not /user.
+    $user_edit_url = $user2->toUrl('edit-form')->toString();
+    $pos = strpos($user_edit_url, '/user');
+    if ($pos !== 0) {
+      $user_edit_url = substr($user_edit_url, $pos);
+    }
+    $this->assertEqual($user_edit_url, '/user/' . $user2->id() . '/edit', "User should be sent back to their account form instead of the node");
 
     // Change password.
     $this->drupalGet("user/" . $user2->id() . "/edit");
-    $edit = array();
+    $edit = [];
     $edit['pass[pass1]'] = '1';
     $edit['pass[pass2]'] = '1';
     $edit['current_pass'] = 'pass';
@@ -154,8 +151,16 @@ class PasswordResetBehaviorsTest extends WebTestBase {
     $this->assertEqual($user_instance->get('field_password_expiration')[0]->value, '0', 'Password expiration field should be empty after changing password');
 
     // Verify if user tries to go to node, they are allowed.
-    $this->drupalGet($node->toUrl());
-    $this->assertEqual($this->getUrl(), $node->toUrl('canonical', ['absolute' => TRUE])->toString(), "User should have access to the node now");
+    $this->drupalGet($node->toUrl()->toString());
+    // Workaround for webtest sometimes returning an extra leading value in the
+    // route base path.  Does not seem to ever happen on local testing, only on
+    // Jenkins simpletest runner.  E.g. /checkout/node, not /node.
+    $node_url = $node->toUrl()->toString();
+    $pos = strpos($node_url, '/node');
+    if ($pos !== 0) {
+      $node_url = substr($node_url, $pos);
+    }
+    $this->assertEqual($node_url, '/node/' . $node->id(), "User should have access to the node now");
     $this->drupalLogout();
   }
 

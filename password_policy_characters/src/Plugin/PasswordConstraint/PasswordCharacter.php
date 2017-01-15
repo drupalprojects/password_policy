@@ -98,13 +98,13 @@ class PasswordCharacter extends PasswordConstraintBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['character_count'] = array(
       '#type' => 'textfield',
-      '#title' => t('Number of characters'),
+      '#title' => $this->t('Number of characters'),
       '#required' => TRUE,
       '#default_value' => $this->getConfiguration()['character_count'],
     );
     $form['character_type'] = array(
       '#type' => 'select',
-      '#title' => t('Character type'),
+      '#title' => $this->t('Character type'),
       '#required' => TRUE,
       '#options' => array(
         'uppercase' => 'Uppercase',

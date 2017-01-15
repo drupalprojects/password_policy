@@ -11,7 +11,7 @@ use Drupal\simpletest\WebTestBase;
  */
 class PasswordHistoryTests extends WebTestBase {
 
-  public static $modules = array('password_policy', 'password_policy_history');
+  public static $modules = ['password_policy', 'password_policy_history'];
 
   /**
    * Test history constraint.
@@ -28,13 +28,20 @@ class PasswordHistoryTests extends WebTestBase {
     $user2 = $this->drupalCreateUser();
 
     // Create role.
-    $rid = $this->drupalCreateRole(array());
+    $rid = $this->drupalCreateRole([]);
 
-    // Set role for user.
+    // Set role for user.  Also manually update password.  The user insert hook
+    // does not add a password hash in the password_policy_history table for
+    // users on initial creation via drupalCreateUser(), but this password
+    // update will register an entry since the password is updated in the
+    // form instead.
     $edit = [
       'roles[' . $rid . ']' => $rid,
+      'pass[pass1]' => $user2->pass_raw,
+      'pass[pass2]' => $user2->pass_raw,
     ];
-    $this->drupalPostForm("user/" . $user2->id() . "/edit", $edit, t('Save'));
+    $user_path = 'user/' . $user2->id() . '/edit';
+    $this->drupalPostForm($user_path, $edit, t('Save'));
 
     // Create new password reset policy for role.
     $this->drupalGet("admin/config/security/password-policy/add");
@@ -67,23 +74,29 @@ class PasswordHistoryTests extends WebTestBase {
 
     $this->assertText('Saved the test Password Policy.');
 
+    // Login as user2.
+    $this->drupalLogin($user2);
+
     // Change password to the same thing.
-    $edit = array(
+    $edit = [
+      'current_pass' => $user2->pass_raw,
       'pass[pass1]' => $user2->pass_raw,
       'pass[pass2]' => $user2->pass_raw,
-    );
-    $this->drupalPostAjaxForm("user/" . $user2->id() . "/edit", $edit, 'pass[pass1]');
+    ];
+    $this->drupalPostAjaxForm($user_path, $edit, 'pass[pass1]');
+    $this->assertNoText('Password has been reused too many times.  Choose a different password.');
 
+    // Save the form so the password history updates.
+    $this->drupalPostForm($user_path, $edit, t('Save'));
     $this->assertText('The changes have been saved.');
 
     // Change password to the same thing again.
-    $edit = array(
-      'pass[pass1]' => $user2->pass_raw,
-      'pass[pass2]' => $user2->pass_raw,
-    );
-    $this->drupalPostAjaxForm("user/" . $user2->id() . "/edit", $edit, 'pass[pass1]');
+    $this->drupalPostAjaxForm($user_path, $edit, 'pass[pass1]');
+    $this->assertText('Password has been reused too many times.  Choose a different password.');
 
-    $this->assertText('You cannot use the same password more than 2 time(s) and this has been used 2 time(s)');
+    // Attempt to save the form.  Should not succeed.
+    $this->drupalPostForm($user_path, $edit, t('Save'));
+    $this->assertText('The password does not satisfy the password policies');
 
     $this->drupalLogout();
   }

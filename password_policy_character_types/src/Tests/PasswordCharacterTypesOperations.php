@@ -44,16 +44,18 @@ class PasswordCharacterTypesOperations extends WebTestBase {
     // Create a policy and add a "character_types" constraint.
     $this->drupalPostForm('admin/config/security/password-policy/add', ['label' => 'Test policy', 'id' => 'test_policy'], 'Next');
     $this->drupalGet('admin/config/system/password_policy/constraint/add/test_policy/character_types');
-    $this->assertText('Number of character types');
+    $this->assertText('Minimum number of character types');
 
-    $this->drupalPostForm(NULL, ['character_types' => 1], 'Save');
-    $this->assertText('The number of character types must be between 2 and 4.');
+    $this->drupalPostForm(NULL, ['character_types' => 2], 'Save');
+    $this->assertText('Minimum password character types: 2');
 
-    $this->drupalPostForm(NULL, ['character_types' => 5], 'Save');
-    $this->assertText('The number of character types must be between 2 and 4.');
-
+    $this->drupalGet('admin/config/system/password_policy/constraint/add/test_policy/character_types');
     $this->drupalPostForm(NULL, ['character_types' => 3], 'Save');
     $this->assertText('Minimum password character types: 3');
+
+    $this->drupalGet('admin/config/system/password_policy/constraint/add/test_policy/character_types');
+    $this->drupalPostForm(NULL, ['character_types' => 4], 'Save');
+    $this->assertText('Minimum password character types: 4');
   }
 
 }
