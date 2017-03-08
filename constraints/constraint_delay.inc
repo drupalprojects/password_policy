@@ -32,7 +32,7 @@ function password_policy_constraint_delay_error($constraint) {
  */
 function password_policy_constraint_delay_validate($password, $constraint, $account) {
   // Bypass delay constraint, if account is marked "Force password change on
-  // next login."
+  // next login".
   if (isset($account->force_password_change) && $account->force_password_change) {
     return TRUE;
   }

@@ -49,7 +49,6 @@ function password_policy_constraint_history_validate($password, $constraint, $ac
 /* Auxiliary                                                                */
 /****************************************************************************/
 
-
 /**
  * Gets old password hashes.
  */
