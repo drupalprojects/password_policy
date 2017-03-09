@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Expiration plugin for Password Policy module.

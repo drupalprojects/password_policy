@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Delay constraint for Password Policy module.

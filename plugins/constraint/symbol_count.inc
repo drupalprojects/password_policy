@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Symbol count constraint for Password Policy module.

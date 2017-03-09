@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Export UI Ctools plugin for Password Policy module.
