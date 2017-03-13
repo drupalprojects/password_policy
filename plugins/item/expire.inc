@@ -164,8 +164,6 @@ function _password_policy_expire_query_users($notice_int, $policy_name) {
   $query->join($current_pw_query, 'c', 'p.created = c.created AND p.uid = c.uid');
 
   // Add negative join to remove all items that have already sent this notice.
-  // @TODO findout why we cannot use arguments here
-  // $query->leftJoin('password_policy_notice_history', 'nh', "nh.hid = p.hid AND nh.timeframe = '%s' AND nh.name='%s'", array($notice_int, $policy_name));
   $condition = t("nh.hid = p.hid AND nh.name='@name' AND nh.timeframe = '@timeframe'", array('@name' => $policy_name, '@timeframe' => $notice_int));
   $query->leftJoin('password_policy_notice_history', 'nh', $condition);
   $query->isNull('nh.hid');
