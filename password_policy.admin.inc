@@ -171,9 +171,6 @@ function _password_policy_admin_list_roles($pid) {
  * The list of the password policies.
  */
 function password_policy_admin_list($form) {
-  $options = array();
-  $enabled = array();
-
   $result = db_select('password_policy', 'p',
     array(
       'fetch' => PDO::FETCH_ASSOC,
@@ -194,10 +191,6 @@ function password_policy_admin_list($form) {
   $form['#tree'] = TRUE;
   foreach ($result as $row) {
     $pid = $row['pid'];
-    $options[$pid] = $row['enabled'] ? format_date($row['created'], 'medium') : '';
-    if ($row['enabled']) {
-      $enabled[] = $pid;
-    }
 
     $form['policies'][$pid]['name'] = array(
       '#markup' => check_plain($row['name']),
