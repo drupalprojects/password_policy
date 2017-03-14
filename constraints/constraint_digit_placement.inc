@@ -6,6 +6,7 @@
  *
  * @link https://drupal.org/node/316768
  *
+ * @codingStandardsIgnoreLine
  * @author David Kent Norman (https://deekayen.net/)
  */
 
