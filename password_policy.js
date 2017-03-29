@@ -95,8 +95,9 @@
 
       $('fieldset#edit-delay-fieldset', context).drupalSetSummary(function (context) {
         var delay = $('input[name="delay"]', context).val();
+        var threshold = $('input[name="threshold"]', context).val();
         if (delay) {
-          return Drupal.t('@delay between changes', {'@delay': delay});
+          return Drupal.t('At most @threshold change(s) in @delay', {'@threshold': threshold, '@delay': delay});
         }
         else {
           return Drupal.t('Not enforced');
