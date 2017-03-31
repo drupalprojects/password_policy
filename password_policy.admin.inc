@@ -392,7 +392,7 @@ function password_policy_admin_form($form, &$form_state, $policy = NULL) {
     '#title' => t('Roles'),
     '#options' => user_roles(TRUE),
     '#default_value' => isset($policy['roles']) ? $policy['roles'] : array(),
-    '#description' => t("Select the roles that this policy will apply to."),
+    '#description' => t('Select the roles that this policy will apply to.'),
   );
 
   $form['expiration'] = array(
@@ -407,14 +407,14 @@ function password_policy_admin_form($form, &$form_state, $policy = NULL) {
     '#default_value' => isset($policy['expiration']) ? $policy['expiration'] : '0',
     '#size' => 5,
     '#maxlength' => 5,
-    '#description' => t("The passwords will expire after this number of days. The users with expired passwords will be blocked. Setting this field to 0 will not put any password expiration constraints."),
+    '#description' => t('The passwords will expire after this number of days. The users with expired passwords will be blocked. Setting this field to 0 will not put any password expiration constraints.'),
   );
   $form['expiration']['warning'] = array(
     '#type' => 'textfield',
     '#title' => t('Password Expiration Warning'),
     '#default_value' => isset($policy['warning']) ? $policy['warning'] : '',
     '#size' => 10,
-    '#field_suffix' => t("days before password expiration"),
+    '#field_suffix' => t('days before password expiration'),
     '#description' => t("<p>When to send a password expiration warning e-mail.  To send warning e-mails on multiple days, enter numbers separated by commas.  For example, '30,7' will cause an expiration warning e-mail to be sent both 30 and 7 days before expiration. Leave blank to not send or display any warnings.</p><p><strong>Important:</strong> Drupal cron must be run once per day. Otherwise, warning e-mails might not be sent. The default Drupal cron configuration relies on site visitors to invoke cron. If your site might not receive visitors on a day, you should run cron from outside the site daily. See <a href='https://www.drupal.org/cron'>Setting Up Cron</a>.</p>"),
   );
 
@@ -466,7 +466,7 @@ function password_policy_admin_form_validate($form, &$form_state) {
   if (empty($roles)) {
     form_set_error('roles', t('You must select at least one role for a policy to apply to.'));
   }
-  if (!empty($form_state['values']['warning']) && !preg_match("/^[0-9,]+$/", $form_state['values']['warning'])) {
+  if (!empty($form_state['values']['warning']) && !preg_match('/^[0-9,]+$/', $form_state['values']['warning'])) {
     form_set_error('warning', t('Warning must only contain digits and commas.'));
   }
 }
@@ -487,7 +487,7 @@ function password_policy_admin_form_submit($form, &$form_state) {
     if (!is_array($value)) {
       // Dodge issues with roles array.
       $value = trim($value);
-      if ($value != "" && preg_match("/^constraint_/", $key)) {
+      if ($value != '' && preg_match('/^constraint_/', $key)) {
         $constraints[substr($key, 11)] = $value;
       }
     }
