@@ -12,7 +12,7 @@ $plugin = array(
   'prime value' => 'symbol_count',
   'config' => array(
     'symbol_count' => NULL,
-    'symbol_count_symbols' => '!@#$%^&*()_+=-|}{"?:><,./;\'\[]',
+    'symbol_count_symbols' => '`~!@#$%^&*()_+=-|}{"?:><,./;\'\\[]',
   ),
 );
 
