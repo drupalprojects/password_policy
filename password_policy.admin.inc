@@ -478,7 +478,7 @@ function password_policy_admin_form_submit($form, &$form_state) {
   $op = $form_state['values']['op'];
 
   if ($op == t('Delete')) {
-    drupal_goto('admin/config/people/password_policy/delete/' . $form_state['values']['pid']);
+    drupal_goto('admin/config/people/password_policy/' . $form_state['values']['pid'] . '/delete');
   }
 
   _password_policy_admin_form_save_policy($form_state);
