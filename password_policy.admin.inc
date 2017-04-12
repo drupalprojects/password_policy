@@ -469,6 +469,31 @@ function password_policy_admin_form_validate($form, &$form_state) {
   if (!empty($form_state['values']['warning']) && !preg_match('/^[0-9,]+$/', $form_state['values']['warning'])) {
     form_set_error('warning', t('Warning must only contain digits and commas.'));
   }
+  if (_password_policy_validating_new_policy($form_state)) {
+    _password_policy_validate_unique_policy_name($form_state);
+  }
+}
+
+/**
+ * Determines whether a new policy is being validated.
+ *
+ * The policy being validated could be either new or edited.
+ */
+function _password_policy_validating_new_policy($form_state) {
+  return !isset($form_state['values']['pid']);
+}
+
+/**
+ * Validates that the policy name is unique.
+ */
+function _password_policy_validate_unique_policy_name($form_state) {
+  $query = db_select('password_policy', 'p')
+    ->condition('p.name', $form_state['values']['name'])
+    ->fields('p', array('pid'));
+  $row_count = $query->execute()->rowCount();
+  if ($row_count > 0) {
+    form_set_error('name', t('A policy with the same name already exists. Please enter a different name.'));
+  }
 }
 
 /**
