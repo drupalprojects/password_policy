@@ -40,7 +40,7 @@
           }
 
           $.post(
-            Drupal.settings.basePath + cleanUrlPrefix + Drupal.settings.pathPrefix + 'password_policy/check',
+            Drupal.settings.basePath + cleanUrlPrefix + Drupal.settings.pathPrefix + 'password_policy/check' + window.location.search,
             data,
             function (data) {
               pw_status = data;
