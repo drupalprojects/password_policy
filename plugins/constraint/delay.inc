@@ -77,7 +77,6 @@ function password_policy_delay_constraint($password, $account, $constraint) {
     return TRUE;
   }
 
-
   // Apply constraint if last number of password changes defined by threshold
   // happened too recently.
   return $account->password_history[$password_index]->created <= strtotime('-' . $constraint->config['delay']);
