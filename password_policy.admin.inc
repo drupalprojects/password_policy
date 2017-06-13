@@ -87,51 +87,62 @@ function password_policy_admin_settings() {
   $form['email']['password_policy_warning_subject'] = array(
     '#type' => 'textfield',
     '#title' => t('Subject of warning e-mail'),
-    '#default_value' => variable_get('password_policy_warning_subject', PASSWORD_POLICY_DEFAULT_WARNING_SUBJECT),
+    '#default_value' => _password_policy_mail_text('warning_subject', NULL, array(), FALSE),
     '#maxlength' => 180,
-    '#description' => t('Customize the subject of the warning e-mail message, which is sent to remind of password expiration.') . _password_policy_warning_email_tokens_help(),
+    '#description' => t('Customize the subject of the warning e-mail message, which is sent to remind of password expiration. Available variables are: [user:name], [site:name], [site:url], [site:url-brief], [user:mail], [date:medium], [site:login-url], [user:edit-url], [password-policy:days-left], [password-policy:password-edit-url].'),
   );
   $form['email']['password_policy_warning_body'] = array(
     '#type' => 'textarea',
     '#title' => t('Body of warning e-mail'),
-    '#default_value' => variable_get('password_policy_warning_body', PASSWORD_POLICY_DEFAULT_WARNING_BODY),
+    '#default_value' => _password_policy_mail_text('warning_body', NULL, array(), FALSE),
     '#rows' => 15,
-    '#description' => t('Customize the body of the warning e-mail message, which is sent to remind of password expiration.') . _password_policy_warning_email_tokens_help(),
+    '#description' => t('Customize the body of the warning e-mail message, which is sent to remind of password expiration. Available variables are: [user:name], [site:name], [site:url], [site:url-brief], [user:mail], [date:medium], [site:login-url], [user:edit-url], [password-policy:days-left], [password-policy:password-edit-url].'),
   );
 
-  $form['actions']['reset'] = array(
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
+  );
+  $form['reset'] = array(
     '#type' => 'submit',
     '#value' => t('Reset to defaults'),
-    '#submit' => array('password_policy_admin_settings_reset_submit'),
   );
 
-  return system_settings_form($form);
+  return $form;
 }
 
 /**
- * Gets help for warning email tokens.
+ * Submit hook for the settings form.
  */
-function _password_policy_warning_email_tokens_help() {
-  return ' ' . t('Available variables are: [user:name], [site:name], [site:url], [site:url-brief], [user:mail], [date:medium], [site:login-url], [user:edit-url], [password-policy:days-left], [password-policy:password-edit-url].');
-}
+function password_policy_admin_settings_submit($form, &$form_state) {
+  $op = $form_state['clicked_button']['#value'];
+  switch ($op) {
+    case t('Save configuration'):
+      variable_set('password_policy_admin', $form_state['values']['password_policy_admin']);
+      variable_set('password_policy_begin', $form_state['values']['password_policy_begin']);
+      variable_set('password_policy_block', $form_state['values']['password_policy_block']);
+      variable_set('password_policy_show_restrictions', $form_state['values']['password_policy_show_restrictions']);
+      variable_set('password_policy_warning_subject', $form_state['values']['password_policy_warning_subject']);
+      variable_set('password_policy_warning_body', $form_state['values']['password_policy_warning_body']);
+      variable_set('password_policy_force_change_reset', $form_state['values']['password_policy_force_change_reset']);
+      variable_set('password_policy_force_change_path', $form_state['values']['password_policy_force_change_path']);
+      variable_set('password_policy_force_change_extra_allowed_paths', $form_state['values']['password_policy_force_change_extra_allowed_paths']);
+      drupal_set_message(t('The configuration options have been saved.'));
+      break;
 
-/**
- * Submit hook for the reset button on the settings form.
- */
-function password_policy_admin_settings_reset_submit($form, &$form_state) {
-  variable_del('password_policy_admin');
-  variable_del('password_policy_begin');
-  variable_del('password_policy_block');
-  variable_del('password_policy_show_restrictions');
-  variable_del('password_policy_warning_subject');
-  variable_del('password_policy_warning_body');
-  variable_del('password_policy_force_change_reset');
-  variable_del('password_policy_force_change_extra_allowed_paths');
-  if (function_exists('variable_delete')) {
-    variable_delete('password_policy_warning_subject');
-    variable_delete('password_policy_warning_body');
+    case t('Reset to defaults'):
+      variable_del('password_policy_admin');
+      variable_del('password_policy_begin');
+      variable_del('password_policy_block');
+      variable_del('password_policy_show_restrictions');
+      variable_del('password_policy_warning_subject');
+      variable_del('password_policy_warning_body');
+      variable_del('password_policy_force_change_reset');
+      variable_del('password_policy_force_change_path');
+      variable_del('password_policy_force_change_extra_allowed_paths');
+      drupal_set_message(t('The configuration options have been reset to their default values.'));
+      break;
   }
-  drupal_set_message(t('The configuration options have been reset to their default values.'));
 }
 
 /**
