@@ -384,6 +384,23 @@ function password_policy_admin_form($form, &$form_state, $policy = NULL) {
     '#description' => t('Select the roles that this policy will apply to.'),
   );
 
+  $authentication_modules = _password_policy_get_authentication_modules();
+  if (count($authentication_modules)) {
+    $form['excluded_authentication_modules'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Excluded Authentication Modules'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['excluded_authentication_modules']['excluded_authentication_modules'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Excluded Authentication Modules'),
+      '#options' => drupal_map_assoc($authentication_modules),
+      '#default_value' => isset($policy['excluded_authentication_modules']) ? $policy['excluded_authentication_modules'] : array(),
+      '#description' => t('Select the authentication modules that this policy will not apply to.'),
+    );
+  }
+
   $form['expiration'] = array(
     '#type' => 'fieldset',
     '#title' => t('Expiration'),
@@ -527,6 +544,7 @@ function _password_policy_admin_form_get_policy(array $form_state) {
     'expiration' => $form_values['expiration'],
     'warning' => $form_values['warning'],
     'roles' => $form_values['roles'],
+    'excluded_authentication_modules' => isset($form_values['excluded_authentication_modules']) ? $form_values['excluded_authentication_modules'] : array(),
   );
   if (isset($form_values['pid'])) {
     // Editing an existing policy. Get pid.
