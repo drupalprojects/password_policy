@@ -323,7 +323,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
       }
       $candidates = _password_policy_expire_query_users($notice_int, $policy_name);
       foreach ($candidates as $candidate) {
-        $account = user_load($candidate->uid);
+        $account = user_load($candidate->uid, TRUE);
         if ($this->policy->match($account)) {
           $message = _password_policy_expire_notify($account, $candidate, $candidate->created + $expire_int, $this);
           if ($message['result']) {
