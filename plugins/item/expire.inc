@@ -229,6 +229,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
         'uid' => $account->uid,
         'pass' => $account->pass,
         'created' => REQUEST_TIME,
+        'is_generated' => FALSE,
       );
       password_policy_update_password_history($account->password_history[0]);
     }
