@@ -282,7 +282,7 @@ class PasswordPolicyExpire extends PasswordPolicyItem {
    */
   public function setExpiredWarningMessage() {
     if (!empty($this->config['expire_warning_message'])) {
-      drupal_set_message($this->config['expire_warning_message'], 'warning');
+      drupal_set_message(t($this->config['expire_warning_message']), 'warning');
     }
   }
 
