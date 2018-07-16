@@ -62,6 +62,14 @@ function password_policy_admin_settings() {
     '#default_value' => variable_get('password_policy_block', 0),
     '#options' => array('0' => t('Expired accounts are blocked. Only administrators can unblock them. Once unblocked, users can log in and will be forced to change their password. If they do not log in and change their password within one day, they will be blocked again.'), '1' => t('Expired accounts are not blocked. Users whose accounts have expired will be forced to change their passwords at next login.')),
   );
+  $form['expiration']['password_policy_expired_account_entries'] = array(
+    '#type' => 'textfield',
+    '#size' => 10,
+    '#title' => t('Entries per page on expired accounts page'),
+    '#element_validate' => array('element_validate_integer_positive'),
+    '#default_value' => variable_get('password_policy_expired_account_entries', 10),
+    '#description' => t('The <a href="@expired-accounts-page">expired accounts page</a> lists all expired accounts to administrators.', array('@expired-accounts-page' => url('admin/people/expired'))),
+  );
 
   // Visibility.
   $form['visibility'] = array(
